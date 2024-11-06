@@ -29,7 +29,7 @@ public class cart {
 
     private Integer delivery;
 
-    @Column(precision = 10, scale = 2, nullable = false)
+    @Column(precision = 10, nullable = false)
     private float totalPrice;
 
     public Long getId() {

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" th:replace="base::layout(~{::main})">
+
+<head>
+</head>
+
+<body>
+	<main>        
+        <!-- Banner -->
+        <section id="home">
+            <div class="product-card">
+                <img src="images/banner.jpg" alt="Best Seller 1" class="img-fluid">
+                <div class="overlay"></div>
+                <div class="overlay-text position-absolute top-50 start-50 translate-middle text-white">
+                    <h1>Welcome to Kanhaiyalal Pragdas Utensils</h1>
+                    <br>
+                    <p>Your trusted source for high-quality utensils</p>
+                    <br>
+                    <button class="btn" onclick="scrollToSection('products')" style="background-color: #DD7210; color: #ffff;">Shop Now</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Best Selling Products -->
+        <section class="best-selling container">
+            <h2 class="text-center fw-bold my-3">Best Selling Products</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/cooker.jpg" alt="Best Seller 1" class="img-fluid">
+                        <p class="text-center p-2">Pressure Cooker - Induction Ceramic NS</p>
+                        <p class="text-center">Price: <s>Rs.1800</s> <span class="text-danger">Rs.1620</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/fry pan.jpg" alt="Best Seller 2" class="img-fluid">
+                        <p class="text-center p-2">Fry Pan - Frying Pan (Rounded Sides)</p>
+                        <p class="text-center">Price: <s>Rs.1010</s> <span class="text-danger">Rs.905</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/deep fry pan.jpg" alt="Best Seller 3" class="img-fluid">
+                        <p class="text-center p-2">Deep Fry Pan - Hawkins Deep Kadhai</p>
+                        <p class="text-center">Price: <s>Rs.1775</s> <span class="text-danger">Rs.1595</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/tava.jpg" alt="Best Seller 1" class="img-fluid">
+                        <p class="text-center p-2">Tava - Hawkins Non Stick Flat Tava</p>
+                        <p class="text-center">Price: <s>Rs.1390</s> <span class="text-danger">Rs.1250</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+            </div>
+            <button type="button" class="btn button d-block mx-auto p-2 px-5 mt-5 rounded-pill" style="background-color: #DD7210; color: #ffff; font-size: 14px;"><span>View All</span></button>
+        </section>
+
+        <!-- Safety -->
+        <section class="safety container">
+            <div class="row mt-5 mb-5">
+                <div class="col-md-4">
+                    <div class="product-card1">
+                        <i class="fa-solid fa-truck-fast"></i><br><br>
+                        <p>Free Shipping</p>
+                        <p>For orders above Rs 999*</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="product-card1">
+                        <i class="fa-solid fa-user-shield"></i><br><br>
+                        <p>Highest Safety Standards</p>
+                        <p>Enjoy worry-free cooking</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="product-card1">
+                        <i class="fa-solid fa-shield"></i><br><br>
+                        <p>Secured Payments</p>
+                        <p>Fast and Secure Checkout</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Launch Products -->
+        <section class="new-launch container">
+            <h2 class="text-center fw-bold my-3">New Launch Products</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/saucepan.jpg" alt="New Launch 1" class="img-fluid">
+                        <p class="text-center p-2">Saucepan - Saucepan with Glass lid</p>
+                        <p class="text-center">Price: <s>Rs.1390</s> <span class="text-danger">Rs.1250</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/handi.jpg" alt="New Launch 2" class="img-fluid">
+                        <p class="text-center p-2">Handi - Ceramic Nonstick Handi with Glass lid</p>
+                        <p class="text-center">Price: <s>Rs.2250</s> <span class="text-danger">Rs.2025</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/stewpott.jpg" alt="New Launch 3" class="img-fluid">
+                        <p class="text-center p-2">handi - Cook-n-Serve Bowl with Glass lid</p>
+                        <p class="text-center">Price: <s>Rs.2075</s> <span class="text-danger">Rs.1865</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="product-card">
+                        <img src="images/idli.jpg" alt="New Launch 3" class="img-fluid">
+                        <p class="text-center p-2">Cookware - Appe Pan with Glass lid</p>
+                        <p class="text-center">Price: <s>Rs.1750</s> <span class="text-danger">Rs.1575</span></p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>
+            </div>
+            <button type="button" class="btn button d-block mx-auto p-2 px-5 mt-5 rounded-pill" style="background-color: #DD7210; color: #ffff; font-size: 14px;"><span>View All</span></button>
+        </section>
+
+        <!-- About Us -->
+        <section class="about container">
+            <h2 class="text-center fw-bold my-3">About Us</h2>
+            <div class="row" style="background-color: #1f1f1f;">
+                <div class="col-md-4">
+                    <div class="product-card">
+                        <img src="images/pan.png" alt="New Launch 1" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-8 p-5">
+                    <p style="text-align: justify;">Imagine cooking with utensils that spark joy or decorating home with pieces that truly reflect your personality! At Homes and Pans, we believe every item should do more than just fill a space, it should make your home feel uniquely yours. We believe that a well-crafted home filled with beautiful and functional items can truly elevate everyday living. Our journey began with a simple goal: to make homes a warm, personalized haven that resonates with each individual’s taste. We understand that creating a lively home isn’t just about selecting items; it’s about curating an experience and setting the tone for cherished moments with family and friends. We believe that a well-crafted home filled with beautiful and functional items can truly elevate everyday living. Our journey began with a simple goal: to make homes a warm, personalized haven that resonates with each individual’s taste. We understand that creating a lively home isn’t just about selecting items; it’s about curating an experience and setting the tone for cherished moments with family and friends.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location -->
+        <section class="location container">
+            <h2 class="text-center fw-bold my-3">Location</h2>
+            <h6 class="text-center fw-bold my-3">Visit Our Stores for the Best in Quality and Service</h6>
+            <div class="row">
+                <div class="col-md-6 mt-5">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.6121854368275!2d81.00970877401487!3d26.82047446405107!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399be3d8d2e0a0f3%3A0x169fac38c98ded0!2sKANHAIYALAL%20PRAGDAS%20Gomti%20Nagar%20Extension!5e0!3m2!1sen!2sin!4v1729347223042!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="col-md-6 p-5 mt-5">
+                    <hr>
+                    <p>Store 1: Pratap Complex Faizabad Road Near Lekhraj Metro Station Indira Nagar, Lucknow</p>
+                    <hr>
+                    <p>Store 2: 4C/1130 ADC Tower Near Panacea Hospital Gomti Nagar Extension, Lucknow</p>
+                    <hr>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonial -->
+        <section class="review container">
+            <h2 class="text-center fw-bold my-3">Reviews and Testimonials</h2>
+            <h6 class="text-center fw-bold my-3">Don’t just take our word for it! Here’s what some of our happy customers have to say:</h6>
+            <div class="row">
+                <div class="col-md-4 mt-5">
+                    <div class="product-card1">
+                        <div class="star">⭐⭐⭐⭐⭐</div>
+                        <p>"I never thought I’d feel this way about a spatula, the grip is perfect, the quality is unmatched, and every time I use it, I feel like I'm creating something special. Thank you, Homes and Pans, for making something so simple feel so meaningful!" - Customer 1 (for spatula)</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-5">
+                    <div class="product-card1">
+                        <div class="star">⭐⭐⭐⭐⭐</div>
+                        <p>“Every guest comments on how cozy and stylish my home looks now! Homes and Pans has definitely become my go-to for home decoration, and I highly recommend it to anyone looking to elevate their space with timeless pieces." - Customer 2 (for decoration)</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mt-5">
+                    <div class="product-card1">
+                        <div class="star">⭐⭐⭐⭐</div>
+                        <p>“My mom always worries about how well I’m taking care of my kitchen items. I got the pressure cooker from Homes and Pans, and every time she sees it, she’s amazed at how ‘new’ it looks! The finishing on this cooker is so good that even after regular use, it shines like the first day.” – Customer 3 (for cooker)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>

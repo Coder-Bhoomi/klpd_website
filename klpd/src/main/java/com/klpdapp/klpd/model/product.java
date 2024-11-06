@@ -37,10 +37,10 @@ public class product {
     @Column(nullable = false)
     private int stock;
 
-    @Column(precision = 10, scale = 2, nullable = false)
+    @Column(precision = 10, nullable = false)
     private float mrp;
 
-    @Column(precision = 10, scale = 2)
+    @Column(precision = 10)
     private Float offerPrice;
 
     public String getProdId() {
