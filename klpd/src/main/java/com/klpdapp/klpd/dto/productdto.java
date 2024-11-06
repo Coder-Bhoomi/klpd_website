@@ -1,9 +1,12 @@
 package com.klpdapp.klpd.dto;
 
+import com.klpdapp.klpd.model.attribute;
+import com.klpdapp.klpd.model.category;
+
 public class productdto {
     private String prodId;         
-    private String categoryId;     
-    private String attId;         
+    private category categoryId;     
+    private attribute attId;         
     private String brand;
     private String prodName;      
     private String description;     
@@ -17,18 +20,8 @@ public class productdto {
     public void setProdId(String prodId) {
         this.prodId = prodId;
     }
-    public String getCategoryId() {
-        return categoryId;
-    }
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
-    public String getAttId() {
-        return attId;
-    }
-    public void setAttId(String attId) {
-        this.attId = attId;
-    }
+    
+    
     public String getBrand() {
         return brand;
     }
@@ -70,6 +63,18 @@ public class productdto {
     }
     public void setOfferPrice(Float offerPrice) {
         this.offerPrice = offerPrice;
+    }
+    public category getCategoryId() {
+        return categoryId;
+    }
+    public void setCategoryId(category categoryId) {
+        this.categoryId = categoryId;
+    }
+    public attribute getAttId() {
+        return attId;
+    }
+    public void setAttId(attribute attId) {
+        this.attId = attId;
     }
 
 }

@@ -3,17 +3,20 @@ package com.klpdapp.klpd.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table ( name = "images")
 public class images {
-     @Id
+    @Id
     @Column(length = 15, nullable = false)
     private String imgId;
 
-    @Column(length = 15, nullable = false)
-    private String product;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private product prodId;
 
     @Column(length = 255, nullable = false, unique = true)
     private String imageUrl;
@@ -29,16 +32,16 @@ public class images {
         this.imgId = imgId;
     }
 
-    public String getProduct() {
-        return product;
-    }
-
-    public void setProduct(String product) {
-        this.product = product;
-    }
-
     public String getImageUrl() {
         return imageUrl;
+    }
+    
+    public product getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(product prodId) {
+        this.prodId = prodId;
     }
 
     public void setImageUrl(String imageUrl) {

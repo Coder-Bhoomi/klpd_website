@@ -3,6 +3,8 @@ package com.klpdapp.klpd.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,11 +14,13 @@ public class product {
     @Column(length = 15, nullable = false)
     private String prodId;
 
-    @Column(length = 15, nullable = false)
-    private String categoryId;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private category categoryId;
 
-    @Column(length = 8, nullable = false)
-    private String attId;
+    @ManyToOne
+    @JoinColumn
+    private attribute attId;
 
     @Column(length = 60, nullable = false)
     private String brand;
@@ -38,4 +42,86 @@ public class product {
 
     @Column(precision = 10, scale = 2)
     private Float offerPrice;
+
+    public String getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(String prodId) {
+        this.prodId = prodId;
+    }
+
+    public category getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(category categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public attribute getAttId() {
+        return attId;
+    }
+
+    public void setAttId(attribute attId) {
+        this.attId = attId;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getProdName() {
+        return prodName;
+    }
+
+    public void setProdName(String prodName) {
+        this.prodName = prodName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public float getMrp() {
+        return mrp;
+    }
+
+    public void setMrp(float mrp) {
+        this.mrp = mrp;
+    }
+
+    public Float getOfferPrice() {
+        return offerPrice;
+    }
+
+    public void setOfferPrice(Float offerPrice) {
+        this.offerPrice = offerPrice;
+    }
+
+    
 }
