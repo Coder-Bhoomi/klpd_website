@@ -5,7 +5,7 @@ import com.klpdapp.klpd.model.product;
 public class imagesdto {
     private product prodId;
     private String imgId;
-    private String imgURL;
+    private String imgURL;  
     private Boolean isPrimary;
     
     public product getProdId() {

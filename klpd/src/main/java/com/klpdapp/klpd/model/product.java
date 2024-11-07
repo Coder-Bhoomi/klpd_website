@@ -15,11 +15,11 @@ public class product {
     private String prodId;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "CategoryId", nullable = false)
     private category categoryId;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "attId")
     private attribute attId;
 
     @Column(length = 60, nullable = false)
@@ -33,9 +33,6 @@ public class product {
 
     @Column(length = 30, nullable = false)
     private String availability;
-
-    @Column(nullable = false)
-    private int stock;
 
     @Column(precision = 10, nullable = false)
     private float mrp;
@@ -98,15 +95,7 @@ public class product {
     public void setAvailability(String availability) {
         this.availability = availability;
     }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
+    
     public float getMrp() {
         return mrp;
     }

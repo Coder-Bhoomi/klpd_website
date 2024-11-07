@@ -17,11 +17,11 @@ public class cart {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false , name = "userid")
     private user userid;
 
     @ManyToOne
-    @JoinColumn(nullable = false, unique = true)
+    @JoinColumn(name= "productid" , nullable = false, unique = true)
     private product productid;
 
     @Column(nullable = false)

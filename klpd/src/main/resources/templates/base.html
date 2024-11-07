@@ -34,21 +34,16 @@
                             Categories
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                            <li><a class="dropdown-item" href="cooker.html">Pressure Cooker</a></li>
-                            <li><a class="dropdown-item" href="frypan.html">Fry Pan</a></li>
-                            <li><a class="dropdown-item" href="tava.html">Tava</a></li>
-                            <li><a class="dropdown-item" href="deepfry.html">Deep Fry Pan</a></li>
-                            <li><a class="dropdown-item" href="saucepan.html">Saucepan</a></li>
-                            <li><a class="dropdown-item" href="handi.html">Handi &amp; Bowl</a></li>
-                            <li><a class="dropdown-item" href="stewpot.html">Stewpot</a></li>
-                            <li><a class="dropdown-item" href="pan.html">Pan</a></li>
-                        </ul>
+                            <li th:each="category : ${categories}">
+                                <a class="dropdown-item" th:href="@{/category/{id}(id=${category.categoryId})}" th:text="${category.categoryName}"></a>
+                            </li>
+                        </ul>                        
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About Us</a>
+                        <a class="nav-link" href="/home#aboutus">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact Us</a>
+                        <a class="nav-link" href="/home#location">Visit Us</a>
                     </li>
                     <li class="nav-item">
                         <form class="d-flex">
@@ -57,7 +52,7 @@
                         </form>
                     </li>
                 </ul>
-                <a class="navbar-brand" href="cart.html">
+                <a class="navbar-brand" href="/cart">
                     <i class="fa-solid fa-cart-shopping" style="color: #ffff; margin-left: 20px;"></i>
                 </a>
                 <a class="navbar-brand" href="#">

@@ -10,8 +10,7 @@ public class productdto {
     private String brand;
     private String prodName;      
     private String description;     
-    private String availability;
-    private int stock;    
+    private String availability;  
     private float mrp;        
     private Float offerPrice;
     public String getProdId() {
@@ -45,12 +44,6 @@ public class productdto {
     }
     public void setAvailability(String availability) {
         this.availability = availability;
-    }
-    public int getStock() {
-        return stock;
-    }
-    public void setStock(int stock) {
-        this.stock = stock;
     }
     public float getMrp() {
         return mrp;

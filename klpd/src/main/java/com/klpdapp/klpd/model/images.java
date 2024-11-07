@@ -15,10 +15,10 @@ public class images {
     private String imgId;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "prodId")
     private product prodId;
 
-    @Column(length = 255, nullable = false, unique = true)
+    @Column(length = 500, nullable = false, unique = true)
     private String imageUrl;
 
     @Column
