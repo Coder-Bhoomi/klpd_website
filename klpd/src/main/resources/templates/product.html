@@ -2,140 +2,149 @@
 <html lang="en" th:replace="base::layout(~{::main})">
 
 <head>
+    <link rel="stylesheet" href="css/product.css">
 </head>
 
 <body>
-	<main> 
+    <main>
 
-    <!-- Main content -->
-    <div class="container my-5">
-        <div class="row">
-            <!-- Image Section -->
-            <div class="col-md-6 d-flex flex-column align-items-center">
-                <img id="mainImage" src="images/cooker.jpg" alt="Product Image" class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
-                <div class="d-flex justify-content-left" style="width: 70%;">
-                    <img src="images/deep fry pan.jpg" alt="Thumbnail 1" class="img-thumbnail m-1" style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
-                    <img src="images/fry pan.jpg" alt="Thumbnail 2" class="img-thumbnail m-1" style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
-                    <img src="images/idli.jpg" alt="Thumbnail 3" class="img-thumbnail m-1" style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
-                </div>
-            </div>
-    
-            <!-- Details Section -->
-            <div class="col-md-6 mt-4">
-                <h1>Artisan Tadka Pan</h1>
-                <p class="price">
-                    <s>Rs. 880</s> <strong class="text-danger">Rs. 749</strong> <span class="text-success">14% OFF</span>
-                </p>
-                <p class="text-muted mb-3">(inclusive of all taxes)</p>
-    
-                <!-- Size Options -->
-                <div class="size-options mb-4">
-                    <span class="fw-bold d-block mb-2">Size:</span>
-                    <button class="btn btn-outline-secondary rounded-pill me-2">8 cm - 230 ml</button>
-                    <button class="btn btn-outline-secondary rounded-pill">10 cm - 300 ml</button>
-                </div>
-    
-                <!-- Quantity -->
-                <div class="quantity mb-4 mt-3">
-                    <span class="fw-bold d-block mb-2">Quantity:</span>
-                    <div class="input-group" style="width: 120px;">
-                        <button class="btn btn-outline-secondary" onclick="changeQuantity(-1)">-</button>
-                        <input type="text" id="quantityInput" class="form-control text-center" value="1">
-                        <button class="btn btn-outline-secondary" onclick="changeQuantity(1)">+</button>
+        <!-- Main content -->
+        <div class="container my-5">
+            <div class="row">
+                <!-- Image Section -->
+                <div class="col-md-6 d-flex flex-column align-items-center">
+                    <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
+                        class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
+                    <div class="d-flex justify-content-left" style="width: 70%;">
+                        <img th:src="@{${product.images[0].imageUrl}}" alt="Thumbnail 1" class="img-thumbnail m-1"
+                            style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
+                        <img th:src="@{${product.images[1].imageUrl}}" alt="Thumbnail 2" class="img-thumbnail m-1"
+                            style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
+                        <img th:src="@{${product.images[2].imageUrl}}" alt="Thumbnail 3" class="img-thumbnail m-1"
+                            style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
                     </div>
                 </div>
-    
-                <!-- Action Buttons -->
-                <div class="action-buttons d-flex gap-3">
-                    <button class="btn btn-secondary">Add to Cart</button>
-                    <button class="btn" onclick="scrollToSection('products')" style="background-color: #DD7210; color: #ffff;">Shop Now</button>
+
+                <!-- Details Section (Single Product) -->
+                <div th:if="${error != null}">
+                    <p th:text="${error}"></p>
                 </div>
-    
-                <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
+                <div class="col-md-6 mt-4">
+                    <div th:if="${product != null}">
+                        <h1 th:text="${product.prodName}">Artisan Tadka Pan</h1>
+                        <p class="price">
+                            <s th:text="${product.mrp}">Rs.1800</s>
+                            <strong class="text-danger" th:text="${product.offerPrice}">Rs. 749</strong>
+                            <span class="text-success" id="discountPercentage">14% OFF</span>
+                        </p>
+                        <p class="text-muted mb-3">(inclusive of all taxes)</p>
+                    </div>
+                    <!-- Size Options -->
+                    <div class="size-options mb-4">
+                        <span class="fw-bold d-block mb-2">Size:</span>
+                        <button class="btn btn-outline-secondary rounded-pill me-2">8 cm - 230 ml</button>
+                        <button class="btn btn-outline-secondary rounded-pill">10 cm - 300 ml</button>
+                    </div>
+
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons d-flex gap-3">
+                        <button class="btn btn-secondary">Add to Cart</button>
+                        <button class="btn" onclick="scrollToSection('products')"
+                            style="background-color: #DD7210; color: #ffff;">Shop Now</button>
+                    </div>
+
+                    <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
+                    <p th:utext="${product.description}"></p>
+                </div>
+
             </div>
         </div>
-    </div>
 
-    <!-- More Information Section -->   
-    <div class="container my-5 mt-5">
-        <h4 class="fw-bold mt-5">More Information</h4>
-        <table class="table table-bordered info-table mt-4">
-            <tbody>
-                <tr>
-                    <th>MANUFACTURED BY</th>
-                    <td>AUTOPRESS (INDIA) PVT. LTD. GAT 322(NEW), PIRANGUT, MULSHI, PUNE, MAHARASHTRA - 412115</td>
-                </tr>
-                <tr>
-                    <th>CUSTOMER CARE & COMPLAINTS</th>
-                    <td>
-                        NAME & ADDRESS SAME AS ABOVE<br>
-                        TEL: +91 8484018048<br>
-                        EMAIL: CARE@STAHLKITCHENS.COM
-                    </td>
-                </tr>
-                <tr>
-                    <th>COMMODITY</th>
-                    <td>SS UTENSILS</td>
-                </tr>
-                <tr>
-                    <th>COUNTRY OF ORIGIN</th>
-                    <td>INDIA</td>
-                </tr>
-                <tr>
-                    <th>NET QUANTITY</th>
-                    <td>1 U</td>
-                </tr>
-                <tr>
-                    <th>CONTENTS</th>
-                    <td>TAWA-1N</td>
-                </tr>
-                <tr>
-                    <th>WARRANTY</th>
-                    <td>3 YEARS WARRANTY ON MANUFACTURING DEFECTS & 2 YEARS WARRANTY ON COATING</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Related Product -->
-    <section class="best-selling container">
-        <h2 class="text-center fw-bold my-3">Related Product</h2>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="product-card">
-                    <img src="images/cooker.jpg" alt="Best Seller 1" class="img-fluid" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <p class="text-center p-2">Pressure Cooker - Induction Ceramic NS</p>
-                    <p class="text-center">Price: <s>Rs.1800</s> <span class="text-danger">Rs.1620</span></p>
-                </div>
-                <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
-            </div>
-            <div class="col-md-3">
-                <div class="product-card">
-                    <img src="images/fry pan.jpg" alt="Best Seller 2" class="img-fluid" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <p class="text-center p-2">Fry Pan - Frying Pan (Rounded Sides)</p>
-                    <p class="text-center">Price: <s>Rs.1010</s> <span class="text-danger">Rs.905</span></p>
-                </div>
-                <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
-            </div>
-            <div class="col-md-3">
-                <div class="product-card">
-                    <img src="images/deep fry pan.jpg" alt="Best Seller 3" class="img-fluid" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <p class="text-center p-2">Deep Fry Pan - Hawkins Deep Kadhai</p>
-                    <p class="text-center">Price: <s>Rs.1775</s> <span class="text-danger">Rs.1595</span></p>
-                </div>
-                <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
-            </div>
-            <div class="col-md-3">
-                <div class="product-card">
-                    <img src="images/tava.jpg" alt="Best Seller 1" class="img-fluid" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                    <p class="text-center p-2">Tava - Hawkins Non Stick Flat Tava</p>
-                    <p class="text-center">Price: <s>Rs.1390</s> <span class="text-danger">Rs.1250</span></p>
-                </div>
-                <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
-            </div>
+        <!-- More Information Section -->
+        <div class="container my-5 mt-5">
+            <h4 class="fw-bold mt-5">More Information</h4>
+            <table class="table table-bordered info-table mt-4">
+                <tbody>
+                    <tr>
+                        <th>Capacity</th>
+                        <td th:text="${product.attribute.capacity}"></td>
+                    </tr>
+                    <tr>
+                        <th>Carton-dimension</th>
+                        <td th:text="${product.attribute.cartonDimension}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Color</th>
+                        <td th:text="${product.attribute.color}"></td>
+                    </tr>
+                    <tr>
+                        <th>Diameter</th>
+                        <td th:text="${product.attribute.diameter}"></td>
+                    </tr>
+                    <tr>
+                        <th>Guarantee</th>
+                        <td th:text="${product.attribute.guarantee}"></td>
+                    </tr>
+                    <tr>
+                        <th>Thickness</th>
+                        <td th:text="${product.attribute.thickness}"></td>
+                    </tr>
+                    <tr>
+                        <th>Weight</th>
+                        <td th:text="${product.attribute.weight}"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <button type="button" class="btn button d-block mx-auto p-2 px-5 mt-5 rounded-pill" style="background-color: #DD7210; color: #ffff; font-size: 14px;"><span>View All</span></button>
-    </section>
+
+        <!-- Related Product -->
+        <section class="best-selling container">
+            <h2 class="text-center fw-bold my-3">Related Product</h2>
+            <div class="row">
+                <div class="col-md-3" th:each="rp : ${relatedProducts}">
+                    <a th:href="@{/product/{prodId}(prodId=${rp.prodId})}"
+                        style="text-decoration: none; color: inherit;">
+                        <div class="product-card">
+                            <div th:if="${rp.images != null and not #lists.isEmpty(rp.images)}">
+                                <img th:src="@{${rp.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
+                                    style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            </div>
+                            <p class="text-center p-2" th:text="${rp.prodName}">Product Name</p>
+                            <p class="text-center">
+                                <span th:if="${rp.offerPrice != null}">
+                                    Price: <s th:text="${rp.mrp}">Rs.1800</s>
+                                    <span class="text-danger" th:text="${rp.offerPrice}">Rs.1620</span>
+                                </span>
+                                <span th:if="${rp.offerPrice == null}">
+                                    Price: <span class="text-danger" th:text="${rp.mrp}">Rs.1800</span>
+                                </span>
+                            </p>
+                        </div>
+                    </a>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to
+                        Cart</button>
+                </div>
+            </div>
+            <button type="button" class="btn button d-block mx-auto p-2 px-5 mt-5 rounded-pill"
+                style="background-color: #DD7210; color: #ffff; font-size: 14px;"><span>View All</span></button>
+        </section>
     </main>
+    <script>
+        // Function to calculate the discount percentage
+        function calculateDiscount() {
+            const mrp = parseFloat(document.querySelector("[th\\:text='${product.mrp}']").innerText.replace('Rs.', '').trim());
+            const offerPrice = parseFloat(document.querySelector("[th\\:text='${product.offerPrice}']").innerText.replace('Rs.', '').trim());
+
+            if (mrp && offerPrice && mrp > 0) {
+                const discount = ((mrp - offerPrice) / mrp) * 100;
+                document.getElementById('discountPercentage').innerText = `${discount.toFixed(2)}% OFF`;
+            }
+        }
+
+        window.onload = calculateDiscount;
+    </script>
 </body>
+
 </html>

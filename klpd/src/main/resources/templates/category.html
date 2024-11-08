@@ -2,6 +2,7 @@
 <html lang="en" th:replace="base::layout(~{::main})">
 
 <head>
+    
 </head>
 
 <body>
@@ -19,8 +20,16 @@
                         Sort by
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="sortByDropdown">
-                        <li><a class="dropdown-item" href="#">Low to High Price</a></li>
-                        <li><a class="dropdown-item" href="#">High to Low Price</a></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/{categoryId}(categoryId=${category.categoryId}, sortBy='priceAsc')}">
+                                Low to High Price
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/{categoryId}(categoryId=${category.categoryId}, sortBy='priceDesc')}">
+                                High to Low Price
+                            </a>
+                        </li>
                     </ul>
                 </div>
     
@@ -41,15 +50,17 @@
                         Color
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="colorFilterDropdown">
-                        <li><a class="dropdown-item" href="#">Black</a></li>
-                        <li><a class="dropdown-item" href="#">Grey</a></li>
+                            <li th:each="color : ${colors}">
+                                <a class="dropdown-item" th:href="@{/{categoryId}(categoryId=${category.categoryId}, color=${color})}" th:text="${color}"></a>
+                            </li>
                     </ul>
                 </div>
+
             </div>
             <hr>
             <div class="row" >
                 <div class="col-md-3" th:each="product : ${products}">
-                    <a th:href="@{${product.prodId}}">
+                    <a th:href="@{/product/{prodId}(prodId=${product.prodId})}" style="text-decoration: none; color: inherit;">
                     <div class="product-card">
                         <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
                         <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
@@ -65,8 +76,8 @@
                             </span>
                         </p>
                     </div>
-                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
                     </a>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
                 </div>            
             </div>
         </section>
