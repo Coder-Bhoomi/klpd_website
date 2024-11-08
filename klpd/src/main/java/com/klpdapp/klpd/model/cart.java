@@ -18,11 +18,11 @@ public class cart {
 
     @ManyToOne
     @JoinColumn(nullable = false , name = "userid")
-    private user userid;
+    private user user;
 
     @ManyToOne
     @JoinColumn(name= "productid" , nullable = false, unique = true)
-    private product productid;
+    private product product;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -40,21 +40,7 @@ public class cart {
         this.id = id;
     }
 
-    public user getUserid() {
-        return userid;
-    }
-
-    public void setUserid(user userid) {
-        this.userid = userid;
-    }
-
-    public product getProductid() {
-        return productid;
-    }
-
-    public void setProductid(product productid) {
-        this.productid = productid;
-    }
+    
 
     public Integer getQuantity() {
         return quantity;
@@ -78,6 +64,22 @@ public class cart {
 
     public void setTotalPrice(float totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public user getUser() {
+        return user;
+    }
+
+    public void setUser(user user) {
+        this.user = user;
+    }
+
+    public product getProduct() {
+        return product;
+    }
+
+    public void setProduct(product product) {
+        this.product = product;
     }
 
 }

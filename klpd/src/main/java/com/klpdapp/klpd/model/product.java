@@ -1,10 +1,14 @@
 package com.klpdapp.klpd.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,11 +20,11 @@ public class product {
 
     @ManyToOne
     @JoinColumn(name = "CategoryId", nullable = false)
-    private category categoryId;
+    private category category;
 
     @ManyToOne
     @JoinColumn(name = "attId")
-    private attribute attId;
+    private attribute attribute;
 
     @Column(length = 60, nullable = false)
     private String brand;
@@ -40,6 +44,18 @@ public class product {
     @Column(precision = 10)
     private Float offerPrice;
 
+    @OneToMany(mappedBy = "prodId", cascade = CascadeType.ALL)
+    private List<images> images;
+    
+
+    public List<images> getImages() {
+        return images;
+    }
+
+    public void setImages(List<images> images) {
+        this.images = images;
+    }
+
     public String getProdId() {
         return prodId;
     }
@@ -47,22 +63,7 @@ public class product {
     public void setProdId(String prodId) {
         this.prodId = prodId;
     }
-
-    public category getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(category categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public attribute getAttId() {
-        return attId;
-    }
-
-    public void setAttId(attribute attId) {
-        this.attId = attId;
-    }
+    
 
     public String getBrand() {
         return brand;
@@ -110,6 +111,22 @@ public class product {
 
     public void setOfferPrice(Float offerPrice) {
         this.offerPrice = offerPrice;
+    }
+
+    public category getCategory() {
+        return category;
+    }
+
+    public void setCategory(category category) {
+        this.category = category;
+    }
+
+    public attribute getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(attribute attribute) {
+        this.attribute = attribute;
     }
 
     

@@ -15,7 +15,7 @@ public class images {
     private String imgId;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "prodId")
+    @JoinColumn(nullable = false, name = "prod_id")
     private product prodId;
 
     @Column(length = 500, nullable = false, unique = true)

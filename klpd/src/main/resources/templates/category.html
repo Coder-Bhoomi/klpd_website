@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" th:replace="base::layout(~{::main})">
+
+<head>
+</head>
+
+<body>
+	<main>     
+        <!-- Main Content Placeholder -->
+    
+
+        <!-- Best Selling Products -->
+        <section class="best-selling container mt-1">
+            <h2 class="text-center fw-bold my-3 mt-5" th:text="${category.categoryName}"></h2>
+            <div class="d-flex mb-3">
+                <!-- Sort By Filter -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortBy" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort by
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortByDropdown">
+                        <li><a class="dropdown-item" href="#">Low to High Price</a></li>
+                        <li><a class="dropdown-item" href="#">High to Low Price</a></li>
+                    </ul>
+                </div>
+    
+                <!-- Categories Filter -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="categoriesFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                        Categories
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="categoriesFilterDropdown">
+                        <li><a class="dropdown-item" href="#">Cooker 1</a></li>
+                        <li><a class="dropdown-item" href="#">Cooker 2</a></li>
+                    </ul>
+                </div>
+    
+                <!-- Color Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorFilter" data-bs-toggle="dropdown" aria-expanded="false">
+                        Color
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="colorFilterDropdown">
+                        <li><a class="dropdown-item" href="#">Black</a></li>
+                        <li><a class="dropdown-item" href="#">Grey</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="row" >
+                <div class="col-md-3" th:each="product : ${products}">
+                    <a th:href="@{${product.prodId}}">
+                    <div class="product-card">
+                        <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
+                        <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
+                        </div>
+                        <p class="text-center p-2" th:text="${product.prodName}">Product Name</p>
+                        <p class="text-center">
+                            <span th:if="${product.offerPrice != null}">
+                                Price: <s th:text="${product.mrp}">Rs.1800</s> 
+                                <span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                            </span>
+                            <span th:if="${product.offerPrice == null}">
+                                Price: <span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                            </span>
+                        </p>
+                    </div>
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                    </a>
+                </div>            
+            </div>
+        </section>
+    </main>
+</body>
+</html>
