@@ -90,6 +90,7 @@ public class maincontroller {
                     prod.getProdId());
 
             model.addAttribute("relatedProducts", relatedProducts);
+            model.addAttribute("categoryId", prod.getCategory().getCategoryId());
         } else {
             model.addAttribute("error", "Product not found!");
         }

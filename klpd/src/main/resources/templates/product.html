@@ -15,14 +15,15 @@
                 <div class="col-md-6 d-flex flex-column align-items-center">
                     <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
                         class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
-                    <div class="d-flex justify-content-left" style="width: 70%;">
-                        <img th:src="@{${product.images[0].imageUrl}}" alt="Thumbnail 1" class="img-thumbnail m-1"
-                            style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
-                        <img th:src="@{${product.images[1].imageUrl}}" alt="Thumbnail 2" class="img-thumbnail m-1"
-                            style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
-                        <img th:src="@{${product.images[2].imageUrl}}" alt="Thumbnail 3" class="img-thumbnail m-1"
-                            style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
-                    </div>
+                        <div class="d-flex justify-content-left flex-row" style="width: 70%;">
+                            <img th:each="image : ${product.images}" 
+                                 th:src="@{${image.imageUrl}}" 
+                                 alt="Thumbnail" 
+                                 class="img-thumbnail m-1" 
+                                 style="width: 20%; cursor: pointer;" 
+                                 onclick="changeImage(this)">
+                        </div>
+                        
                 </div>
 
                 <!-- Details Section (Single Product) -->
@@ -49,9 +50,15 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons d-flex gap-3">
-                        <button class="btn btn-secondary">Add to Cart</button>
-                        <button class="btn" onclick="scrollToSection('products')"
-                            style="background-color: #DD7210; color: #ffff;">Shop Now</button>
+                        <form th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.prodId}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add
+                                to Cart</button>
+                        </form>
+                        <a href="/cart">
+                        <button class="btn" style="background-color: #DD7210; color: #ffff;">Go to Cart</button>
+                        </a>
                     </div>
 
                     <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
@@ -123,12 +130,21 @@
                             </p>
                         </div>
                     </a>
-                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to
-                        Cart</button>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${rp.prodId}" />
+                        <input type="hidden" name="quantity" value="1" min="1" />
+                        <button type="submit" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to
+                            Cart</button>
+                    </form>
                 </div>
             </div>
-            <button type="button" class="btn button d-block mx-auto p-2 px-5 mt-5 rounded-pill"
-                style="background-color: #DD7210; color: #ffff; font-size: 14px;"><span>View All</span></button>
+            <a th:href="@{/{categoryId}(categoryId=${product.category.categoryId})}">
+                <button type="button" class="btn button d-block mx-auto p-2 px-5 mt-5 rounded-pill"
+                        style="background-color: #DD7210; color: #fff; font-size: 14px;">
+                    <span>View All</span>
+                </button>
+            </a>
+            
         </section>
     </main>
     <script>
