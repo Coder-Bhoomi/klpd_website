@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <main>
+    <main style="padding-bottom: 120px;">
         <!-- Main Content Placeholder -->
 
 
@@ -84,36 +84,33 @@
 
             </div>
             <hr>
-            <div class="row">
+            <div class="row mb-5" >
                 <div class="col-md-3" th:each="product : ${products}">
-                    <a th:href="@{/product/{prodId}(prodId=${product.prodId})}"
-                        style="text-decoration: none; color: inherit;">
-                        <div class="product-card">
-                            <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
-                                <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
-                            </div>
-                            <p class="text-center p-2" th:text="${product.prodName}">Product Name</p>
-                            <p class="text-center">
-                                <span th:if="${product.offerPrice != null}">
-                                    Price: <s th:text="${product.mrp}">Rs.1800</s>
-                                    <span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
-                                </span>
-                                <span th:if="${product.offerPrice == null}">
-                                    Price: <span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
-                                </span>
-                            </p>
+                    <a th:href="@{/product/{prodId}(prodId=${product.prodId})}" style="text-decoration: none; color: inherit;">
+                    <div class="product-card2">
+                        <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
+                        <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
                         </div>
+                        <p class="text-center p-2" th:text="${product.prodName}">Product Name</p>
+                        <p class="text-center">
+                            <span th:if="${product.offerPrice != null}">
+                                Price: <s th:text="${product.mrp}">Rs.1800</s> 
+                                <span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                            </span>
+                            <span th:if="${product.offerPrice == null}">
+                                Price: <span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                            </span>
+                        </p>
+                    </div>
                     </a>
                     <form th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="productId" th:value="${product.prodId}" />
                         <input type="hidden" name="quantity" value="1" min="1" />
-                        <button type="submit" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to
-                            Cart</button>
-                    </form>
-                </div>
+                        <button type="submit" class="btn btn-outline-success d-block mx-auto p-2">Add to Cart</button>
+                    </form>                
+                </div>            
             </div>
         </section>
     </main>
 </body>
-
 </html>
