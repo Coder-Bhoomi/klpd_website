@@ -12,16 +12,16 @@
 
         <!-- Best Selling Products -->
         <section class="best-selling container mt-1">
-            <!--h2 class="text-center fw-bold my-3 mt-5" th:text="${category.categoryName}"></h2>
+            <h2 class="text-center fw-bold my-3 mt-5" th:text="${category.categoryName}"></h2>
             <div class="d-flex mb-3">
-                <-- Sort By Filter -->
-                <!--div class="dropdown me-3">
+                <!-- Sort By Filter -->
+                <div class="dropdown me-3">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortBy" data-bs-toggle="dropdown" aria-expanded="false">
                         Sort by
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="sortByDropdown">
                         <li>
-                            <a class="dropdown-item" th:href="@{/{categoryId}(categoryId=${category.categoryId}, sortBy='priceAsc')}">
+                            <a class="dropdown-item" th:href="/search, sortBy='priceAsc')}">
                                 Low to High Price
                             </a>
                         </li>
@@ -33,7 +33,7 @@
                     </ul>
                 </div>
     
-                <-- Categories Filter ->
+                <!-- Categories Filter -->
                 <div class="dropdown me-3">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="categoriesFilter" data-bs-toggle="dropdown" aria-expanded="false">
                         Categories
@@ -44,7 +44,7 @@
                     </ul>
                 </div>
     
-                <-- Color Filter ->
+                <!-- Color Filter -->
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorFilter" data-bs-toggle="dropdown" aria-expanded="false">
                         Color
@@ -54,7 +54,7 @@
                                 <a class="dropdown-item" th:href="@{/{categoryId}(categoryId=${category.categoryId}, color=${color})}" th:text="${color}"></a>
                             </li>
                     </ul>
-                </div-->
+                </div>
 
             </div>
             <hr>
@@ -77,11 +77,8 @@
                         </p>
                     </div>
                     </a>
-                    <form th:action="@{/cart/add}" method="post">
-                        <input type="hidden" name="productId" th:value="${product.prodId}" />
-                        <input type="hidden" name="quantity" value="1" min="1" />
-                        <button type="submit" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
-                    </form>                </div>            
+                    <button type="button" class="btn d-block mx-auto p-2" style="background-color: #DD7210;">Add to Cart</button>
+                </div>            
             </div>
         </section>
     </main>

@@ -17,10 +17,6 @@ public class cart {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false , name = "userid")
-    private user user;
-
-    @ManyToOne
     @JoinColumn(name= "productid" , nullable = false, unique = true)
     private product product;
 
@@ -66,13 +62,6 @@ public class cart {
         this.totalPrice = totalPrice;
     }
 
-    public user getUser() {
-        return user;
-    }
-
-    public void setUser(user user) {
-        this.user = user;
-    }
 
     public product getProduct() {
         return product;

@@ -23,5 +23,9 @@ public interface productrepo extends JpaRepository<product, String> {
 
     @Query("SELECT p FROM product p WHERE p.category.categoryId = :categoryId AND p.attribute.color = :color")
     List<product> findByCategory_CategoryIdAndAttribute_Color(@Param("categoryId") String categoryId, @Param("color") String color);
+
+    List<product> findByProdNameContainingIgnoreCase(String query);
+
+    List<product> findByProdNameContainingIgnoreCaseAndAttribute_Color(String query, String color);
 }
    
