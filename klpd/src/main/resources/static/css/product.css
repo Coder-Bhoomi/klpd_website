@@ -5,13 +5,6 @@
     margin-top: 15px;
 }
 
-.quantity button {
-    font-size: 14px;
-    background-color: #f1f1f1;
-    border: none;
-    cursor: pointer;
-}
-
 #quantityInput {
     width: 40px;
     height: 37px; 

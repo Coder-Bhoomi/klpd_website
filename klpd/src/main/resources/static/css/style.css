@@ -139,6 +139,25 @@ body {
     transform: scale(1.05);
 }
 
+.product-card2 {
+    position: relative;
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+}
+
+.product-card2 img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.product-card2:hover {
+    transform: scale(1.05);
+}
+
 .button {
     border-radius: 4px;
     background-color: #f4511e;
@@ -223,7 +242,6 @@ footer {
     background-color: #1f1f1f;
     color: #fff;
     padding: 1px;
-    margin-top: 120px;
 }
 
 footer a {
