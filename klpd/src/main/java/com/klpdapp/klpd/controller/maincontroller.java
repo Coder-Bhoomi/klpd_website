@@ -59,6 +59,10 @@ public class maincontroller {
             @RequestParam(required = false) String categoryId,
             @RequestParam(required = false) Integer minDiscount,
             @RequestParam(required = false) Integer maxDiscount,
+            @RequestParam(required = false) String diameter,
+            @RequestParam(required = false) String thickness,
+            @RequestParam(required = false) String capacity,
+            @RequestParam(required = false) String guarantee,
             Model model) {
 
         List<product> products;
@@ -81,25 +85,18 @@ public class maincontroller {
             products.sort(Comparator.comparing(product::getMrp).reversed());
         }
 
-        Set<String> colors = new HashSet<>();
-        for (product product : products) {
-            // Ensure product and product.getAttribute() are not null
-            if (product.getAttribute() != null && product.getAttribute().getColor() != null) {
-                colors.add(product.getAttribute().getColor());
-            }
-        }
-
         if (color != null && !color.isEmpty()) {
             List<product> filteredByColor = new ArrayList<>();
             for (product product : products) {
-                if (product.getAttribute().getColor() != null && product.getAttribute().getColor().equalsIgnoreCase(color)) {
+                if (product.getAttribute().getColor() != null
+                        && product.getAttribute().getColor().equalsIgnoreCase(color)) {
                     filteredByColor.add(product);
                 }
             }
             products = filteredByColor;
         }
 
-        // Filter by discount (traditional loop)
+        // Filter by discount 
         if (minDiscount != null && maxDiscount != null) {
             List<product> filteredByDiscount = new ArrayList<>();
             for (product product : products) {
@@ -110,18 +107,92 @@ public class maincontroller {
             }
             products = filteredByDiscount;
         }
+        // Filter by diameter
+        if (diameter != null && !diameter.isEmpty()) {
+            List<product> diameterFiltered = new ArrayList<>();
+            for (product product : products) {
+                if (product.getAttribute().getDiameter() != null
+                        && product.getAttribute().getDiameter().equalsIgnoreCase(diameter)) {
+                    diameterFiltered.add(product);
+                }
+            }
+            products = diameterFiltered;
+        }
+
+        // Filter by thickness
+        if (thickness != null && !thickness.isEmpty()) {
+            List<product> thicknessFiltered = new ArrayList<>();
+            for (product product : products) {
+                if (product.getAttribute().getThickness() != null
+                        && product.getAttribute().getThickness().equalsIgnoreCase(thickness)) {
+                    thicknessFiltered.add(product);
+                }
+            }
+            products = thicknessFiltered;
+        }
+
+        // Filter by capacity
+        if (capacity != null && !capacity.isEmpty()) {
+            List<product> capacityFiltered = new ArrayList<>();
+            for (product product : products) {
+                if (product.getAttribute().getCapacity() != null
+                        && product.getAttribute().getCapacity().equalsIgnoreCase(capacity)) {
+                    capacityFiltered.add(product);
+                }
+            }
+            products = capacityFiltered;
+        }
+
+        // Filter by guarantee
+        if (guarantee != null && !guarantee.isEmpty()) {
+            List<product> guaranteeFiltered = new ArrayList<>();
+            for (product product : products) {
+                if (product.getAttribute().getGuarantee() != null
+                        && product.getAttribute().getGuarantee().equalsIgnoreCase(guarantee)) {
+                    guaranteeFiltered.add(product);
+                }
+            }
+            products = guaranteeFiltered;
+        }
+        Set<String> colors = new HashSet<>();
+        Set<String> diameters = new HashSet<>();
+        Set<String> thicknesses = new HashSet<>();
+        Set<String> capacities = new HashSet<>();
+        Set<String> guarantees = new HashSet<>();
+
+        for (product product : products) {
+            if (product.getAttribute().getColor() != null) {
+                colors.add(product.getAttribute().getColor());
+            }
+            if (product.getAttribute().getDiameter() != null) {
+                diameters.add(product.getAttribute().getDiameter());
+            }
+            if (product.getAttribute().getThickness() != null) {
+                thicknesses.add(product.getAttribute().getThickness());
+            }
+            if (product.getAttribute().getCapacity() != null) {
+                capacities.add(product.getAttribute().getCapacity());
+            }
+            if (product.getAttribute().getGuarantee() != null) {
+                guarantees.add(product.getAttribute().getGuarantee());
+            }
+        }
 
         // Add data to the model for rendering
         model.addAttribute("products", products);
         model.addAttribute("query", query);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("colors", colors);
+        model.addAttribute("diameters", diameters);
+        model.addAttribute("thicknesses", thicknesses);
+        model.addAttribute("capacities", capacities);
+        model.addAttribute("guarantees", guarantees);
         model.addAttribute("minDiscount", minDiscount);
         model.addAttribute("maxDiscount", maxDiscount);
 
         addCategoriesToModel(model);
 
-        return "category"; // Return view for displaying products
+        return "category"; 
     }
 
     @GetMapping("{categoryId}")
@@ -152,10 +223,10 @@ public class maincontroller {
 
     @GetMapping("/cart")
     public String showCart(Model model) {
-        List<cart> cartItems = cartRepository.findAll(); // Adjust according to user-specific cart if needed
+        List<cart> cartItems = cartRepository.findAll(); 
         float subtotal = cartItems.stream().map(item -> item.getTotalPrice()).reduce(0.0f, Float::sum);
-        float discount = 0.0f; // Add logic for any discounts if applicable
-        float tax = subtotal * 0.10f; // Assuming 10% tax
+        float discount = 0.0f; 
+        float tax = subtotal * 0.10f; 
         float total = subtotal + tax - discount;
 
         model.addAttribute("cart", cartItems);
@@ -164,7 +235,7 @@ public class maincontroller {
         model.addAttribute("tax", tax);
         model.addAttribute("total", total);
         addCategoriesToModel(model);
-        return "cart"; // Adjust to your Thymeleaf template name
+        return "cart"; 
     }
 
     @PostMapping("/cart/update")
@@ -172,12 +243,12 @@ public class maincontroller {
         cart cartItem = cartRepository.findById(cartId).orElse(null);
 
         if (cartItem != null) {
-            // Update the quantity
+            
             product product = cartItem.getProduct();
             cartItem.setQuantity(quantity);
             cartItem.setTotalPrice(
                     quantity * (product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp()));
-            cartRepository.save(cartItem); // Save updated cart item
+            cartRepository.save(cartItem); 
             model.addAttribute("message", "Cart updated successfully.");
         } else {
             model.addAttribute("message", "Cart item not found.");
@@ -193,24 +264,21 @@ public class maincontroller {
 
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam String productId, @RequestParam Integer quantity, Model model) {
-        // Fetch product from the database
+        
         product product = prepo.findById(productId).orElse(null);
 
         if (product != null) {
             cart existingCartItem = cartRepository.findByProduct(product);
 
             if (existingCartItem != null) {
-                // If product is already in the cart, increase the quantity
+                
                 existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
-
-                // Update the total price based on the new quantity
                 float price = product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp();
                 existingCartItem.setTotalPrice(price * existingCartItem.getQuantity());
 
                 // Save the updated cart item
                 cartRepository.save(existingCartItem);
             } else {
-                // Create a new cart item
                 cart cart = new cart();
                 cart.setDelivery(60);
                 cart.setProduct(product);
