@@ -1,6 +1,11 @@
 package com.klpdapp.klpd.controller;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,47 +40,94 @@ public class maincontroller {
         model.addAttribute("categories", categories);
     }
 
+    private double calculateDiscount(double mrp, double offerPrice) {
+        if (mrp > 0 && offerPrice > 0) {
+            return ((mrp - offerPrice) / mrp) * 100;
+        }
+        return 0;
+    }
+
     @GetMapping("/home")
     public String showIndex(Model model) {
         addCategoriesToModel(model);
         return "index";
     }
 
-    @GetMapping("{categoryId}")
-    public String showCategory(@PathVariable String categoryId,
-            @RequestParam(required = false) String color,
+    @GetMapping("/products")
+    public String listProducts(@RequestParam(required = false) String query,
             @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) Integer minDiscount,
+            @RequestParam(required = false) Integer maxDiscount,
             Model model) {
 
-        category category = ctgrepo.findById(categoryId).orElse(null);
+        List<product> products;
 
-        if (category != null) {
-            List<product> products;
-
-            List<String> colors = prepo.findDistinctColorsByCategory(categoryId);
-            model.addAttribute("colors", colors);
-
+        if (categoryId != null && !categoryId.isEmpty()) {
             products = prepo.findByCategory_CategoryId(categoryId);
-
-            // Apply color filter
-            if (color != null && !color.isEmpty()) {
-                products = prepo.findByCategory_CategoryIdAndAttribute_Color(categoryId, color);
-            }
-
-            // Check the sortBy parameter and apply sorting accordingly
-            if ("priceAsc".equals(sortBy)) {
-                products = prepo.findByCategory_CategoryIdOrderByMrpAsc(categoryId);
-            } else if ("priceDesc".equals(sortBy)) {
-                products = prepo.findByCategory_CategoryIdOrderByMrpDesc(categoryId);
-            }
-
+            category category = ctgrepo.findById(categoryId).orElse(null);
             model.addAttribute("category", category);
-            model.addAttribute("products", products);
+
+        } else if (query != null && !query.isEmpty()) {
+            products = prepo.findByProdNameContainingIgnoreCase(query);
+        } else {
+            products = prepo.findAll();
         }
+
+        // Sorting
+        if ("priceAsc".equals(sortBy)) {
+            products.sort(Comparator.comparing(product::getMrp));
+        } else if ("priceDesc".equals(sortBy)) {
+            products.sort(Comparator.comparing(product::getMrp).reversed());
+        }
+
+        Set<String> colors = new HashSet<>();
+        for (product product : products) {
+            // Ensure product and product.getAttribute() are not null
+            if (product.getAttribute() != null && product.getAttribute().getColor() != null) {
+                colors.add(product.getAttribute().getColor());
+            }
+        }
+
+        if (color != null && !color.isEmpty()) {
+            List<product> filteredByColor = new ArrayList<>();
+            for (product product : products) {
+                if (product.getAttribute().getColor() != null && product.getAttribute().getColor().equalsIgnoreCase(color)) {
+                    filteredByColor.add(product);
+                }
+            }
+            products = filteredByColor;
+        }
+
+        // Filter by discount (traditional loop)
+        if (minDiscount != null && maxDiscount != null) {
+            List<product> filteredByDiscount = new ArrayList<>();
+            for (product product : products) {
+                double discount = calculateDiscount(product.getMrp(), product.getOfferPrice());
+                if (discount >= minDiscount && discount <= maxDiscount) {
+                    filteredByDiscount.add(product);
+                }
+            }
+            products = filteredByDiscount;
+        }
+
+        // Add data to the model for rendering
+        model.addAttribute("products", products);
+        model.addAttribute("query", query);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("colors", colors);
+        model.addAttribute("minDiscount", minDiscount);
+        model.addAttribute("maxDiscount", maxDiscount);
 
         addCategoriesToModel(model);
 
-        return "category";
+        return "category"; // Return view for displaying products
+    }
+
+    @GetMapping("{categoryId}")
+    public String showCategory(@PathVariable String categoryId, Model model) {
+        return "redirect:/products?categoryId=" + categoryId;
     }
 
     @GetMapping("/product/{prodId}")
@@ -94,19 +146,9 @@ public class maincontroller {
         } else {
             model.addAttribute("error", "Product not found!");
         }
-        return "product";
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam("query") String query, Model model) {
-        // Directly search products based on the query
-        List<product> products = prepo.findByProdNameContainingIgnoreCase(query);
-
-        // Add the products to the model to display in the view
-        model.addAttribute("products", products);
-
         addCategoriesToModel(model);
-        return "category";
+
+        return "product";
     }
 
     @GetMapping("/cart")
@@ -126,7 +168,7 @@ public class maincontroller {
         return "cart"; // Adjust to your Thymeleaf template name
     }
 
-     @PostMapping("/cart/update")
+    @PostMapping("/cart/update")
     public String updateCart(@RequestParam Long cartId, @RequestParam Integer quantity, Model model) {
         cart cartItem = cartRepository.findById(cartId).orElse(null);
 
@@ -134,13 +176,14 @@ public class maincontroller {
             // Update the quantity
             product product = cartItem.getProduct();
             cartItem.setQuantity(quantity);
-            cartItem.setTotalPrice(quantity * (product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp()));
+            cartItem.setTotalPrice(
+                    quantity * (product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp()));
             cartRepository.save(cartItem); // Save updated cart item
             model.addAttribute("message", "Cart updated successfully.");
         } else {
             model.addAttribute("message", "Cart item not found.");
         }
-        return "redirect:/cart"; 
+        return "redirect:/cart";
     }
 
     @GetMapping({ "/cart/delete" })
@@ -179,16 +222,12 @@ public class maincontroller {
                 // Save the cart item
                 cartRepository.save(cart);
 
-                // Optionally add a success message to the model
                 model.addAttribute("message", "Product added to cart!");
             }
         } else {
-            // If product not found, show error message
             model.addAttribute("message", "Product not found.");
         }
-
-        // Redirect back to the cart page
-        return "redirect:/category"; // Change this URL to your cart page
+        return "/cart";
     }
 
 }
