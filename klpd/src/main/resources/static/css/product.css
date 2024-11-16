@@ -1,21 +1,7 @@
-.quantity {
-    display: flex;
-    flex-direction: column; 
-    align-items: flex-start;
-    margin-top: 15px;
-}
-
-#quantityInput {
-    width: 40px;
-    height: 37px; 
-    text-align: center;
-    font-size: 16px;
-    background-color: #f1f1f1;
-    border: none;
-}
-
-.info-table {
-    font-size: 14px;
+.table {
+    --bs-table-bg: #121212 !important;
+    --bs-table-color: #ffffff !important;
+    --bs-table-border-color: #333333 !important;
 }
 
 .info-table td, .info-table th {

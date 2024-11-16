@@ -12,7 +12,7 @@ body {
 .navbar-nav .nav-link {
     color: white !important;  /* Change the text color to white */
     font-size: 18px;
-  }
+}
 
 .nav-item{
     margin-left: 30px;
@@ -22,6 +22,10 @@ body {
     margin-right: 5px;
     padding: 8px;
     padding-bottom: 15px;
+}
+
+.search{
+    width: 280px;
 }
 
 .icons{
@@ -42,7 +46,7 @@ body {
 }
 
 .navbar-nav .nav-link:hover {
-    color: #DD7210 !important; 
+    color: #367D8A !important; 
 }
 
 .navbar-nav .nav-link::after {
@@ -52,7 +56,7 @@ body {
     bottom: -2px; /* Adjust for alignment */
     width: 100%;
     height: 5px;
-    background-color: #DD7210;
+    background-color: #367D8A;
     transform: scaleX(0);
     transition: transform 0.3s ease; /* Smooth underline transition */
     transform-origin: right; /* Start from the right */
@@ -64,14 +68,14 @@ body {
 }
 
 .btn-outline-success {
-    color: #DD7210; /* Text color */
-    border-color: #DD7210; /* Border color */
+    color: #367D8A; /* Text color */
+    border-color: #367D8A; /* Border color */
 }
 
 .btn-outline-success:hover {
-    background-color: #DD7210; /* Background color on hover */
+    background-color: #367D8A; /* Background color on hover */
     color: #fff; /* Text color on hover */
-    border-color: #DD7210; /* Keep border color on hover */
+    border-color: #367D8A; /* Keep border color on hover */
 }
 
 .navbar-brand i {
@@ -80,7 +84,7 @@ body {
 }
 
 .navbar-brand:hover i {
-    color: #DD7210 !important; /* Change color on hover */
+    color: #367D8A !important; /* Change color on hover */
 }
 
 #home{
@@ -96,6 +100,50 @@ body {
 #home p {
     font-size: 20px;
 }
+
+/* Styling for the timer overlay background */
+.timer-overlay {
+    background: rgba(0, 0, 0, 0.5); /* Light transparent background */
+    padding: 15px 25px;
+    border-radius: 10px; /* Rounded corners */
+    display: inline-block;
+    margin: 20px 0; /* Spacing above and below */
+}
+
+/* Styling for the timer to display in a single line */
+.timer {
+    display: flex; /* Flexbox to align items in a single line */
+    justify-content: center; /* Center align the timer */
+    gap: 20px; /* Spacing between each timer segment */
+    font-size: 1.2rem; /* Adjust font size */
+    color: #ddd; /* Dark text color for contrast */
+    font-weight: bold;
+}
+
+/* Styling for each timer segment */
+.timer div {
+    text-align: center;
+}
+
+/* Styling for numbers */
+.timer div span {
+    font-size: 2rem; /* Larger size for numbers */
+    color: white; /* Black color for numbers */
+    display: block;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .timer {
+        font-size: 1rem;
+        gap: 10px;
+    }
+
+    .timer div span {
+        font-size: 1.5rem;
+    }
+}
+
 
 .product-card {
     position: relative;
@@ -197,6 +245,78 @@ body {
     right: 0;
 }
 
+.cartbutton {
+    position: relative;
+    overflow: hidden;
+}
+
+.cartbutton span {
+    display: inline-block;
+    transition: 0.5s;
+}
+
+.cartbutton::after {
+    content: '\f07a'; /* Font Awesome cart icon */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    bottom: -30px; /* Start below the button */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%);
+    font-size: 18px; /* Icon size */
+    opacity: 0; /* Hidden by default */
+    transition: 0.5s;
+    color: #fff;
+}
+
+.cartbutton:hover span {
+    opacity: 0; /* Hide text */
+    transform: translateY(-20px); /* Move text upwards */
+}
+
+.cartbutton:hover::after {
+    bottom: 50%; /* Slide icon to center */
+    opacity: 1; /* Make icon visible */
+    transform: translate(-50%, 50%);
+}
+
+.checkoutbutton {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    text-align: center;
+}
+
+.checkoutbutton span {
+    display: inline-block;
+    transition: 0.5s;
+}
+
+.checkoutbutton::after {
+    content: '\f0d1'; /* Unicode for Font Awesome truck icon */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 50%; /* Vertically center */
+    left: -30px; /* Start from the left side */
+    transform: translateY(-50%);
+    font-size: 18px; /* Icon size */
+    opacity: 0; /* Initially hidden */
+    transition: 1s;
+    color: #fff;
+}
+
+.checkoutbutton:hover span {
+    opacity: 0; /* Hide text */
+    transform: translateX(20px); /* Slide text to the right */
+}
+
+.checkoutbutton:hover::after {
+    left: 50%; /* Move truck icon to center */
+    opacity: 1; /* Make icon visible */
+    transform: translate(-50%, -50%);
+}
+
 .best-selling{
     margin-top: 100px;
 }
@@ -270,7 +390,7 @@ footer a {
 }
 
 footer a:hover {
-    color: #DD7210 !important; 
+    color: #367D8A !important; 
 }
 
 footer h5 {
@@ -295,7 +415,7 @@ footer .social-icons .social {
 }
 
 footer .social-icons .social:hover {
-    color: #DD7210;
+    color: #367D8A;
 }
 
 footer .footer-divider {

@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="en" th:replace="base::layout(~{::main})">
 <head>
-    <link rel="stylesheet" href="/css/cart.css">
+
 </head>
 
 <body>
-    <main style="background-color: #ffffff; color: black; padding-bottom: 120px;">
+    <main>
         <!-- Cart Container -->
-        <div class="container cart-container" style="max-width: 900px; margin: auto; padding: 20px;">
+        <div class="container cart-container">
             <h2 class="text-center mb-4 fw-bold mt-3">Shopping Cart</h2>
 
             <!-- Cart Items -->
             <div id="cart-items">
                 <!-- Render Cart Items Dynamically -->
-                <div class="cart-item d-flex align-items-center" th:each="cartItem : ${cart}" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f8f8f8; margin-bottom: 15px;">
+                <div class="cart-item d-flex align-items-center" th:each="cartItem : ${cart}">
                     
                     <div class="col-2">
                         <img th:src="@{${cartItem.product.images[0].imageUrl}}" alt="Product Image" class="img-fluid rounded">
@@ -22,9 +22,9 @@
                         <p class="mb-1 mx-5" th:text="${cartItem.product.prodName}">Product Name</p>
                     </div>
                     <div class="col-2">
-                        <form th:action="@{/cart/update}" method="post" class="w-100">
+                        <form th:action="@{/cart/update}" method="post">
                             <input type="hidden" th:value="${cartItem.id}" name="cartId">
-                            <input type="number" class="form-control quantity-input" min="1" th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
+                            <input type="number" class="form-control quantity-input w-2" min="1" th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
                         </form>
                     </div>
                     <div class="col-2 text-success fw-bold item-price text-center" th:text="${cartItem.totalPrice}">Price</div>
@@ -37,7 +37,7 @@
             </div>
 
             <!-- Coupon Section -->
-            <div class="coupon-section mt-4" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f8f8f8; margin-bottom: 15px;">
+            <div class="coupon-section mt-4">
                 <h5 class="fw-bold mx-1">Coupon</h5>
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Coupon Code">
@@ -47,7 +47,7 @@
             </div>
 
             <!-- Summary Section -->
-            <div class="summary-section mt-4" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px; background-color: #f8f8f8;">
+            <div class="summary-section mt-4">
                 <h5 class="fw-bold">Order Summary</h5>
                 <div class="d-flex justify-content-between">
                     <p>Subtotal</p>
@@ -70,7 +70,7 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons mt-4">
-                <button class="btn btn-outline-success d-block mx-auto p-2 w-100 mb-2">Checkout</button>
+                <button class="btn checkoutbutton d-block mx-auto p-2 w-100 mb-2" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Checkout</span></button>
                 <a href="/home" class="btn btn-outline-secondary d-block mx-auto p-2 w-100">Continue Shopping</a>
             </div>
         </div>

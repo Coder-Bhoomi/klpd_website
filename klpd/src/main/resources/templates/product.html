@@ -2,11 +2,11 @@
 <html lang="en" th:replace="base::layout(~{::main})">
 
 <head>
-    <link rel="stylesheet" href="/css/product.css">
+    
 </head>
 
 <body>
-    <main style="background-color: #ffffff; color: black; padding-bottom: 120px; padding-top: 30px;">
+    <main style="padding-bottom: 120px; padding-top: 30px;">
 
         <!-- Main content -->
         <div class="container">
@@ -15,7 +15,7 @@
                 <div class="col-md-6 d-flex flex-column align-items-center">
                     <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
                         class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
-                        <div class="d-flex justify-content-left flex-row" style="width: 70%;">
+                        <div class="d-flex justify-content-center flex-row" style="width: 70%;">
                             <img th:each="image : ${product.images}" 
                                  th:src="@{${image.imageUrl}}" 
                                  alt="Thumbnail" 
@@ -38,7 +38,7 @@
                             <strong class="text-danger" th:text="${product.offerPrice}">Rs. 749</strong>
                             <!--span class="text-success" id="discountPercentage">14% OFF</span-->
                         </p>
-                        <p class="text-muted mb-3">(inclusive of all taxes)</p>
+                        <p class="text mb-3" style="color: grey !important;">(inclusive of all taxes)</p>
                     </div>
                     <!-- Size Options ->
                     <div class="size-options mb-4">
@@ -53,11 +53,10 @@
                         <form th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.prodId}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
-                            <button type="submit" class="btn btn-outline-success d-block mx-auto p-2">Add
-                                to Cart</button>
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
                         </form>
                         <a href="/cart">
-                        <button class="btn p-2" style="background-color: #DD7210; color: #ffff;">Go to Cart</button>
+                        <button class="btn p-2" style="background-color: #367D8A; color: #ffff;">Go to Cart</button>
                         </a>
                     </div>
 
@@ -133,14 +132,13 @@
                     <form th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="productId" th:value="${rp.prodId}" />
                         <input type="hidden" name="quantity" value="1" min="1" />
-                        <button type="submit" class="btn btn-outline-success d-block mx-auto p-2">Add to
-                            Cart</button>
+                        <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
                     </form>
                 </div>
             </div>
             <a th:href="@{/{categoryId}(categoryId=${product.category.categoryId})}">
                 <button type="button" class="btn button d-block mx-auto p-2 mt-5 rounded-pill"
-                        style="background-color: #DD7210; color: #fff; font-size: 14px;">
+                        style="background-color: #367D8A; color: #fff; font-size: 14px;">
                     <span>View All</span>
                 </button>
             </a>

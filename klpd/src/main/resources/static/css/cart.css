@@ -10,23 +10,27 @@
 
 .cart-item {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid grey;
     border-radius: 8px;
-    background-color: #f8f8f8;
+    background-color: #1f1f1f;
     margin-bottom: 15px;
 }
 
 .coupon-section {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid grey;
     border-radius: 8px;
-    background-color: #f8f8f8;
+    background-color: #1f1f1f;
     margin-bottom: 15px;
 }
 
 .summary-section {
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid grey;
     border-radius: 8px;
-    background-color: #f8f8f8;
+    background-color: #1f1f1f;
+}
+
+.text-muted{
+    color: grey !important;
 }
