@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/registration.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <title>Registration Page</title>
+</head>
+<body>
+    <div class="container">
+        <div class="form-box login">
+            <form action="">
+                <h1>Login</h1>
+                <div class="input-box">
+                    <input type="email" placeholder="E-mail" required>
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="input-box pass">
+                    <input type="password" placeholder="Password" class="password" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                
+                <div class="forget-link">
+                    <a href="#">Forget password?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <p>or login with social platforms</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <form action="">
+                <h1>Registration</h1>
+                <div class="input-box">
+                    <input type="text" placeholder="Name" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="input-box">
+                    <input type="number" placeholder="Contact" required>
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="input-box">
+                    <input type="email" placeholder="E-mail" required>
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div class="input-box pass1">
+                    <input type="password" placeholder="Password" class="password1" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <p>or register with social platforms</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </form>
+        </div>
+        <div class="toggle-box">
+            <div class="toggle-panel toggle-left">
+                <h1>Hello Welcome!</h1>
+                <p>Don't have an account?</p>
+                <button class="btn register-btn">Register Now</button>
+            </div>
+            <div class="toggle-panel toggle-right">
+                
+                <h1>Welcome Back!</h1>
+                <p>Already have an account?</p>
+                <button class="btn login-btn">Login</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const container = document.querySelector('.container');
+        const registerBtn = document.querySelector('.register-btn');
+        const loginBtn = document.querySelector('.login-btn');
+        const password = document.querySelector('.password');
+        const password1 = document.querySelector('.password1');
+        const pass = document.querySelector('.pass');
+        const pass1 = document.querySelector('.pass1');
+
+        registerBtn.addEventListener('click', () => { 
+            container.classList.add('active');
+        });
+        loginBtn.addEventListener('click', () => { 
+            container.classList.remove('active');
+        });
+        password.addEventListener('input',()=>{
+            if(password.value.length < 4){
+                pass.style.borderColor= 'red';
+            }else if(password.value.length >= 4 && password.value.length < 8)
+            {
+                pass.style.borderColor= 'yellow';
+            
+            } else if(password.value.length >=8)
+        {
+                pass.style.borderColor= 'green';
+            
+            }
+        })
+        password1.addEventListener('input',()=>{
+            if(password1.value.length < 4){
+                pass1.style.borderColor= 'red';
+            }else if(password1.value.length >= 4 && password1.value.length < 8)
+            {
+                pass1.style.borderColor= 'yellow';
+            
+            } else if(password1.value.length >=8)
+        {
+                pass1.style.borderColor= 'green';
+            }
+        })
+    </script>
+</body>
+</html>
