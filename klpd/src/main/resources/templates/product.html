@@ -53,10 +53,10 @@
                         <form th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.prodId}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
-                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
+                            <button type="submit" class="btn cartbutton d-block p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
                         </form>
                         <a href="/cart">
-                        <button class="btn p-2" style="background-color: #367D8A; color: #ffff;">Go to Cart</button>
+                            <button type="button" class="btn cart-btn p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Go to Cart</span></button>
                         </a>
                     </div>
 
