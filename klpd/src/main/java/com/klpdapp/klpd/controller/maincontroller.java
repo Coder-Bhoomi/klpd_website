@@ -23,6 +23,7 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -313,4 +314,10 @@ public class maincontroller {
         return "redirect:/cart";
     }
 
+    @GetMapping({"/login"})
+    public String ShowLogin(Model model) {
+        UserDto dto = new UserDto();
+        model.addAttribute("dto",dto);
+        return "registration" ;
+    }
 }
