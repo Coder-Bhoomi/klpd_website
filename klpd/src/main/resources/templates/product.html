@@ -39,6 +39,28 @@
                             <!--span class="text-success" id="discountPercentage">14% OFF</span-->
                         </p>
                         <p class="text mb-3" style="color: grey !important;">(inclusive of all taxes)</p>
+                        <!-- Rating Section -->
+                        <div class="rating d-flex align-items-center mb-3">
+                            <span class="me-2 text-warning">
+                                <!-- Use Font Awesome for stars -->
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </span>
+                            <span class="text-muted">(4.3/5)</span>
+                        </div>
+                    </div>
+                    <!-- Size Dropdown -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label for="sizeSelect" class="form-label fw-bold me-2 mb-0">Size:</label>
+                        <select id="sizeSelect" class="form-select custom-dropdown">
+                            <option selected disabled>Choose</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                        </select>
                     </div>
                     <!-- Size Options ->
                     <div class="size-options mb-4">
@@ -49,15 +71,13 @@
 
 
                     <!-- Action Buttons -->
-                    <div class="action-buttons d-flex gap-3">
+                    <div class="action-buttons d-flex gap-3 mt-4">
                         <form th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.prodId}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
                             <button type="submit" class="btn cartbutton d-block p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
                         </form>
-                        <a href="/cart">
-                            <button type="button" class="btn cart-btn p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Go to Cart</span></button>
-                        </a>
+                        <a href="/cart"></a>
                     </div>
 
                     <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
