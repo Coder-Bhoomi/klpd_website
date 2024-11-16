@@ -33,16 +33,16 @@
                 <div class="col-md-6 mt-4">
                     <div th:if="${product != null}">
                         <h1 th:text="${product.prodName}">Artisan Tadka Pan</h1>
-                        <p class="price">
+                        <p class="price" style="font-size: 20px;">
                             <s th:text="${product.mrp}">Rs.1800</s>
                             <strong class="text-danger" th:text="${product.offerPrice}">Rs. 749</strong>
                             <!--span class="text-success" id="discountPercentage">14% OFF</span-->
                         </p>
                         <p class="text mb-3" style="color: grey !important;">(inclusive of all taxes)</p>
+
                         <!-- Rating Section -->
                         <div class="rating d-flex align-items-center mb-3">
                             <span class="me-2 text-warning">
-                                <!-- Use Font Awesome for stars -->
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
                                 <i class="fa-solid fa-star"></i>
@@ -52,6 +52,7 @@
                             <span class="text-muted">(4.3/5)</span>
                         </div>
                     </div>
+
                     <!-- Size Dropdown -->
                     <div class="d-flex align-items-center mb-3">
                         <label for="sizeSelect" class="form-label fw-bold me-2 mb-0">Size:</label>
@@ -62,14 +63,7 @@
                             <option value="large">Large</option>
                         </select>
                     </div>
-                    <!-- Size Options ->
-                    <div class="size-options mb-4">
-                        <span class="fw-bold d-block mb-2">Size:</span>
-                        <button class="btn btn-outline-secondary rounded-pill me-2">8 cm - 230 ml</button>
-                        <button class="btn btn-outline-secondary rounded-pill">10 cm - 300 ml</button>
-                    </div-->
-
-
+                    
                     <!-- Action Buttons -->
                     <div class="action-buttons d-flex gap-3 mt-4">
                         <form th:action="@{/cart/add}" method="post">
@@ -93,8 +87,16 @@
             <table class="table table-bordered info-table mt-4">
                 <tbody>
                     <tr>
+                        <th>Brand</th>
+                        <td>-</td>
+                    </tr>
+                    <tr>
                         <th>Capacity</th>
                         <td th:text="${product.attribute.capacity}"></td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>-</td>
                     </tr>
                     <tr>
                         <th>Carton-dimension</th>
@@ -116,6 +118,14 @@
                     <tr>
                         <th>Thickness</th>
                         <td th:text="${product.attribute.thickness}"></td>
+                    </tr>
+                    <tr>
+                        <th>Length</th>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <th>Height</th>
+                        <td>-</td>
                     </tr>
                     <tr>
                         <th>Weight</th>
