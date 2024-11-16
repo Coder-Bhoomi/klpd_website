@@ -1,22 +1,18 @@
 package com.klpdapp.klpd.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+@Access(AccessType.FIELD)
 @Entity
-@Table ( name = "images")
-public class images {
+@Table ( name = "Images")
+public class Images {
     @Id
     @Column(length = 15, nullable = false)
     private String imgId;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "prod_id")
-    private product prodId;
+    private Product prodId;
 
     @Column(length = 500, nullable = false, unique = true)
     private String imageUrl;
@@ -36,16 +32,16 @@ public class images {
         return imageUrl;
     }
     
-    public product getProdId() {
+    public Product getProdId() {
         return prodId;
     }
 
-    public void setProdId(product prodId) {
+    public void setProdId(Product prodId) {
         this.prodId = prodId;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrl(String ImageUrl) {
+        this.imageUrl = ImageUrl;
     }
 
     public Boolean getIsPrimary() {

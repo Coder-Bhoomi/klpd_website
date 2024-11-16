@@ -1,38 +1,53 @@
 package com.klpdapp.klpd.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 @Entity
-@Table (name = "attributes")
-public class attribute {
+@Indexed 
+@Table(name = "attributes")
+@Access(AccessType.FIELD)
+public class Attribute {
+
     @Id
     @Column(length = 15, nullable = false)
+    @GenericField 
     private String attId;
 
     @Column(length = 15)
+    @FullTextField
     private String diameter;
 
     @Column(length = 15)
+    @FullTextField 
     private String thickness;
 
     @Column(length = 15)
+    @FullTextField 
     private String capacity;
 
     @Column(length = 50)
+    @FullTextField 
     private String cartonDimension;
 
     @Column(length = 15)
+    @FullTextField 
     private String weight;
 
     @Column(length = 10)
+    @FullTextField 
     private String guarantee;
 
     @Column(length = 20)
+    @FullTextField 
     private String color;
 
+    @OneToOne(mappedBy = "attribute")  
+    private Product product;
+
+    // Getters and Setters
     public String getAttId() {
         return attId;
     }
@@ -96,5 +111,4 @@ public class attribute {
     public void setColor(String color) {
         this.color = color;
     }
-
 }

@@ -1,15 +1,15 @@
 package com.klpdapp.klpd.dto;
 
-public class cartdto {
-    private String productId;
+public class CartDto {
+    private String ProductId;
     private Integer quantity;
     private Integer delivery;
     private float totalPrice;
     public String getProductId() {
-        return productId;
+        return ProductId;
     }
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setProductId(String ProductId) {
+        this.ProductId = ProductId;
     }
     public Integer getQuantity() {
         return quantity;

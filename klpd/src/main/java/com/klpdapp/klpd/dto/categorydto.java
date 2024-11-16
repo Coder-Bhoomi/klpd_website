@@ -1,6 +1,6 @@
 package com.klpdapp.klpd.dto;
 
-public class categorydto {
+public class CategoryDto {
     private String categoryId;
     private String categoryname;
 

@@ -1,60 +1,61 @@
 package com.klpdapp.klpd.model;
 
+import jakarta.persistence.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
 @Entity
-@Table (name = "product")
-public class product {
+@Indexed 
+@Table(name = "Product")
+@Access(AccessType.FIELD)
+public class Product {
+
     @Id
     @Column(length = 15, nullable = false)
+    @GenericField 
     private String prodId;
 
     @ManyToOne
     @JoinColumn(name = "CategoryId", nullable = false)
-    private category category;
+    @IndexedEmbedded 
+    private Category category;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "attId")
-    private attribute attribute;
+    @IndexedEmbedded
+    private Attribute attribute;
 
     @Column(length = 60, nullable = false)
+    @FullTextField 
     private String brand;
 
     @Column(length = 100, nullable = false)
+    @FullTextField 
     private String prodName;
 
     @Column(columnDefinition = "TEXT", nullable = false)
+    @FullTextField 
     private String description;
 
     @Column(length = 30, nullable = false)
+    @GenericField 
     private String availability;
 
     @Column(precision = 10, nullable = false)
+    @GenericField 
     private float mrp;
 
     @Column(precision = 10)
+    @GenericField 
     private Float offerPrice;
 
-    @OneToMany(mappedBy = "prodId", cascade = CascadeType.ALL)
-    private List<images> images;
-    
-
-    public List<images> getImages() {
-        return images;
-    }
-
-    public void setImages(List<images> images) {
-        this.images = images;
-    }
+    @OneToMany(mappedBy = "prodId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded 
+    private List<Images> images;
 
     public String getProdId() {
         return prodId;
@@ -63,7 +64,22 @@ public class product {
     public void setProdId(String prodId) {
         this.prodId = prodId;
     }
-    
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
+    }
 
     public String getBrand() {
         return brand;
@@ -96,7 +112,7 @@ public class product {
     public void setAvailability(String availability) {
         this.availability = availability;
     }
-    
+
     public float getMrp() {
         return mrp;
     }
@@ -113,21 +129,12 @@ public class product {
         this.offerPrice = offerPrice;
     }
 
-    public category getCategory() {
-        return category;
+    public List<Images> getImages() {
+        return images;
     }
 
-    public void setCategory(category category) {
-        this.category = category;
+    public void setImages(List<Images> Images) {
+        this.images = Images;
     }
 
-    public attribute getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(attribute attribute) {
-        this.attribute = attribute;
-    }
-
-    
 }
