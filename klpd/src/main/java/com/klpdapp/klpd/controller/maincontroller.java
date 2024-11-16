@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Session;
+import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,27 +17,34 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.klpdapp.klpd.model.cart;
-import com.klpdapp.klpd.model.category;
-import com.klpdapp.klpd.model.product;
-import com.klpdapp.klpd.services.cartrepo;
-import com.klpdapp.klpd.services.categoryrepo;
-import com.klpdapp.klpd.services.productrepo;
+import com.klpdapp.klpd.Repository.CartRepo;
+import com.klpdapp.klpd.Repository.CategoryRepo;
+import com.klpdapp.klpd.Repository.ProductRepo;
+import com.klpdapp.klpd.model.Cart;
+import com.klpdapp.klpd.model.Category;
+import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.dto.UserDto;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Controller
 public class maincontroller {
 
     @Autowired
-    categoryrepo ctgrepo;
+    CategoryRepo ctgRepo;
 
     @Autowired
-    productrepo prepo;
+    ProductRepo pRepo;
 
     @Autowired
-    cartrepo cartRepository;
+    CartRepo cartRepository;
+
+    @PersistenceContext
+    private EntityManager EntityManager;
 
     private void addCategoriesToModel(Model model) {
-        List<category> categories = ctgrepo.findAll();
+        List<Category> categories = ctgRepo.findAll();
         model.addAttribute("categories", categories);
     }
 
@@ -65,94 +74,102 @@ public class maincontroller {
             @RequestParam(required = false) String guarantee,
             Model model) {
 
-        List<product> products;
+        List<Product> Products;
 
         if (categoryId != null && !categoryId.isEmpty()) {
-            products = prepo.findByCategory_CategoryId(categoryId);
-            category category = ctgrepo.findById(categoryId).orElse(null);
+            Products = pRepo.findByCategory_CategoryId(categoryId);
+            Category category = ctgRepo.findById(categoryId).orElse(null);
             model.addAttribute("category", category);
 
         } else if (query != null && !query.isEmpty()) {
-            products = prepo.findByProdNameContainingIgnoreCase(query);
+
+            Session session = EntityManager.unwrap(Session.class);
+            Products = Search.session(session)
+                    .search(Product.class)
+                    .where(f -> f.match().fields("prodName", "brand", "description")
+                            .matching(query)
+                            .fuzzy())
+                    .fetchAllHits();
+
         } else {
-            products = prepo.findAll();
+            Products = pRepo.findAll();
         }
 
         // Sorting
         if ("priceAsc".equals(sortBy)) {
-            products.sort(Comparator.comparing(product::getMrp));
+            Products.sort(Comparator.comparing(Product::getMrp));
         } else if ("priceDesc".equals(sortBy)) {
-            products.sort(Comparator.comparing(product::getMrp).reversed());
+            Products.sort(Comparator.comparing(Product::getMrp).reversed());
         }
 
         if (color != null && !color.isEmpty()) {
-            List<product> filteredByColor = new ArrayList<>();
-            for (product product : products) {
-                if (product.getAttribute().getColor() != null
-                        && product.getAttribute().getColor().equalsIgnoreCase(color)) {
-                    filteredByColor.add(product);
+            List<Product> filteredByColor = new ArrayList<>();
+            for (Product Product : Products) {
+                if (Product.getAttribute().getColor() != null
+                        && Product.getAttribute().getColor().equalsIgnoreCase(color)) {
+                    filteredByColor.add(Product);
                 }
             }
-            products = filteredByColor;
+            Products = filteredByColor;
         }
 
-        // Filter by discount 
+        // Filter by discount
         if (minDiscount != null && maxDiscount != null) {
-            List<product> filteredByDiscount = new ArrayList<>();
-            for (product product : products) {
-                double discount = calculateDiscount(product.getMrp(), product.getOfferPrice());
+            List<Product> filteredByDiscount = new ArrayList<>();
+            for (Product Product : Products) {
+                double discount = calculateDiscount(Product.getMrp(), Product.getOfferPrice());
                 if (discount >= minDiscount && discount <= maxDiscount) {
-                    filteredByDiscount.add(product);
+                    filteredByDiscount.add(Product);
                 }
             }
-            products = filteredByDiscount;
+            Products = filteredByDiscount;
         }
         // Filter by diameter
         if (diameter != null && !diameter.isEmpty()) {
-            List<product> diameterFiltered = new ArrayList<>();
-            for (product product : products) {
-                if (product.getAttribute().getDiameter() != null
-                        && product.getAttribute().getDiameter().equalsIgnoreCase(diameter)) {
-                    diameterFiltered.add(product);
+            List<Product> diameterFiltered = new ArrayList<>();
+            for (Product Product : Products) {
+                if (Product.getAttribute().getDiameter() != null
+                        && Product.getAttribute().getDiameter().equalsIgnoreCase(diameter)) {
+                    diameterFiltered.add(Product);
                 }
             }
-            products = diameterFiltered;
+            Products = diameterFiltered;
         }
 
         // Filter by thickness
         if (thickness != null && !thickness.isEmpty()) {
-            List<product> thicknessFiltered = new ArrayList<>();
-            for (product product : products) {
-                if (product.getAttribute().getThickness() != null
-                        && product.getAttribute().getThickness().equalsIgnoreCase(thickness)) {
-                    thicknessFiltered.add(product);
+            List<Product> thicknessFiltered = new ArrayList<>();
+            for (Product Product : Products) {
+                if (Product.getAttribute().getThickness() != null
+                        && Product.getAttribute().getThickness().equalsIgnoreCase(thickness)) {
+                    thicknessFiltered.add(Product);
                 }
             }
-            products = thicknessFiltered;
+            Products = thicknessFiltered;
         }
 
         // Filter by capacity
         if (capacity != null && !capacity.isEmpty()) {
-            List<product> capacityFiltered = new ArrayList<>();
-            for (product product : products) {
-                if (product.getAttribute().getCapacity() != null
-                        && product.getAttribute().getCapacity().equalsIgnoreCase(capacity)) {
-                    capacityFiltered.add(product);
+            List<Product> capacityFiltered = new ArrayList<>();
+            for (Product Product : Products) {
+                if (Product.getAttribute().getCapacity() != null
+                        && Product.getAttribute().getCapacity().equalsIgnoreCase(capacity)) {
+                    capacityFiltered.add(Product);
                 }
             }
-            products = capacityFiltered;
+            Products = capacityFiltered;
         }
 
         // Filter by guarantee
         if (guarantee != null && !guarantee.isEmpty()) {
-            List<product> guaranteeFiltered = new ArrayList<>();
-            for (product product : products) {
-                if (product.getAttribute().getGuarantee() != null
-                        && product.getAttribute().getGuarantee().equalsIgnoreCase(guarantee)) {
-                    guaranteeFiltered.add(product);
+            List<Product> guaranteeFiltered = new ArrayList<>();
+            for (Product Product : Products) {
+                if (Product.getAttribute().getGuarantee() != null
+                        && Product.getAttribute().getGuarantee().equalsIgnoreCase(guarantee)) {
+                    guaranteeFiltered.add(Product);
                 }
             }
-            products = guaranteeFiltered;
+            Products = guaranteeFiltered;
         }
         Set<String> colors = new HashSet<>();
         Set<String> diameters = new HashSet<>();
@@ -160,26 +177,26 @@ public class maincontroller {
         Set<String> capacities = new HashSet<>();
         Set<String> guarantees = new HashSet<>();
 
-        for (product product : products) {
-            if (product.getAttribute().getColor() != null) {
-                colors.add(product.getAttribute().getColor());
+        for (Product Product : Products) {
+            if (Product.getAttribute().getColor() != null) {
+                colors.add(Product.getAttribute().getColor());
             }
-            if (product.getAttribute().getDiameter() != null) {
-                diameters.add(product.getAttribute().getDiameter());
+            if (Product.getAttribute().getDiameter() != null) {
+                diameters.add(Product.getAttribute().getDiameter());
             }
-            if (product.getAttribute().getThickness() != null) {
-                thicknesses.add(product.getAttribute().getThickness());
+            if (Product.getAttribute().getThickness() != null) {
+                thicknesses.add(Product.getAttribute().getThickness());
             }
-            if (product.getAttribute().getCapacity() != null) {
-                capacities.add(product.getAttribute().getCapacity());
+            if (Product.getAttribute().getCapacity() != null) {
+                capacities.add(Product.getAttribute().getCapacity());
             }
-            if (product.getAttribute().getGuarantee() != null) {
-                guarantees.add(product.getAttribute().getGuarantee());
+            if (Product.getAttribute().getGuarantee() != null) {
+                guarantees.add(Product.getAttribute().getGuarantee());
             }
         }
 
         // Add data to the model for rendering
-        model.addAttribute("products", products);
+        model.addAttribute("products", Products);
         model.addAttribute("query", query);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("colors", colors);
@@ -192,7 +209,7 @@ public class maincontroller {
 
         addCategoriesToModel(model);
 
-        return "category"; 
+        return "category";
     }
 
     @GetMapping("{categoryId}")
@@ -203,11 +220,11 @@ public class maincontroller {
     @GetMapping("/product/{prodId}")
     public String showProductDetails(@PathVariable String prodId, Model model) {
 
-        product prod = prepo.findById(prodId).orElse(null);
+        Product prod = pRepo.findById(prodId).orElse(null);
 
         if (prod != null) {
             model.addAttribute("product", prod);
-            List<product> relatedProducts = prepo.findTop4ByCategoryCategoryIdAndProdIdNot(
+            List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndProdIdNot(
                     prod.getCategory().getCategoryId(),
                     prod.getProdId());
 
@@ -223,10 +240,10 @@ public class maincontroller {
 
     @GetMapping("/cart")
     public String showCart(Model model) {
-        List<cart> cartItems = cartRepository.findAll(); 
+        List<Cart> cartItems = cartRepository.findAll();
         float subtotal = cartItems.stream().map(item -> item.getTotalPrice()).reduce(0.0f, Float::sum);
-        float discount = 0.0f; 
-        float tax = subtotal * 0.10f; 
+        float discount = 0.0f;
+        float tax = subtotal * 0.10f;
         float total = subtotal + tax - discount;
 
         model.addAttribute("cart", cartItems);
@@ -235,20 +252,20 @@ public class maincontroller {
         model.addAttribute("tax", tax);
         model.addAttribute("total", total);
         addCategoriesToModel(model);
-        return "cart"; 
+        return "cart";
     }
 
     @PostMapping("/cart/update")
     public String updateCart(@RequestParam Long cartId, @RequestParam Integer quantity, Model model) {
-        cart cartItem = cartRepository.findById(cartId).orElse(null);
+        Cart cartItem = cartRepository.findById(cartId).orElse(null);
 
         if (cartItem != null) {
-            
-            product product = cartItem.getProduct();
+
+            Product Product = cartItem.getProduct();
             cartItem.setQuantity(quantity);
             cartItem.setTotalPrice(
-                    quantity * (product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp()));
-            cartRepository.save(cartItem); 
+                    quantity * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
+            cartRepository.save(cartItem);
             model.addAttribute("message", "Cart updated successfully.");
         } else {
             model.addAttribute("message", "Cart item not found.");
@@ -265,10 +282,10 @@ public class maincontroller {
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam String productId, @RequestParam Integer quantity, Model model) {
         
-        product product = prepo.findById(productId).orElse(null);
+        Product product = pRepo.findById(productId).orElse(null);
 
         if (product != null) {
-            cart existingCartItem = cartRepository.findByProduct(product);
+            Cart existingCartItem = cartRepository.findByProduct(product);
 
             if (existingCartItem != null) {
                 
@@ -279,7 +296,7 @@ public class maincontroller {
                 // Save the updated cart item
                 cartRepository.save(existingCartItem);
             } else {
-                cart cart = new cart();
+                Cart cart = new Cart();
                 cart.setDelivery(60);
                 cart.setProduct(product);
                 cart.setQuantity(quantity);
@@ -297,4 +314,10 @@ public class maincontroller {
         return "redirect:/cart";
     }
 
+    @GetMapping({"/login"})
+    public String ShowLogin(Model model) {
+        UserDto dto = new UserDto();
+        model.addAttribute("dto",dto);
+        return "registration" ;
+    }
 }

@@ -1,17 +1,17 @@
 package com.klpdapp.klpd.dto;
 
-import com.klpdapp.klpd.model.product;
+import com.klpdapp.klpd.model.Product;
 
-public class imagesdto {
-    private product prodId;
+public class ImagesDto {
+    private Product prodId;
     private String imgId;
     private String imgURL;  
     private Boolean isPrimary;
     
-    public product getProdId() {
+    public Product getProdId() {
         return prodId;
     }
-    public void setProdId(product prodId) {
+    public void setProdId(Product prodId) {
         this.prodId = prodId;
     }
     public String getImgId() {

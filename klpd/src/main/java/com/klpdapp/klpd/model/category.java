@@ -1,13 +1,11 @@
 package com.klpdapp.klpd.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+@Access(AccessType.FIELD)
 @Entity
 @Table ( name ="Category")
-public class category {
+public class Category {
     @Id
     @Column ( length = 15 , nullable = false)
     private String categoryId;

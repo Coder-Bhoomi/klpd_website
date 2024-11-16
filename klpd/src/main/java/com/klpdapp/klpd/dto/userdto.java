@@ -1,6 +1,6 @@
 package com.klpdapp.klpd.dto;
 
-public class userdto {
+public class UserDto {
 
     private int userId;
     private String name;

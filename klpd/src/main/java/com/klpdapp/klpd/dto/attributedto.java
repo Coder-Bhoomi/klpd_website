@@ -1,6 +1,6 @@
 package com.klpdapp.klpd.dto;
 
-public class attributedto {
+public class AttributeDto {
     private String attId;         
     private String diameter;
     private String thickness;

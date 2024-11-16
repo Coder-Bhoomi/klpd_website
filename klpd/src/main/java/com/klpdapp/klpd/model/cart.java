@@ -1,24 +1,18 @@
 package com.klpdapp.klpd.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+@Access(AccessType.FIELD)
 @Entity
 @Table (name = "cart")
-public class cart {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name= "productid" , nullable = false, unique = true)
-    private product product;
+    @JoinColumn(name= "productid" , nullable = false)
+    private Product product;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -63,12 +57,12 @@ public class cart {
     }
 
 
-    public product getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(product product) {
-        this.product = product;
+    public void setProduct(Product Product) {
+        this.product = Product;
     }
 
 }
