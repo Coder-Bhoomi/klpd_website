@@ -5,13 +5,16 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,13 +23,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
+import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class maincontroller {
@@ -39,6 +46,9 @@ public class maincontroller {
 
     @Autowired
     CartRepo cartRepository;
+
+    @Autowired
+    UserRepo uRepo;
 
     @PersistenceContext
     private EntityManager EntityManager;
@@ -82,14 +92,32 @@ public class maincontroller {
             model.addAttribute("category", category);
 
         } else if (query != null && !query.isEmpty()) {
-
             Session session = EntityManager.unwrap(Session.class);
             Products = Search.session(session)
                     .search(Product.class)
-                    .where(f -> f.match().fields("prodName", "brand", "description")
-                            .matching(query)
-                            .fuzzy())
-                    .fetchAllHits();
+                    .where(f -> f.bool()
+                            .should(f.match()
+                                    .fields("prodName")
+                                    .matching(query)
+                                    .boost(5.0f)) // Exact match on prodName with the highest boost
+                            .should(f.match()
+                                    .fields("brand", "description")
+                                    .matching(query)
+                                    .boost(4.0f)) // Exact match on brand and description with lower boost
+                            .should(f.simpleQueryString()
+                                    .fields("prodName")
+                                    .matching(query + "*")
+                                    .boost(3.0f)) // Prefix match to capture terms starting with the query
+                            .should(f.match()
+                                    .fields("prodName", "brand", "description")
+                                    .matching(query)
+                                    .fuzzy()
+                                    .boost(1.0f)) // Fuzzy match for variations and typos
+                    )
+                    .fetchAllHits()
+                    .stream()
+                    .distinct() // Ensures that only unique products are returned
+                    .collect(Collectors.toList());
 
         } else {
             Products = pRepo.findAll();
@@ -281,14 +309,14 @@ public class maincontroller {
 
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam String productId, @RequestParam Integer quantity, Model model) {
-        
+
         Product product = pRepo.findById(productId).orElse(null);
 
         if (product != null) {
             Cart existingCartItem = cartRepository.findByProduct(product);
 
             if (existingCartItem != null) {
-                
+
                 existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
                 float price = product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp();
                 existingCartItem.setTotalPrice(price * existingCartItem.getQuantity());
@@ -314,10 +342,57 @@ public class maincontroller {
         return "redirect:/cart";
     }
 
-    @GetMapping({"/login"})
+    @GetMapping({ "/login" })
     public String ShowLogin(Model model) {
-        UserDto dto = new UserDto();
-        model.addAttribute("dto",dto);
-        return "registration" ;
+        UserDto udto = new UserDto();
+        model.addAttribute("udto", udto);
+        model.addAttribute("formType", "login");
+        addCategoriesToModel(model);
+        return "registration";
     }
+
+    @PostMapping({ "/login" })
+    public String validateLogin(@ModelAttribute UserDto udto, HttpSession session, RedirectAttributes attrib) {
+        try {
+            User us = uRepo.findByEmail(udto.getEmail());
+            if (us.getPassword().equals(udto.getPassword())) {
+                session.setAttribute("userid", us.getUserId());
+                return "redirect:/home";
+            } else {
+                attrib.addFlashAttribute("msg", "Invalid User");
+            }
+            return "redirect:/login";
+        } catch (EntityNotFoundException ex) {
+            attrib.addFlashAttribute("msg", "User doesn't exist!!");
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/register")
+    public String ShowRegistration(Model model) {
+        UserDto dto = new UserDto();
+        model.addAttribute("dto", dto);
+        model.addAttribute("formType", "register");
+        addCategoriesToModel(model);
+        return "registration";
+    }
+
+    @PostMapping("/register")
+    public String SubmitRegister(@ModelAttribute("dto") UserDto userDto, BindingResult result,
+            RedirectAttributes redirectAttributes) {
+        try {
+            User user = new User();
+            user.setName(userDto.getName());
+            user.setEmail(userDto.getEmail());
+            user.setPassword(userDto.getPassword());
+            user.setStatus("Active");
+            uRepo.save(user);
+            redirectAttributes.addFlashAttribute("message", "Registered Successfully");
+            return "redirect:/register";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
+            return "redirect:/register";
+        }
+    }
+
 }

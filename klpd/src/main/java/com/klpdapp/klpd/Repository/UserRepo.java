@@ -6,4 +6,5 @@ import com.klpdapp.klpd.model.User;
 
 public interface UserRepo extends JpaRepository<User, Integer> {
 
+    User findByEmail(String email);
 }

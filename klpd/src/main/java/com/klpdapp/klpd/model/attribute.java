@@ -44,8 +44,52 @@ public class Attribute {
     @FullTextField 
     private String color;
 
+    @Column(length = 15)
+    @FullTextField
+    private String length;
+
+    @Column(length = 15)
+    @FullTextField
+    private String height;
+
+    @Column(length = 15)
+    @FullTextField
+    private String type;
+
     @OneToOne(mappedBy = "attribute")  
     private Product product;
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     // Getters and Setters
     public String getAttId() {

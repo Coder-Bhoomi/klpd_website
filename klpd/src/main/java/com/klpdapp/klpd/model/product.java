@@ -57,6 +57,34 @@ public class Product {
     @IndexedEmbedded 
     private List<Images> images;
 
+    @ManyToOne
+    @IndexedEmbedded
+    @JoinColumn(name = "subcategory_id")
+    private SubCategory subcategoryId;
+
+    @Column(name = "created_at")
+    private String createdAt;
+
+    private int hits;
+
+   
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getHits() {
+        return hits;
+    }
+
+    public void setHits(int hits) {
+        this.hits = hits;
+    }
+
     public String getProdId() {
         return prodId;
     }
@@ -135,6 +163,14 @@ public class Product {
 
     public void setImages(List<Images> Images) {
         this.images = Images;
+    }
+
+    public SubCategory getSubcategoryId() {
+        return subcategoryId;
+    }
+
+    public void setSubcategoryId(SubCategory subcategoryId) {
+        this.subcategoryId = subcategoryId;
     }
 
 }
