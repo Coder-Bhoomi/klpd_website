@@ -411,4 +411,27 @@ public class maincontroller {
         }
     }
 
+    @GetMapping({ "/admin" })
+    public String ShowAdmLogin(Model model) {
+        AdminDto addto = new AdminDto();
+        model.addAttribute("dto", addto);
+        addCategoriesToModel(model);
+        return "/admin/login";
+    }
+    
+    public String validateAdmLogin(@ModelAttribute AdminDto adto, HttpSession session, RedirectAttributes attrib) {
+        try {
+            Admin adm = adRepo.findByEmail(adto.getEmail());
+            if (adm.getPassword().equals(adto.getPassword())) {
+                session.setAttribute("userid", adm.getEmail());
+                return "redirect:/admin/dashboard";
+            } else {
+                attrib.addFlashAttribute("msg", "Invalid User");
+            }
+            return "redirect:/admin";
+        } catch (EntityNotFoundException ex) {
+            attrib.addFlashAttribute("msg", "User doesn't exist!!");
+            return "redirect:/admin";
+        }
+    }
 }
