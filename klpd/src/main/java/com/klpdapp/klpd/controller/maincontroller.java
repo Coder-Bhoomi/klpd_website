@@ -92,6 +92,14 @@ public class maincontroller {
             model.addAttribute("category", category);
 
         } else if (query != null && !query.isEmpty()) {
+            try {
+            Search.session(EntityManager.unwrap(Session.class))
+                  .massIndexer()
+                  .startAndWait();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();             
+                }
+            finally {
             Session session = EntityManager.unwrap(Session.class);
             Products = Search.session(session)
                     .search(Product.class)
@@ -118,8 +126,8 @@ public class maincontroller {
                     .stream()
                     .distinct() // Ensures that only unique products are returned
                     .collect(Collectors.toList());
-
-        } else {
+        } 
+    }else {
             Products = pRepo.findAll();
         }
 
