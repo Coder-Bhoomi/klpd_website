@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="userdashboard::layout(~{::main})">
+
+<head>
+
+</head>
+
+<body class="text-light" style="background-color: #121212;">
+
+    <!-- Main Content -->
+    <main>
+        <div class="p-4 px-5 border rounded" style="background-color: #1f1f1f;">
+
+            <h4 class="mb-4">My Wishlist</h4>
+            <div id="product-1" class="card mb-4 p-3">
+                <div class="row align-items-center d-flex">
+                    <div class="col-2">
+                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
+                            style="border-radius: 5px;">
+                    </div>
+                    <div class="col-8">
+                        <p class="text-light mb-1">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
+                        <div class="wishlist-rating">
+                            ★★★★☆
+                        </div>
+                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
+                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
+                            <span class="text" style="color:#ccc;"><s>₹2,499</s></span>
+                            <span class="text-success">72% off</span>
+                        </div>
+                    </div>
+                    <div class="col-2 text-end">
+                        <button onclick="showDeleteModal(1)" class="btn btn-dark text-danger" data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="product-2" class="card mb-4 p-3">
+                <div class="row align-items-center d-flex">
+                    <div class="col-2">
+                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
+                            style="border-radius: 5px;">
+                    </div>
+                    <div class="col-8">
+                        <p class="text-light mb-1">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
+                        <div class="wishlist-rating">
+                            ★★★★☆
+                        </div>
+                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
+                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
+                            <span class="text" style="color:#ccc;"><s>₹2,499</s></span>
+                            <span class="text-success">72% off</span>
+                        </div>
+                    </div>
+                    <div class="col-2 text-end">
+                        <button onclick="showDeleteModal(1)" class="btn btn-dark text-danger" data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="product-3" class="card mb-4 p-3">
+                <div class="row align-items-center d-flex">
+                    <div class="col-2">
+                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
+                            style="border-radius: 5px;">
+                    </div>
+                    <div class="col-8">
+                        <p class="text-light mb-1">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
+                        <div class="wishlist-rating">
+                            ★★★★☆
+                        </div>
+                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
+                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
+                            <span class="text" style="color:#ccc;"><s>₹2,499</s></span>
+                            <span class="text-success">72% off</span>
+                        </div>
+                    </div>
+                    <div class="col-2 text-end">
+                        <button onclick="showDeleteModal(1)" class="btn btn-dark text-danger" data-bs-toggle="modal"
+                            data-bs-target="#confirmDeleteModal">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color:black;" id="confirmDeleteModalLabel">Confirm Remove</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="color:black;">
+                        Are you sure you want to remove this product?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button id="confirmDeleteBtn" type="button" class="btn btn-danger">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script>
+            // Variable to store the ID of the product to delete
+            let productIdToDelete = null;
+
+            // Function to set the product ID when showing the delete modal
+            function showDeleteModal(productId) {
+                productIdToDelete = productId; // Store the product ID in a global variable
+            }
+
+            // Event listener for the "Yes" button in the delete modal
+            document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+                if (productIdToDelete != null) {
+                    // Find and remove the product element from the DOM
+                    const productElement = document.getElementById(`product-${productIdToDelete}`);
+                    if (productElement) {
+                        productElement.remove();
+                    }
+
+                    // Hide the modal after deleting the item
+                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById("confirmDeleteModal"));
+                    deleteModal.hide();
+
+                    // Reset the global variable
+                    productIdToDelete = null;
+                }
+            });
+
+        </script>
+        
+    </main>
+</body>
+
+</html>

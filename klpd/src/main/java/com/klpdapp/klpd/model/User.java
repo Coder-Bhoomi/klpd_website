@@ -14,7 +14,6 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false)
     private LocalDate dob;
 
     @Column(length = 20)
@@ -26,7 +25,6 @@ public class User {
     @Column(nullable = false, length = 15)
     private String password;
 
-    @Column(nullable = false)
     private long mobile;
 
     @Column(name = "alternate_mobile")

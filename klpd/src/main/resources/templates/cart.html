@@ -23,13 +23,13 @@
                     </div>
                     <div class="col-2">
                         <form th:action="@{/cart/update}" method="post">
-                            <input type="hidden" th:value="${cartItem.id}" name="cartId">
+                            <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
                             <input type="number" class="form-control quantity-input w-2" min="1" th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
                         </form>
                     </div>
-                    <div class="col-2 text-success fw-bold item-price text-center" th:text="${cartItem.totalPrice}">Price</div>
+                    <div class="col-2 text-success fw-bold item-price text-center" th:text="${cartItem.productTotal}">Price</div>
                     <div class="col-2 text-end">
-                        <a th:href="@{cart/delete(id=${cartItem.id})}">
+                        <a th:href="@{cart/delete(id=${cartItem.cartId})}">
                         <button class="btn btn-outline-danger btn-sm">Delete</button>
                         </a>
                     </div>

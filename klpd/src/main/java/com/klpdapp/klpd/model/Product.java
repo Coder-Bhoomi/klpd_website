@@ -7,6 +7,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Indexed
@@ -124,7 +125,18 @@ public class Product {
 
     private int rating;
 
+    @OneToMany(mappedBy = "pid", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded 
+    private List<Images> images;
     // Getters and Setters
+
+    public List<Images> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Images> images) {
+        this.images = images;
+    }
 
     public int getPid() {
         return pid;

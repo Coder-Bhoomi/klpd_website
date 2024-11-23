@@ -1,9 +1,11 @@
 package com.klpdapp.klpd.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,10 +25,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
+import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.model.Size;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.dto.UserDto;
 
@@ -50,6 +54,9 @@ public class maincontroller {
     @Autowired
     UserRepo uRepo;
 
+    @Autowired
+    SizeRepo sizeRepo;
+
     @PersistenceContext
     private EntityManager EntityManager;
 
@@ -67,7 +74,11 @@ public class maincontroller {
 
     @GetMapping("/")
     public String showIndex(Model model) {
+        List<Product> NewProducts = pRepo.findTop4ByOrderByCreatedAtDesc();
+        List<Product> TopProducts = pRepo.findTop4ByOrderByHitsDesc();
         addCategoriesToModel(model);
+        model.addAttribute("topProduct", TopProducts);
+        model.addAttribute("newProduct", NewProducts);
         return "index";
     }
 
@@ -253,7 +264,8 @@ public class maincontroller {
     }
 
     @GetMapping("/product/{pid}")
-    public String showProductDetails(@PathVariable Integer pid, Model model) {
+    public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
+            Model model) {
 
         Product prod = pRepo.getById(pid);
 
@@ -263,9 +275,21 @@ public class maincontroller {
                     prod.getCategory().getCategoryId(),
                     prod.getPid());
 
+            List<String> sizes = pRepo.findDistinctSizesBySubcategoryId(prod.getSubcategory().getSubcategoryId());
+
+            // Fetch products based on size
+            
+            if (selectedSize != null) {
+                prod = pRepo.findProductsBySizeAndSubcategory(prod.getSubcategory().getSubcategoryId(), selectedSize);
+            } else {
+                prod = pRepo.findBySubcategory_SubcategoryId(prod.getSubcategory().getSubcategoryId()); // All products for the
+                                                                                       // subcategory
+            }
+            model.addAttribute("sizes", sizes);
+           
             model.addAttribute("relatedProducts", relatedProducts);
             model.addAttribute("categoryId", prod.getCategory().getCategoryId());
-        } 
+        }
         addCategoriesToModel(model);
 
         return "product";
@@ -288,7 +312,7 @@ public class maincontroller {
             addCategoriesToModel(model);
             return "cart";
         } else {
-            return "redirect/login";
+            return "redirect:/login";
         }
     }
 
@@ -303,15 +327,13 @@ public class maincontroller {
                     quantity * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
             cartRepository.save(cartItem);
             model.addAttribute("message", "Cart updated successfully.");
-        } else {
-            model.addAttribute("message", "Cart item not found.");
         }
         return "redirect:/cart";
     }
 
     @GetMapping({ "/cart/delete" })
     public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
-        cartRepository.deleteById( id);
+        cartRepository.deleteById(id);
         return "redirect:/cart";
     }
 
@@ -319,38 +341,40 @@ public class maincontroller {
     public String addToCart(HttpSession session, @RequestParam Integer productId, @RequestParam Integer quantity,
             Model model) {
         if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
             Product product = pRepo.findById(productId).orElse(null);
 
             if (product != null) {
-                Cart existingCartItem = cartRepository.findByProduct(product);
+                Cart existingCartItem = cartRepository.findByProductAndUser(product, user).orElse(null);
 
                 if (existingCartItem != null) {
-
-                    existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+                    // Update quantity and product total
+                    existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
                     float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
-                    existingCartItem.setProductTotal((int)price * existingCartItem.getQuantity());
-
-                    // Save the updated cart item
+                    existingCartItem.setProductTotal(price * existingCartItem.getQuantity());
                     cartRepository.save(existingCartItem);
                 } else {
+                    // Create a new cart item
                     Cart cart = new Cart();
+                    cart.setUser(user);
                     cart.setProduct(product);
                     cart.setQuantity(quantity);
-                    cart.setProductTotal(product.getOfferPrice() != null ? product.getOfferPrice() * quantity
-                            : product.getMrp() * quantity);
-
-                    // Save the cart item
+                    float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
+                    cart.setProductTotal(price * quantity);
                     cartRepository.save(cart);
-
-                    model.addAttribute("message", "Product added to cart!");
                 }
+
+                model.addAttribute("message", "Product added to cart!");
             } else {
                 model.addAttribute("message", "Product not found.");
             }
-            return "redirect:/cart";
         } else {
             return "redirect:/login";
         }
+
+        return "redirect:/cart";
+
     }
 
     @GetMapping({ "/login" })
@@ -371,7 +395,7 @@ public class maincontroller {
         if ("login".equals(actionType)) {
             return validateLogin(userDto, session, attrib); // Delegate to login logic
         } else if ("register".equals(actionType)) {
-            return SubmitRegister(userDto, attrib); // Delegate to registration logic
+            return SubmitRegister(userDto, attrib, session); // Delegate to registration logic
         } else {
             attrib.addFlashAttribute("msg", "Invalid Action Type");
             return "redirect:/";
@@ -383,19 +407,19 @@ public class maincontroller {
             User us = uRepo.findByEmail(udto.getEmail());
             if (us.getPassword().equals(udto.getPassword())) {
                 session.setAttribute("userid", us.getUserId());
-                return "redirect:/home";
+                return "redirect:/profile";
             } else {
                 attrib.addFlashAttribute("msg", "Invalid User");
             }
-            return "redirect:/login";
+            return "redirect:/profile";
         } catch (EntityNotFoundException ex) {
             attrib.addFlashAttribute("msg", "User doesn't exist!!");
             return "redirect:/login";
         }
     }
 
-    public String SubmitRegister(@ModelAttribute("dto") UserDto userDto,
-            RedirectAttributes redirectAttributes) {
+    public String SubmitRegister(@ModelAttribute UserDto userDto,
+            RedirectAttributes redirectAttributes, HttpSession session) {
         try {
             User user = new User();
             user.setName(userDto.getName());
@@ -403,12 +427,98 @@ public class maincontroller {
             user.setPassword(userDto.getPassword());
             user.setStatus("Active");
             uRepo.save(user);
+            session.setAttribute("userid", userDto.getUserId());
             redirectAttributes.addFlashAttribute("message", "Registered Successfully");
-            return "redirect:/register";
+            return "redirect:/profile";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
-            return "redirect:/register";
+            return "redirect:/";
         }
+    }
+
+    @GetMapping("/profile")
+    public String ShowProfile(Model model, HttpSession session) {
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
+            model.addAttribute("user", user);
+            addCategoriesToModel(model);
+            return "profile";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@RequestParam("firstName") String firstName,
+            @RequestParam("middleName") String middleName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("dob") LocalDate dob,
+            @RequestParam("gender") String gender,
+            @RequestParam("email") String email,
+            @RequestParam("contactNumber") long contactNumber,
+            HttpSession session) {
+
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User existingUser = uRepo.findById(userId).orElse(null);
+
+            if (existingUser != null) {
+                String fullName = firstName + (middleName.isEmpty() ? "" : " " + middleName) + " " + lastName;
+
+                existingUser.setName(fullName);
+                existingUser.setDob(dob);
+                existingUser.setGender(gender);
+                existingUser.setEmail(email);
+                existingUser.setMobile(contactNumber);
+
+                uRepo.save(existingUser);
+
+                return "redirect:/profile";
+            } else {
+
+                return "redirect:/login";
+            }
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/address")
+    public String ShowAddress(Model model, HttpSession session) {
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
+            model.addAttribute("user", user);
+            addCategoriesToModel(model);
+            return "address";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/coupon")
+    public String ShowCoupon(Model model) {
+        addCategoriesToModel(model);
+        return "coupon";
+    }
+
+    @GetMapping("/order")
+    public String ShowOrder(Model model) {
+        addCategoriesToModel(model);
+        return "order";
+    }
+
+    @GetMapping("/wishlist")
+    public String ShowWishlist(Model model) {
+        addCategoriesToModel(model);
+        return "wishlist";
+    }
+
+    @GetMapping("/notification")
+    public String ShowNotification(Model model) {
+        addCategoriesToModel(model);
+        return "notification";
     }
 
 }

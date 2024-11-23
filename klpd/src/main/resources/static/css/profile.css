@@ -1,0 +1,55 @@
+.sidebar .nav-link {
+    color: #bbb;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+    background-color: #367D8A;
+    color: white;
+    border-radius: 5px;
+}
+
+.sidebar .nav-link + .collapse .nav-link {
+    margin-left: 45px;
+}
+
+.bg-dark {
+    background-color: #121212 !important;
+}
+
+.form-control {
+    border: 1px solid #444;
+}
+
+.border {
+    border-color: #444 !important;
+}
+
+.card{
+    border: 1px solid #121212;
+    background-color: #1f1f1f;
+}
+
+.card-title{
+    color: green;
+}
+
+.address-card {
+    border: 1px solid #1f1f1f;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.add-address-card {
+    border: 2px dashed #1976d2;
+    border-radius: 8px;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 10%;
+}
+
+.wishlist-rating{
+    color: gold;
+}
