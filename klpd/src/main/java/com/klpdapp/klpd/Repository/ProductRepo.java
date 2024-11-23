@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.klpdapp.klpd.model.Product;
 
-public interface ProductRepo extends JpaRepository<Product, String> {
+public interface ProductRepo extends JpaRepository<Product, Integer> {
 
     List<Product> findByCategory_CategoryId(String categoryId);
 

@@ -253,9 +253,9 @@ public class maincontroller {
     }
 
     @GetMapping("/product/{pid}")
-    public String showProductDetails(@PathVariable String pid, Model model) {
+    public String showProductDetails(@PathVariable Integer pid, Model model) {
 
-        Product prod = pRepo.findById(pid).orElse(null);
+        Product prod = pRepo.getById(pid);
 
         if (prod != null) {
             model.addAttribute("product", prod);
@@ -265,9 +265,7 @@ public class maincontroller {
 
             model.addAttribute("relatedProducts", relatedProducts);
             model.addAttribute("categoryId", prod.getCategory().getCategoryId());
-        } else {
-            model.addAttribute("error", "Product not found!");
-        }
+        } 
         addCategoriesToModel(model);
 
         return "product";
@@ -295,8 +293,8 @@ public class maincontroller {
     }
 
     @PostMapping("/cart/update")
-    public String updateCart(@RequestParam Long cartId, @RequestParam Integer quantity, Model model) {
-        Cart cartItem = cartRepository.findById(cartId).orElse(null);
+    public String updateCart(@RequestParam Integer cartId, @RequestParam Integer quantity, Model model) {
+        Cart cartItem = cartRepository.getById(cartId);
         if (cartItem != null) {
 
             Product Product = cartItem.getProduct();
@@ -313,12 +311,12 @@ public class maincontroller {
 
     @GetMapping({ "/cart/delete" })
     public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
-        cartRepository.deleteById((long) id);
+        cartRepository.deleteById( id);
         return "redirect:/cart";
     }
 
     @PostMapping("/cart/add")
-    public String addToCart(HttpSession session, @RequestParam String productId, @RequestParam Integer quantity,
+    public String addToCart(HttpSession session, @RequestParam Integer productId, @RequestParam Integer quantity,
             Model model) {
         if (session.getAttribute("userid") != null) {
             Product product = pRepo.findById(productId).orElse(null);

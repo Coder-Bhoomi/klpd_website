@@ -19,11 +19,11 @@ public class Product {
     @GenericField
     private int pid;
 
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(nullable = false, length = 50)
     @FullTextField
     private String companyPid;
 
-    @Column(nullable = false, length = 50, unique = true)
+    @Column(nullable = false, length = 50)
     @FullTextField
     private String hapPid;
 
