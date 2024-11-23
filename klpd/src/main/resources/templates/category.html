@@ -199,13 +199,12 @@
                         <i class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center" 
                             style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
                         </i>   
-                                                 
-                        <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
-                            <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
-                        </div>
-
                         <a th:href="@{/product/{prodId}(prodId=${product.prodId})}"
                             style="text-decoration: none; color: inherit;">
+                            <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
+                                <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
+                            </div>
+
                             <p class="text-center p-2" th:text="${product.prodName}">Product Name</p>
                             <p class="text-center">
                                 <span th:if="${product.offerPrice != null}">
