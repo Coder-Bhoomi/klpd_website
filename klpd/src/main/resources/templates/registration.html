@@ -11,15 +11,16 @@
     <main>
         <div class="container2 mx-auto mt-5 mb-5">
             <!-- Render both forms -->
-            <div class="form-box login" id="loginForm" th:if="${formType == 'login'}">
-                <form th:action="@{/login}" th:object="${udto}" method="post">
+            <div class="form-box login" id="loginForm" >
+                <form th:action="@{/submit}" th:object="${dto}" method="post">
+                    <input type="hidden" name="actionType" value="login">
                     <h1>Login</h1>
                     <div class="input-box2">
-                        <input type="email" placeholder="E-mail" th:field="${udto.email}" required>
+                        <input type="email" placeholder="E-mail" th:field="${dto.email}" required>
                         <i class="fa-solid fa-envelope"></i>
                     </div>
                     <div class="input-box2 pass">
-                        <input type="password" placeholder="Password" class="password" th:field="${udto.password}"
+                        <input type="password" placeholder="Password" class="password" th:field="${dto.password}"
                             required>
                         <i class="fa-solid fa-lock"></i>
                     </div>
@@ -28,7 +29,7 @@
                     </div>
                     <button type="submit" class="btn2">Login</button>
                     <p>or login with social platforms</p>
-                    <div class="social-icons mt-4">
+                    <div class="social-icons mt-4">  
                         <a class="social" href="#"><i class="fa-brands fa-square-instagram"></i></a>
                         <a class="social" href="#"><i class="fa-brands fa-square-x-twitter"></i></a>
                         <a class="social" href="#"><i class="fa-brands fa-square-facebook"></i></a>
@@ -37,8 +38,9 @@
                 </form>
             </div>
 
-            <div class="form-box register" id="registerForm" th:if="${formType == 'register'}">
-                <form th:action="@{/register}" th:object="${dto}" method="post">
+            <div class="form-box register" id="registerForm">
+                <form th:action="@{/submit}" th:object="${dto}" method="post">
+                    <input type="hidden" name="actionType" value="register">
                     <h1>Registration</h1>
                     <div class="input-box2">
                         <input type="text" placeholder="Name" th:field="${dto.name}" required>
@@ -92,12 +94,10 @@
             registerBtn.addEventListener('click', () => {
                 container.classList.add('active');
                 formType.value = 'register'; 
-                location.href='/register';
             });
             loginBtn.addEventListener('click', () => {
                 container.classList.remove('active');
                 formType.value = 'login'; 
-                location.href='/login';
             });
 
         

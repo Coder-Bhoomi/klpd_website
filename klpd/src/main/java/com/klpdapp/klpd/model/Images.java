@@ -11,8 +11,8 @@ public class Images {
     private String imgId;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "prod_id")
-    private Product prodId;
+    @JoinColumn(nullable = false, name = "pid")
+    private Product pid;
 
     @Column(length = 500, nullable = false, unique = true)
     private String imageUrl;
@@ -32,12 +32,12 @@ public class Images {
         return imageUrl;
     }
     
-    public Product getProdId() {
-        return prodId;
+    public Product getpid() {
+        return pid;
     }
 
-    public void setProdId(Product prodId) {
-        this.prodId = prodId;
+    public void setpid(Product pid) {
+        this.pid = pid;
     }
 
     public void setImageUrl(String ImageUrl) {

@@ -1,14 +1,23 @@
 package com.klpdapp.klpd.dto;
 
-public class UserDto {
+import java.time.LocalDate;
 
+public class UserDto {
     private int userId;
     private String name;
+    private LocalDate dob;
+    private String gender;
     private String email;
-    private String password;
-    private Long contact;
-    private String address;
+    private long mobile;
     private String status;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public int getUserId() {
         return userId;
     }
@@ -21,29 +30,29 @@ public class UserDto {
     public void setName(String name) {
         this.name = name;
     }
+    public LocalDate getDob() {
+        return dob;
+    }
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+    public String getGender() {
+        return gender;
+    }
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
     public String getEmail() {
         return email;
     }
     public void setEmail(String email) {
         this.email = email;
     }
-    public String getPassword() {
-        return password;
+    public long getMobile() {
+        return mobile;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public Long getContact() {
-        return contact;
-    }
-    public void setContact(Long contact) {
-        this.contact = contact;
-    }
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
+    public void setMobile(long mobile) {
+        this.mobile = mobile;
     }
     public String getStatus() {
         return status;
@@ -51,5 +60,6 @@ public class UserDto {
     public void setStatus(String status) {
         this.status = status;
     }
+
     
 }

@@ -1,32 +1,41 @@
 package com.klpdapp.klpd.dto;
 
 public class CartDto {
-    private String ProductId;
-    private Integer quantity;
-    private Integer delivery;
-    private float totalPrice;
-    public String getProductId() {
-        return ProductId;
+    private int cartId;
+    private int userId;
+    private int productId;
+    private int quantity;
+    private int productTotal;
+    public int getCartId() {
+        return cartId;
     }
-    public void setProductId(String ProductId) {
-        this.ProductId = ProductId;
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
     }
-    public Integer getQuantity() {
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+    public int getProductId() {
+        return productId;
+    }
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+    public int getQuantity() {
         return quantity;
     }
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public Integer getDelivery() {
-        return delivery;
+    public int getProductTotal() {
+        return productTotal;
     }
-    public void setDelivery(Integer delivery) {
-        this.delivery = delivery;
+    public void setProductTotal(int productTotal) {
+        this.productTotal = productTotal;
     }
-    public float getTotalPrice() {
-        return totalPrice;
-    }
-    public void setTotalPrice(float totalPrice) {
-        this.totalPrice = totalPrice;
-    }
+
+    
 }

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar p-4">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="product.html">Product Entry</a>
+        <a href="category.html">Category List</a>
+        <a href="sub_category.html">Sub Category List</a>
+        <a href="size.html">Size List</a>
+        <a href="productlist.html">Product List</a>
+        <a href="product_image.html">Product Image List</a>
+        <a href="coupon.html">Coupon List</a>
+        <a href="order.html">Orders</a>
+        <a href="setting.html">Settings</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <h4>Welcome, Admin</h4>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+
+        <!-- Content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Orders List</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-bordered table-dark">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Order ID</th>
+                                            <th scope="col">Customer Name</th>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Total Price</th>
+                                            <th scope="col">Order Date</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ORD12345</td>
+                                            <td>John Doe</td>
+                                            <td>Pressure Cooker</td>
+                                            <td>1</td>
+                                            <td>₹1500</td>
+                                            <td>2024-11-10</td>
+                                            <td><span class="order-status pending">Pending</span></td>
+                                            <td>
+                                                <button class="btn btn-warning btn-sm">View</button>
+                                                <button class="btn btn-success btn-sm">Mark as Shipped</button>
+                                                <button class="btn btn-danger btn-sm">Cancel</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ORD12346</td>
+                                            <td>Jane Smith</td>
+                                            <td>Fry Pan</td>
+                                            <td>2</td>
+                                            <td>₹2400</td>
+                                            <td>2024-11-12</td>
+                                            <td><span class="order-status shipped">Shipped</span></td>
+                                            <td>
+                                                <button class="btn btn-warning btn-sm">View</button>
+                                                <button class="btn btn-success btn-sm">Mark as Shipped</button>
+                                                <button class="btn btn-danger btn-sm">Cancel</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ORD12347</td>
+                                            <td>David Miller</td>
+                                            <td>Stewpot</td>
+                                            <td>1</td>
+                                            <td>₹1800</td>
+                                            <td>2024-11-14</td>
+                                            <td><span class="order-status cancelled">Cancelled</span></td>
+                                            <td>
+                                                <button class="btn btn-warning btn-sm">View</button>
+                                                <button class="btn btn-success btn-sm">Mark as Shipped</button>
+                                                <button class="btn btn-danger btn-sm">Cancel</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product List Section -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Product List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Product ID</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Pressure Cooker</td>
+                                        <td>Cookware</td>
+                                        <td>₹1500</td>
+                                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Fry Pan</td>
+                                        <td>Cookware</td>
+                                        <td>₹1200</td>
+                                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Stewpot</td>
+                                        <td>Cookware</td>
+                                        <td>₹1800</td>
+                                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to logout?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Logout</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

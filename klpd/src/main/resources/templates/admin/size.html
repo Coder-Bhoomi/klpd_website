@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Product Listings</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar p-4">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product.html">Product Entry</a>
+        <a href="category.html">Category List</a>
+        <a href="sub_category.html">Sub Category List</a>
+        <a href="size.html" class="active">Size List</a>
+        <a href="productlist.html">Product List</a>
+        <a href="product_image.html">Product Image List</a>
+        <a href="coupon.html">Coupon List</a>
+        <a href="order.html">Orders</a>
+        <a href="setting.html">Settings</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <h4>Welcome, Admin</h4>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+
+        <!-- Product List Section -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Size List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-dark" id="horizontalTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">SubCategory ID</th>
+                                        <th scope="col">Size</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="editable">1</td>
+                                        <td class="editable">5L</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="editable">2</td>
+                                        <td class="editable">2L</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="editable">3</td>
+                                        <td class="editable">4L</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+</div>
+
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to log out?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="logout_page.html" class="btn btn-primary">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const editButton = document.getElementById('editButton');
+    const saveButton = document.getElementById('saveButton');
+    const editableFields = document.querySelectorAll('.modal .editable');
+
+    document.querySelectorAll('.edit-btn').forEach((editBtn) => {
+        editBtn.addEventListener('click', () => {
+            const row = editBtn.closest('tr');
+            row.querySelectorAll('.editable').forEach(cell => {
+                const value = cell.textContent;
+                cell.innerHTML = `<input type="text" class="form-control" value="${value}">`;
+            });
+            editBtn.classList.add('d-none');
+            row.querySelector('.save-btn').classList.remove('d-none');
+        });
+    });
+
+    document.querySelectorAll('.save-btn').forEach((saveBtn) => {
+        saveBtn.addEventListener('click', () => {
+            const row = saveBtn.closest('tr');
+            row.querySelectorAll('.editable').forEach(cell => {
+                const input = cell.querySelector('input');
+                cell.textContent = input.value;
+            });
+            saveBtn.classList.add('d-none');
+            row.querySelector('.edit-btn').classList.remove('d-none');
+            alert('Row changes saved successfully!');
+        });
+    });
+</script>
+
+</body>
+</html>

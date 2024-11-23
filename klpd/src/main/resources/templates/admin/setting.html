@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Settings</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar p-4">
+        <h4 class="text-center text-white">Admin Panel</h4>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product.html">Product Entry</a>
+        <a href="category.html">Category List</a>
+        <a href="sub_category.html">Sub Category List</a>
+        <a href="size.html">Size List</a>
+        <a href="productlist.html">Product List</a>
+        <a href="product_image.html">Product Image List</a>
+        <a href="coupon.html">Coupon List</a>
+        <a href="order.html">Orders</a>
+        <a href="setting.html" class="active">Settings</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <h4>Welcome, Admin</h4>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+
+        <!-- Content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Account Settings Section -->
+                    <div class="card form-section mb-5">
+                        <div class="card-header">
+                            <h5>Account Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="#" method="post">
+                                <div class="mb-3">
+                                    <label for="adminName" class="form-label">Admin Name</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="adminName" value="Admin User" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="adminEmail" class="form-label">Email</label>
+                                    <input type="email" class="form-control bg-dark text-light" id="adminEmail" value="admin@example.com" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="adminPassword" class="form-label">Change Password</label>
+                                    <input type="password" class="form-control bg-dark text-light" id="adminPassword" placeholder="********">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Account</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Site Settings Section -->
+                    <div class="card form-section mb-5">
+                        <div class="card-header">
+                            <h5>Site Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="#" method="post">
+                                <div class="mb-3">
+                                    <label for="siteName" class="form-label">Site Name</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="siteName" value="Kanhaiyalal Pragdas Bartan Wale" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="siteLogo" class="form-label">Site Logo</label>
+                                    <input type="file" class="form-control bg-dark text-light" id="siteLogo" accept="image/*">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="siteTheme" class="form-label">Site Theme Color</label>
+                                    <input type="color" class="form-control bg-dark text-light" id="siteTheme" value="#007bff">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Site Settings</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Payment Settings Section -->
+                    <div class="card form-section mb-5">
+                        <div class="card-header">
+                            <h5>Payment Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="#" method="post">
+                                <div class="mb-3">
+                                    <label for="paymentGateway" class="form-label">Payment Gateway</label>
+                                    <select class="form-select bg-dark text-light" id="paymentGateway" required>
+                                        <option value="Stripe">Stripe</option>
+                                        <option value="PayPal">PayPal</option>
+                                        <option value="Razorpay">Razorpay</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="gatewayApiKey" class="form-label">API Key</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="gatewayApiKey" placeholder="Enter API Key" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Payment Settings</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to log out?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="logout_page.html" class="btn btn-primary">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

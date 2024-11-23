@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +65,7 @@ public class maincontroller {
         return 0;
     }
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String showIndex(Model model) {
         addCategoriesToModel(model);
         return "index";
@@ -93,41 +93,40 @@ public class maincontroller {
 
         } else if (query != null && !query.isEmpty()) {
             try {
-            Search.session(EntityManager.unwrap(Session.class))
-                  .massIndexer()
-                  .startAndWait();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();             
-                }
-            finally {
-            Session session = EntityManager.unwrap(Session.class);
-            Products = Search.session(session)
-                    .search(Product.class)
-                    .where(f -> f.bool()
-                            .should(f.match()
-                                    .fields("prodName")
-                                    .matching(query)
-                                    .boost(5.0f)) // Exact match on prodName with the highest boost
-                            .should(f.match()
-                                    .fields("brand", "description")
-                                    .matching(query)
-                                    .boost(4.0f)) // Exact match on brand and description with lower boost
-                            .should(f.simpleQueryString()
-                                    .fields("prodName")
-                                    .matching(query + "*")
-                                    .boost(3.0f)) // Prefix match to capture terms starting with the query
-                            .should(f.match()
-                                    .fields("prodName", "brand", "description")
-                                    .matching(query)
-                                    .fuzzy()
-                                    .boost(1.0f)) // Fuzzy match for variations and typos
-                    )
-                    .fetchAllHits()
-                    .stream()
-                    .distinct() // Ensures that only unique products are returned
-                    .collect(Collectors.toList());
-        } 
-    }else {
+                Search.session(EntityManager.unwrap(Session.class))
+                        .massIndexer()
+                        .startAndWait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                Session session = EntityManager.unwrap(Session.class);
+                Products = Search.session(session)
+                        .search(Product.class)
+                        .where(f -> f.bool()
+                                .should(f.match()
+                                        .fields("prodName")
+                                        .matching(query)
+                                        .boost(5.0f)) // Exact match on prodName with the highest boost
+                                .should(f.match()
+                                        .fields("brand", "description")
+                                        .matching(query)
+                                        .boost(4.0f)) // Exact match on brand and description with lower boost
+                                .should(f.simpleQueryString()
+                                        .fields("prodName")
+                                        .matching(query + "*")
+                                        .boost(3.0f)) // Prefix match to capture terms starting with the query
+                                .should(f.match()
+                                        .fields("prodName", "brand", "description")
+                                        .matching(query)
+                                        .fuzzy()
+                                        .boost(1.0f)) // Fuzzy match for variations and typos
+                        )
+                        .fetchAllHits()
+                        .stream()
+                        .distinct() // Ensures that only unique products are returned
+                        .collect(Collectors.toList());
+            }
+        } else {
             Products = pRepo.findAll();
         }
 
@@ -141,8 +140,8 @@ public class maincontroller {
         if (color != null && !color.isEmpty()) {
             List<Product> filteredByColor = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getAttribute().getColor() != null
-                        && Product.getAttribute().getColor().equalsIgnoreCase(color)) {
+                if (Product.getColor() != null
+                        && Product.getColor().equalsIgnoreCase(color)) {
                     filteredByColor.add(Product);
                 }
             }
@@ -164,8 +163,8 @@ public class maincontroller {
         if (diameter != null && !diameter.isEmpty()) {
             List<Product> diameterFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getAttribute().getDiameter() != null
-                        && Product.getAttribute().getDiameter().equalsIgnoreCase(diameter)) {
+                if (Product.getDiameter() != null
+                        && Product.getDiameter().equalsIgnoreCase(diameter)) {
                     diameterFiltered.add(Product);
                 }
             }
@@ -176,8 +175,8 @@ public class maincontroller {
         if (thickness != null && !thickness.isEmpty()) {
             List<Product> thicknessFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getAttribute().getThickness() != null
-                        && Product.getAttribute().getThickness().equalsIgnoreCase(thickness)) {
+                if (Product.getThickness() != null
+                        && Product.getThickness().equalsIgnoreCase(thickness)) {
                     thicknessFiltered.add(Product);
                 }
             }
@@ -188,8 +187,8 @@ public class maincontroller {
         if (capacity != null && !capacity.isEmpty()) {
             List<Product> capacityFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getAttribute().getCapacity() != null
-                        && Product.getAttribute().getCapacity().equalsIgnoreCase(capacity)) {
+                if (Product.getCapacity() != null
+                        && Product.getCapacity().equalsIgnoreCase(capacity)) {
                     capacityFiltered.add(Product);
                 }
             }
@@ -200,8 +199,8 @@ public class maincontroller {
         if (guarantee != null && !guarantee.isEmpty()) {
             List<Product> guaranteeFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getAttribute().getGuarantee() != null
-                        && Product.getAttribute().getGuarantee().equalsIgnoreCase(guarantee)) {
+                if (Product.getGuarantee() != null
+                        && Product.getGuarantee().equalsIgnoreCase(guarantee)) {
                     guaranteeFiltered.add(Product);
                 }
             }
@@ -214,20 +213,20 @@ public class maincontroller {
         Set<String> guarantees = new HashSet<>();
 
         for (Product Product : Products) {
-            if (Product.getAttribute().getColor() != null) {
-                colors.add(Product.getAttribute().getColor());
+            if (Product.getColor() != null) {
+                colors.add(Product.getColor());
             }
-            if (Product.getAttribute().getDiameter() != null) {
-                diameters.add(Product.getAttribute().getDiameter());
+            if (Product.getDiameter() != null) {
+                diameters.add(Product.getDiameter());
             }
-            if (Product.getAttribute().getThickness() != null) {
-                thicknesses.add(Product.getAttribute().getThickness());
+            if (Product.getThickness() != null) {
+                thicknesses.add(Product.getThickness());
             }
-            if (Product.getAttribute().getCapacity() != null) {
-                capacities.add(Product.getAttribute().getCapacity());
+            if (Product.getCapacity() != null) {
+                capacities.add(Product.getCapacity());
             }
-            if (Product.getAttribute().getGuarantee() != null) {
-                guarantees.add(Product.getAttribute().getGuarantee());
+            if (Product.getGuarantee() != null) {
+                guarantees.add(Product.getGuarantee());
             }
         }
 
@@ -253,16 +252,16 @@ public class maincontroller {
         return "redirect:/products?categoryId=" + categoryId;
     }
 
-    @GetMapping("/product/{prodId}")
-    public String showProductDetails(@PathVariable String prodId, Model model) {
+    @GetMapping("/product/{pid}")
+    public String showProductDetails(@PathVariable String pid, Model model) {
 
-        Product prod = pRepo.findById(prodId).orElse(null);
+        Product prod = pRepo.findById(pid).orElse(null);
 
         if (prod != null) {
             model.addAttribute("product", prod);
-            List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndProdIdNot(
+            List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
                     prod.getCategory().getCategoryId(),
-                    prod.getProdId());
+                    prod.getPid());
 
             model.addAttribute("relatedProducts", relatedProducts);
             model.addAttribute("categoryId", prod.getCategory().getCategoryId());
@@ -275,31 +274,34 @@ public class maincontroller {
     }
 
     @GetMapping("/cart")
-    public String showCart(Model model) {
-        List<Cart> cartItems = cartRepository.findAll();
-        float subtotal = cartItems.stream().map(item -> item.getTotalPrice()).reduce(0.0f, Float::sum);
-        float discount = 0.0f;
-        float tax = subtotal * 0.10f;
-        float total = subtotal + tax - discount;
+    public String showCart(Model model, HttpSession session) {
+        if (session.getAttribute("userid") != null) {
+            List<Cart> cartItems = cartRepository.findAll();
+            float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
+            float discount = 0.0f;
+            float tax = subtotal * 0.10f;
+            float total = subtotal + tax - discount;
 
-        model.addAttribute("cart", cartItems);
-        model.addAttribute("subtotal", subtotal);
-        model.addAttribute("discount", discount);
-        model.addAttribute("tax", tax);
-        model.addAttribute("total", total);
-        addCategoriesToModel(model);
-        return "cart";
+            model.addAttribute("cart", cartItems);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("discount", discount);
+            model.addAttribute("tax", tax);
+            model.addAttribute("total", total);
+            addCategoriesToModel(model);
+            return "cart";
+        } else {
+            return "redirect/login";
+        }
     }
 
     @PostMapping("/cart/update")
     public String updateCart(@RequestParam Long cartId, @RequestParam Integer quantity, Model model) {
         Cart cartItem = cartRepository.findById(cartId).orElse(null);
-
         if (cartItem != null) {
 
             Product Product = cartItem.getProduct();
             cartItem.setQuantity(quantity);
-            cartItem.setTotalPrice(
+            cartItem.setProductTotal(
                     quantity * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
             cartRepository.save(cartItem);
             model.addAttribute("message", "Cart updated successfully.");
@@ -316,50 +318,68 @@ public class maincontroller {
     }
 
     @PostMapping("/cart/add")
-    public String addToCart(@RequestParam String productId, @RequestParam Integer quantity, Model model) {
+    public String addToCart(HttpSession session, @RequestParam String productId, @RequestParam Integer quantity,
+            Model model) {
+        if (session.getAttribute("userid") != null) {
+            Product product = pRepo.findById(productId).orElse(null);
 
-        Product product = pRepo.findById(productId).orElse(null);
+            if (product != null) {
+                Cart existingCartItem = cartRepository.findByProduct(product);
 
-        if (product != null) {
-            Cart existingCartItem = cartRepository.findByProduct(product);
+                if (existingCartItem != null) {
 
-            if (existingCartItem != null) {
+                    existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+                    float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
+                    existingCartItem.setProductTotal((int)price * existingCartItem.getQuantity());
 
-                existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
-                float price = product.getOfferPrice() != null ? product.getOfferPrice() : product.getMrp();
-                existingCartItem.setTotalPrice(price * existingCartItem.getQuantity());
+                    // Save the updated cart item
+                    cartRepository.save(existingCartItem);
+                } else {
+                    Cart cart = new Cart();
+                    cart.setProduct(product);
+                    cart.setQuantity(quantity);
+                    cart.setProductTotal(product.getOfferPrice() != null ? product.getOfferPrice() * quantity
+                            : product.getMrp() * quantity);
 
-                // Save the updated cart item
-                cartRepository.save(existingCartItem);
+                    // Save the cart item
+                    cartRepository.save(cart);
+
+                    model.addAttribute("message", "Product added to cart!");
+                }
             } else {
-                Cart cart = new Cart();
-                cart.setDelivery(60);
-                cart.setProduct(product);
-                cart.setQuantity(quantity);
-                cart.setTotalPrice(product.getOfferPrice() != null ? product.getOfferPrice() * quantity
-                        : product.getMrp() * quantity);
-
-                // Save the cart item
-                cartRepository.save(cart);
-
-                model.addAttribute("message", "Product added to cart!");
+                model.addAttribute("message", "Product not found.");
             }
+            return "redirect:/cart";
         } else {
-            model.addAttribute("message", "Product not found.");
+            return "redirect:/login";
         }
-        return "redirect:/cart";
     }
 
     @GetMapping({ "/login" })
     public String ShowLogin(Model model) {
         UserDto udto = new UserDto();
-        model.addAttribute("udto", udto);
-        model.addAttribute("formType", "login");
+        model.addAttribute("dto", udto);
         addCategoriesToModel(model);
         return "registration";
     }
 
-    @PostMapping({ "/login" })
+    @PostMapping("/submit")
+    public String handleFormSubmission(
+            @ModelAttribute UserDto userDto,
+            @RequestParam("actionType") String actionType,
+            HttpSession session,
+            RedirectAttributes attrib) {
+
+        if ("login".equals(actionType)) {
+            return validateLogin(userDto, session, attrib); // Delegate to login logic
+        } else if ("register".equals(actionType)) {
+            return SubmitRegister(userDto, attrib); // Delegate to registration logic
+        } else {
+            attrib.addFlashAttribute("msg", "Invalid Action Type");
+            return "redirect:/";
+        }
+    }
+
     public String validateLogin(@ModelAttribute UserDto udto, HttpSession session, RedirectAttributes attrib) {
         try {
             User us = uRepo.findByEmail(udto.getEmail());
@@ -376,17 +396,7 @@ public class maincontroller {
         }
     }
 
-    @GetMapping("/register")
-    public String ShowRegistration(Model model) {
-        UserDto dto = new UserDto();
-        model.addAttribute("dto", dto);
-        model.addAttribute("formType", "register");
-        addCategoriesToModel(model);
-        return "registration";
-    }
-
-    @PostMapping("/register")
-    public String SubmitRegister(@ModelAttribute("dto") UserDto userDto, BindingResult result,
+    public String SubmitRegister(@ModelAttribute("dto") UserDto userDto,
             RedirectAttributes redirectAttributes) {
         try {
             User user = new User();

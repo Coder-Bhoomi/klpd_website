@@ -193,7 +193,7 @@
             <hr>
             <div class="row mb-5">
                 <div class="col-md-3" th:each="product : ${products}">
-                    <a th:href="@{/product/{prodId}(prodId=${product.prodId})}"
+                    <a th:href="@{/product/{pid}(pid=${product.pid})}"
                         style="text-decoration: none; color: inherit;">
                         <div class="product-card2">
                             <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
@@ -212,7 +212,7 @@
                         </div>
                     </a>
                     <form th:action="@{/cart/add}" method="post">
-                        <input type="hidden" name="productId" th:value="${product.prodId}" />
+                        <input type="hidden" name="productId" th:value="${product.pid}" />
                         <input type="hidden" name="quantity" value="1" min="1" />
                         <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
                     </form>

@@ -1,0 +1,107 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: #121212; /* Dark background */
+    color: white; /* Light text color */
+}
+.d-flex {
+    display: flex;
+    height: 100vh;
+}
+.sidebar {
+    background-color: #1f1f1f; /* Dark sidebar */
+    color: white;
+    padding-top: 20px;
+    width: 250px;
+    position: fixed;
+    height: 100vh;
+}
+.sidebar a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 15px;
+    display: block;
+    margin-bottom: 10px;
+}
+.sidebar a:hover {
+    background-color: #333333; /* Slightly lighter hover color */
+}
+.sidebar .active {
+    background-color: #007bff; /* Active link color */
+}
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #121212; /* Dark background */
+    min-height: 100vh;
+    margin-left: 250px;
+}
+.top-navbar {
+    background-color: #1f1f1f; /* Dark background for top navbar */
+    padding: 10px 20px;
+    color: white;
+    height: auto;
+}
+.top-navbar h4 {
+    margin: 0;
+}
+.container {
+    margin-top: 30px;
+}
+.card {
+    border: none;
+    background-color: #1f1f1f; /* Dark card background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+.table-container {
+    max-height: 500px;
+    overflow-y: auto;
+}
+.table {
+    background-color: #1f1f1f; /* Table background */
+    color: white;
+}
+.table th, .table td {
+    color: white;
+}
+.table-bordered th, .table-bordered td {
+    border: 1px solid #333333;
+}
+.order-status {
+    width: 150px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+.order-status.pending {
+    background-color: #ffc107;
+    color: #fff;
+}
+.order-status.shipped {
+    background-color: #28a745;
+    color: #fff;
+}
+.order-status.cancelled {
+    background-color: #dc3545;
+    color: #fff;
+}
+.modal-content {
+    background-color: #2c2c2c; /* Dark background for modal */
+    color: white;
+}
+.modal-header {
+    background-color: #343a40;
+}
+.modal-footer button {
+    background-color: #007bff;
+}
+.modal-footer button:hover {
+    background-color: #0056b3;
+}

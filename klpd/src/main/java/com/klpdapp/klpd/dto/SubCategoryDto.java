@@ -1,8 +1,18 @@
 package com.klpdapp.klpd.dto;
 
+import com.klpdapp.klpd.model.Category;
+
 public class SubCategoryDto {
     private String subcategoryId;
     private String subcategoryName;
+    private Category category;
+
+    public Category getCategory() {
+        return category;
+    }
+    public void setCategory(Category category) {
+        this.category = category;
+    }
     public String getSubcategoryId() {
         return subcategoryId;
     }

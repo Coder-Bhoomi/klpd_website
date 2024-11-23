@@ -1,31 +1,36 @@
 package com.klpdapp.klpd.model;
 
+import java.time.LocalDate;
 import jakarta.persistence.*;
 
-@Access(AccessType.FIELD)
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private int userId;
 
-    @Column(length = 70, nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 60, unique = true, nullable = false)
+    @Column(nullable = false)
+    private LocalDate dob;
+
+    @Column(length = 20)
+    private String gender;
+
+    @Column(nullable = false, unique = true, length = 60)
     private String email;
 
-    @Column(length = 15, nullable = false)
+    @Column(nullable = false, length = 15)
     private String password;
 
-    @Column(length = 10)
-    private Long contact;
+    @Column(nullable = false)
+    private long mobile;
 
-    @Column(length = 250)
-    private String address;
+    @Column(name = "alternate_mobile")
+    private Long alternateMobile;
 
     @Column(length = 50)
     private String status;
@@ -46,6 +51,22 @@ public class User {
         this.name = name;
     }
 
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -62,20 +83,20 @@ public class User {
         this.password = password;
     }
 
-    public Long getContact() {
-        return contact;
+    public long getMobile() {
+        return mobile;
     }
 
-    public void setContact(Long contact) {
-        this.contact = contact;
+    public void setMobile(long mobile) {
+        this.mobile = mobile;
     }
 
-    public String getAddress() {
-        return address;
+    public Long getAlternateMobile() {
+        return alternateMobile;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAlternateMobile(Long alternateMobile) {
+        this.alternateMobile = alternateMobile;
     }
 
     public String getStatus() {

@@ -34,7 +34,7 @@
             <div class="collapse navbar-collapse left-item" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/home">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
@@ -43,19 +43,21 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                             <li th:each="category : ${categories}">
-                                <a class="dropdown-item" th:href="@{{id}(id=${category.categoryId})}" th:text="${category.categoryName}"></a>
+                                <a class="dropdown-item" th:href="@{{id}(id=${category.categoryId})}"
+                                    th:text="${category.categoryName}"></a>
                             </li>
-                        </ul>                        
+                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/home#aboutus">About Us</a>
+                        <a class="nav-link" href="/#aboutus">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/home#location">Visit Us</a>
+                        <a class="nav-link" href="/#location">Visit Us</a>
                     </li>
                     <li class="nav-item">
                         <form class="d-flex" action="#" th:action="@{/products}" method="get">
-                            <input class="form-control search me-2" type="text" name="query" placeholder="Search for products" />
+                            <input class="form-control search me-2" type="text" name="query"
+                                placeholder="Search for products" />
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
                     </li>
@@ -63,7 +65,7 @@
                 <a class="navbar-brand" href="/cart">
                     <i class="fa-solid fa-cart-shopping" style="color: #ffff; margin-left: 20px;"></i>
                 </a>
-                <a class="navbar-brand px-3" href="#">
+                <a class="navbar-brand px-3" href="/wishlist">
                     <i class="fa-solid fa-heart" style="color: #ffff;"></i>
                 </a>
                 <a class="navbar-brand" href="/login">
@@ -73,9 +75,9 @@
         </div>
     </nav>
     <!-- Main Content Placeholder -->
-	<main>
-		<div class="row" th:replace="${content}" style="background-color: #ffffff; color: black;"></div>
-	</main>
+    <main>
+        <div class="row" th:replace="${content}" style="background-color: #ffffff; color: black;"></div>
+    </main>
     <!-- Footer -->
     <footer>
         <div class="container text-center">
@@ -90,19 +92,20 @@
                 <div class="col-md-3 mt-4">
                     <h5 class="fw-bold">Product Series</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">Cooker</a></li>
-                        <li><a href="#" class="text-white">Cookware</a></li>
-                        <li><a href="#" class="text-white">Gift-Items</a></li>
-                        <li><a href="#" class="text-white">Frying Pans</a></li>
-                        <li><a href="#" class="text-white">Handi</a></li>
-                    </ul>
+                        <li th:each="category, iterStat : ${categories}">
+                            <a class="dropdown-item text-white" 
+                               th:if="${iterStat.index < 5}" 
+                               th:href="@{{id}(id=${category.categoryId})}"
+                               th:text="${category.categoryName}"></a>
+                        </li>
+                    </ul>                    
                 </div>
 
                 <!-- Quick Links -->
                 <div class="col-md-3 mt-4">
                     <h5 class="fw-bold">Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white">About Us</a></li>
+                        <li><a href="/#aboutus" class="text-white">About Us</a></li>
                         <li><a href="#" class="text-white">Privacy Policy</a></li>
                         <li><a href="#" class="text-white">Terms &amp; Conditions</a></li>
                         <li><a href="#" class="text-white">Contact Us</a></li>

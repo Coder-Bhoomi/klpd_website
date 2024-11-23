@@ -10,8 +10,17 @@ public class Size {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "subcategory_id")
-    private String subcategoryId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "subcategory_id", nullable = false)
+    private SubCategory subcategory;
+
+    public SubCategory getSubcategory() {
+        return subcategory;
+    }
+
+    public void setSubcategory(SubCategory subcategory) {
+        this.subcategory = subcategory;
+    }
 
     @Column(name = "size")
     private String size;
@@ -22,14 +31,6 @@ public class Size {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getSubcategoryId() {
-        return subcategoryId;
-    }
-
-    public void setSubcategoryId(String subcategoryId) {
-        this.subcategoryId = subcategoryId;
     }
 
     public String getSize() {
