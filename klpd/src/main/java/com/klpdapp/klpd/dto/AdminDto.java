@@ -4,6 +4,14 @@ public class AdminDto{
     private int adminId;
     private String name;
     private String email;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public int getAdminId() {
         return adminId;
     }
@@ -23,5 +31,6 @@ public class AdminDto{
         this.email = email;
     }
 
+    
     // Getters and Setters
 }

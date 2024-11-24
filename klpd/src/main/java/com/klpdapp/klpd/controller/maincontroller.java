@@ -22,16 +22,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Size;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.dto.AdminDto;
 import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
@@ -56,6 +59,9 @@ public class maincontroller {
 
     @Autowired
     SizeRepo sizeRepo;
+
+    @Autowired
+    AdminRepo adRepo;
 
     @PersistenceContext
     private EntityManager EntityManager;
@@ -277,14 +283,14 @@ public class maincontroller {
 
             List<String> sizes = pRepo.findDistinctSizesBySubcategoryId(prod.getSubcategory().getSubcategoryId());
 
-            // Fetch products based on size
+            /* Fetch products based on size
             
             if (selectedSize != null) {
                 prod = pRepo.findProductsBySizeAndSubcategory(prod.getSubcategory().getSubcategoryId(), selectedSize);
             } else {
                 prod = pRepo.findBySubcategory_SubcategoryId(prod.getSubcategory().getSubcategoryId()); // All products for the
                                                                                        // subcategory
-            }
+            }*/
             model.addAttribute("sizes", sizes);
            
             model.addAttribute("relatedProducts", relatedProducts);
@@ -529,6 +535,7 @@ public class maincontroller {
         return "/admin/login";
     }
     
+    @PostMapping("/admin")
     public String validateAdmLogin(@ModelAttribute AdminDto adto, HttpSession session, RedirectAttributes attrib) {
         try {
             Admin adm = adRepo.findByEmail(adto.getEmail());
@@ -541,7 +548,7 @@ public class maincontroller {
             return "redirect:/admin";
         } catch (EntityNotFoundException ex) {
             attrib.addFlashAttribute("msg", "User doesn't exist!!");
-            return "redirect:/admin";
+            return "redirect:/";
         }
     }
 }
