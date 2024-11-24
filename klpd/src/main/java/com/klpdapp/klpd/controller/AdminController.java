@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.OrderRepository;
+import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Order;
+import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Size;
 import com.klpdapp.klpd.model.SubCategory;
 
@@ -32,6 +34,9 @@ public class AdminController {
 
 	@Autowired
 	private SubCategoryRepo sCatRepo;
+
+	@Autowired
+	ProductRepo prepo;
 
 	@Autowired
 	SizeRepo srepo;
@@ -71,6 +76,12 @@ public class AdminController {
 		List<Size> s = srepo.findAll();
 		model.addAttribute("size", s);
 		return "admin/size";
+	}
+	@GetMapping({"/productlist"})
+	public String ShowProductList(Model model) {
+		List<Product> p = prepo.findAll();
+		model.addAttribute("product", p);
+		return "admin/productlist";
 	}
 	@GetMapping({"/coupon"})
 	public String ShowCoupon(Model model) {
