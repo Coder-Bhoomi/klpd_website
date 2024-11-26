@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,12 +27,13 @@ import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.Size;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wishlist;
 import com.klpdapp.klpd.dto.AdminDto;
 import com.klpdapp.klpd.dto.UserDto;
 
@@ -62,6 +62,9 @@ public class maincontroller {
 
     @Autowired
     AdminRepo adRepo;
+
+    @Autowired
+    WishlistRepo wishlistRepo;
 
     @PersistenceContext
     private EntityManager EntityManager;
@@ -382,6 +385,62 @@ public class maincontroller {
         return "redirect:/cart";
 
     }
+    
+    @GetMapping("/wishlist")
+    public String showwishlist(Model model, HttpSession session) {
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
+            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+
+            model.addAttribute("wishlist", wishlistItems);
+            addCategoriesToModel(model);
+            return "wishlist";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping({ "/wishlist/delete" })
+    public String DeletewishlistItem(@RequestParam int id, RedirectAttributes attrib) {
+        wishlistRepo.deleteById(id);
+        return "redirect:/wishlist";
+    }
+
+    @PostMapping("/wishlist/add")
+    public String addTowishlist(HttpSession session, @RequestParam Integer productId,
+            Model model) {
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
+            Product product = pRepo.findById(productId).orElse(null);
+
+            if (product != null) {
+                Wishlist existingwishlistItem = wishlistRepo.findByProductAndUser(product, user).orElse(null);
+
+                if (existingwishlistItem != null) {
+                    // Update quantity and product total
+                    
+                } else {
+                    // Create a new wishlist item
+                    Wishlist wishlist = new Wishlist();
+                    wishlist.setUser(user);
+                    wishlist.setProduct(product);
+                    wishlistRepo.save(wishlist);
+                }
+
+                model.addAttribute("message", "Product added to wishlist!");
+            } else {
+                model.addAttribute("message", "Product not found.");
+            }
+        } else {
+            return "redirect:/login";
+        }
+
+        return "redirect:/wishlist";
+
+    }
+
 
     @GetMapping({ "/login" })
     public String ShowLogin(Model model) {
@@ -513,12 +572,6 @@ public class maincontroller {
     public String ShowOrder(Model model) {
         addCategoriesToModel(model);
         return "order";
-    }
-
-    @GetMapping("/wishlist")
-    public String ShowWishlist(Model model) {
-        addCategoriesToModel(model);
-        return "wishlist";
     }
 
     @GetMapping("/notification")

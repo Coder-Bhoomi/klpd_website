@@ -48,8 +48,15 @@
                     <div class="col-md-3" th:each="product : ${topProduct}">
                         <div class="product-card2 position-relative">
                             <!-- Heart Icon -->
+                            <!-- Hidden form that will be submitted when the icon is clicked -->
+                            <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                                <input type="hidden" name="productId" th:value="${product.pid}" />
+                            </form>
+
+                            <!-- Icon with onclick to submit the form -->
                             <i class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
-                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;"
+                                onclick="document.getElementById('wishlistForm').submit();">
                             </i>
                             <a th:href="@{/product/{pid}(pid=${product.pid})}"
                                 style="text-decoration: none; color: inherit;">
@@ -258,7 +265,16 @@
                 </div>
             </div>
         </section>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.heart-icon').forEach(icon => {
+                    icon.addEventListener('click', function () {
+                        this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
+                    });
+                });
+            });
 
+        </script>
     </main>
 </body>
 

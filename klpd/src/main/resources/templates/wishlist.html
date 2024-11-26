@@ -13,73 +13,22 @@
 
             <h4 class="mb-4">My Wishlist</h4>
             <div id="product-1" class="card mb-4 p-3">
-                <div class="row align-items-center d-flex">
+                <div class="row align-items-center d-flex" th:each="w : ${wishlist}">
                     <div class="col-2">
-                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
-                            style="border-radius: 5px;">
+                        <div th:if="${w.product.images != null and not #lists.isEmpty(w.product.images)}">
+                            <img th:src="@{${w.product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"  style="border-radius: 5px;">
+                        </div>
+                       
                     </div>
                     <div class="col-8">
-                        <p class="text-light mb-1">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
+                        <p class="text-light mb-1" th:text="${w.product.prodName}">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
                         <div class="wishlist-rating">
                             ★★★★☆
                         </div>
                         <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
-                            <span class="text" style="color:#ccc;"><s>₹2,499</s></span>
-                            <span class="text-success">72% off</span>
-                        </div>
-                    </div>
-                    <div class="col-2 text-end">
-                        <button onclick="showDeleteModal(1)" class="btn btn-dark text-danger" data-bs-toggle="modal"
-                            data-bs-target="#confirmDeleteModal">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-
-            <div id="product-2" class="card mb-4 p-3">
-                <div class="row align-items-center d-flex">
-                    <div class="col-2">
-                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
-                            style="border-radius: 5px;">
-                    </div>
-                    <div class="col-8">
-                        <p class="text-light mb-1">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
-                        <div class="wishlist-rating">
-                            ★★★★☆
-                        </div>
-                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
-                            <span class="text" style="color:#ccc;"><s>₹2,499</s></span>
-                            <span class="text-success">72% off</span>
-                        </div>
-                    </div>
-                    <div class="col-2 text-end">
-                        <button onclick="showDeleteModal(1)" class="btn btn-dark text-danger" data-bs-toggle="modal"
-                            data-bs-target="#confirmDeleteModal">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="product-3" class="card mb-4 p-3">
-                <div class="row align-items-center d-flex">
-                    <div class="col-2">
-                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
-                            style="border-radius: 5px;">
-                    </div>
-                    <div class="col-8">
-                        <p class="text-light mb-1">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
-                        <div class="wishlist-rating">
-                            ★★★★☆
-                        </div>
-                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
-                            <span class="text" style="color:#ccc;"><s>₹2,499</s></span>
-                            <span class="text-success">72% off</span>
+                            <span class="text-danger" style="font-size: 1.2rem;" th:text="${w.product.offerPrice}">₹699</span>
+                            <span class="text" style="color:#ccc;" th:text="${w.product.mrp}"><s>₹2,499</s></span>
+                            <span class="text-success" th:text="${w.product.percentage}">72% off</span>
                         </div>
                     </div>
                     <div class="col-2 text-end">
