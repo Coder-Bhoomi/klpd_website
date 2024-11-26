@@ -19,7 +19,7 @@
                 </div>
                 <div class="mt-4 mb-5">
                     <div class="row">
-                        <label for="firstName" class="form-label">First Name</label>
+                        <label for="firstName" class="form-label">Name</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control bg-dark text-light" 
                                 th:value="${user.name.split(' ')[0]}" id="firstName" name="firstName" placeholder="First name" aria-label="First name" readonly>
@@ -80,24 +80,25 @@
                 <button type="submit" class="btn btn-danger" form="personalInfoForm">Delete Account</button>
             </div>
         </div>
-    </main>
-    <script>
-        const editButton = document.getElementById("editButton");
-        const formFields = document.querySelectorAll("#personalInfoForm input, #personalInfoForm input[type='radio']");
-
-        editButton.addEventListener("click", () => {
-            const isEditing = editButton.textContent === "Edit";
-
-            // Toggle text of the button
-            editButton.textContent = isEditing ? "Save" : "Edit";
-
-            // Toggle read-only state for all input fields
-            formFields.forEach((field) => {
-                field.readOnly = !isEditing; // Enable/Disable text fields
-                field.disabled = !isEditing; // Enable/Disable radio buttons
+        <script>
+            const editButton = document.getElementById("editButton");
+            const formFields = document.querySelectorAll("#personalInfoForm input, #personalInfoForm input[type='radio']");
+    
+            editButton.addEventListener("click", () => {
+                const isEditing = editButton.textContent === "Edit";
+    
+                // Toggle text of the button
+                editButton.textContent = isEditing ? "Save" : "Edit";
+    
+                // Toggle read-only state for all input fields
+                formFields.forEach((field) => {
+                    field.readOnly = !isEditing; // Enable/Disable text fields
+                    field.disabled = !isEditing; // Enable/Disable radio buttons
+                });
             });
-        });
-    </script>
+        </script>
+    </main>
+    
 </body>
 
 </html>
