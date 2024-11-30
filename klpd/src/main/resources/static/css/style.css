@@ -103,20 +103,20 @@ body {
 
 /* Styling for the timer overlay background */
 .timer-overlay {
-    background: rgba(0, 0, 0, 0.5); /* Light transparent background */
+    background: rgba(0, 0, 0, 0.5); 
     padding: 15px 25px;
-    border-radius: 10px; /* Rounded corners */
+    border-radius: 10px; 
     display: inline-block;
-    margin: 20px 0; /* Spacing above and below */
+    margin: 20px 0; 
 }
 
 /* Styling for the timer to display in a single line */
 .timer {
-    display: flex; /* Flexbox to align items in a single line */
-    justify-content: center; /* Center align the timer */
-    gap: 20px; /* Spacing between each timer segment */
-    font-size: 1.2rem; /* Adjust font size */
-    color: #ddd; /* Dark text color for contrast */
+    display: flex;
+    justify-content: center; 
+    gap: 20px; 
+    font-size: 1.2rem; 
+    color: #ddd; 
     font-weight: bold;
 }
 
@@ -127,8 +127,8 @@ body {
 
 /* Styling for numbers */
 .timer div span {
-    font-size: 2rem; /* Larger size for numbers */
-    color: white; /* Black color for numbers */
+    font-size: 2rem; 
+    color: white;
     display: block;
 }
 
@@ -162,9 +162,9 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(65, 63, 63, 0.5); /* Light shade with 50% opacity */
-    border-radius: 10px; /* Match the radius of the image */
-    z-index: 1; /* Ensure it appears above the image */
+    background-color: rgba(65, 63, 63, 0.5); 
+    border-radius: 10px; 
+    z-index: 1;
 }
 
 .overlay-text {
@@ -256,27 +256,27 @@ body {
 }
 
 .cartbutton::after {
-    content: '\f07a'; /* Font Awesome cart icon */
+    content: '\f07a';
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     position: absolute;
-    bottom: -30px; /* Start below the button */
-    left: 50%; /* Center horizontally */
+    bottom: -30px; 
+    left: 50%; 
     transform: translateX(-50%);
-    font-size: 18px; /* Icon size */
-    opacity: 0; /* Hidden by default */
+    font-size: 18px; 
+    opacity: 0; 
     transition: 0.5s;
     color: #fff;
 }
 
 .cartbutton:hover span {
-    opacity: 0; /* Hide text */
-    transform: translateY(-20px); /* Move text upwards */
+    opacity: 0; 
+    transform: translateY(-20px); 
 }
 
 .cartbutton:hover::after {
-    bottom: 50%; /* Slide icon to center */
-    opacity: 1; /* Make icon visible */
+    bottom: 50%; 
+    opacity: 1; 
     transform: translate(-50%, 50%);
 }
 
@@ -293,29 +293,60 @@ body {
 }
 
 .checkoutbutton::after {
-    content: '\f0d1'; /* Unicode for Font Awesome truck icon */
+    content: '\f0d1'; 
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     position: absolute;
-    top: 50%; /* Vertically center */
-    left: -30px; /* Start from the left side */
+    top: 50%; 
+    left: -30px; 
     transform: translateY(-50%);
-    font-size: 18px; /* Icon size */
-    opacity: 0; /* Initially hidden */
+    font-size: 18px; 
+    opacity: 0; 
     transition: 1s;
     color: #fff;
 }
 
 .checkoutbutton:hover span {
-    opacity: 0; /* Hide text */
-    transform: translateX(20px); /* Slide text to the right */
+    opacity: 0; 
+    transform: translateX(20px); 
 }
 
 .checkoutbutton:hover::after {
-    left: 50%; /* Move truck icon to center */
-    opacity: 1; /* Make icon visible */
+    left: 50%; 
+    opacity: 1; 
     transform: translate(-50%, -50%);
 }
+
+/*.quantity-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 18px;
+    background-color: #367D8A;
+    width: 43%;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+
+.quantity-container .btn {
+    padding: 5px 10px;
+    font-size: 18px;
+    background-color: #367D8A;
+    border: 1px solid #367D8A;
+    color: #fff;
+    cursor: pointer;
+}
+
+.quantity-container .btn:hover {
+    background-color: #367D8A;
+    color: #fff;
+}
+
+#quantity-display {
+    font-size: 20px;
+    font-weight: bold;
+}*/
 
 .best-selling{
     margin-top: 100px;
@@ -445,7 +476,7 @@ footer .footer-copyright {
 
 /* Centered image styling */
 #loading-image {
-    width: 200px; /* Adjust size as needed */
+    width: 200px;
     height: auto;
     border-radius: 10px;
 }

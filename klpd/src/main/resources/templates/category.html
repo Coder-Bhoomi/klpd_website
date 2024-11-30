@@ -230,6 +230,12 @@
                         <input type="hidden" name="productId" th:value="${product.pid}" />
                         <input type="hidden" name="quantity" value="1" min="1" />
                         <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
+                        <!--Quantity Button -->
+                        <!--<div class="quantity-container">
+                            <button type="button" class="btn minus" id="minus-btn">-</button>
+                            <span id="quantity-display">1</span>
+                            <button type="button" class="btn plus" id="plus-btn">+</button>
+                        </div>-->
                     </form>
                 </div>
             </div>
@@ -242,6 +248,21 @@
                 });
             });
             
+            document.getElementById("minus-btn").addEventListener("click", function () {
+            let quantity = parseInt(document.getElementById("quantity-display").textContent);
+            if (quantity > 1) {  // Ensure quantity does not go below 1
+                quantity--;
+                document.getElementById("quantity-display").textContent = quantity;
+                document.getElementById("quantity").value = quantity;  // Update hidden input
+                }
+            });
+
+            document.getElementById("plus-btn").addEventListener("click", function () {
+                let quantity = parseInt(document.getElementById("quantity-display").textContent);
+                quantity++;
+                document.getElementById("quantity-display").textContent = quantity;
+                document.getElementById("quantity").value = quantity;  // Update hidden input
+            });
             </script>
         </section>
     </main>
