@@ -9,7 +9,7 @@
 
     <!-- Main Content -->
     <main>
-        <div class="p-4 px-5 border rounded" style="background-color: #1f1f1f;">
+        <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
 
             <h4 class="mb-4">My Wishlist</h4>
             <div id="product-1" class="card mb-4 p-3" th:each="w : ${wishlist}">
@@ -36,7 +36,7 @@
                     <div class="col-2 text-end">
                         <button data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
                             th:data-bs-id="${w.wishlistId}" class="btn btn-dark text-danger">
-                            <i class="bi bi-trash"></i>
+                            <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -50,20 +50,20 @@
             aria-hidden="true">
             <div class="modal-dialog">
                 <form method="POST" action="/wishlist/delete">
-                    <div class="modal-content">
+                    <div class="modal-content bg-dark">
                         <div class="modal-header">
-                            <h5 class="modal-title" style="color:black;" id="confirmDeleteModalLabel">Confirm Remove
+                            <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Remove
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" style="color:black;">
+                        <div class="modal-body">
                             Are you sure you want to remove this item from your wishlist?
                             <!-- Hidden input to store the wishlist ID -->
                             <input type="hidden" id="wishlistIdInput" name="wishlistId" value="">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-danger">Yes</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
                         </div>
                     </div>
                 </form>

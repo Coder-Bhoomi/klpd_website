@@ -17,8 +17,8 @@
                     <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
                         <input type="hidden" name="productId" th:value="${product.pid}" />
                         <button
-                            class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
-                            style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                            class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                            style="top: 12px; right: 115px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;">
                         </button>
                     </form>
                 </i> 
@@ -155,9 +155,13 @@
                     
                     <div class="product-card2 position-relative">
                         <!-- Heart Icon -->
-                        <i class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center" 
-                            style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
-                        </i> 
+                        <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <button
+                                class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;">
+                            </button>
+                        </form> 
                         <a th:href="@{/product/{pid}(pid=${rp.pid})}"
                             style="text-decoration: none; color: inherit;">
                             <div th:if="${rp.images != null and not #lists.isEmpty(rp.images)}">

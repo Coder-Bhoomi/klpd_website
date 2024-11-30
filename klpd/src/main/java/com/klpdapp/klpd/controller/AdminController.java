@@ -20,7 +20,6 @@ import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
-import com.klpdapp.klpd.dto.CategoryDto;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Images;
