@@ -95,7 +95,7 @@
                         <li th:each="category, iterStat : ${categories}">
                             <a class="dropdown-item text-white" 
                                th:if="${iterStat.index < 5}" 
-                               th:href="@{{id}(id=${category.categoryId})}"
+                               th:href="@{/category/{id}(id=${category.categoryId})}"
                                th:text="${category.categoryName}"></a>
                         </li>
                     </ul>                    
