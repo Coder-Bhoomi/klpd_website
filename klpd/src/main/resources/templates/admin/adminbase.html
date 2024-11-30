@@ -14,11 +14,13 @@
     <!-- Sidebar -->
     <div class="sidebar p-4"> 
         <h4 class="text-center text-white">Admin Panel</h4>
-        <a th:href="dashboard">Dashboard</a>
+        <a th:href="dashboard" class="active">Dashboard</a>
         <a th:href="product">Product Entry</a>
         <a th:href="category">Category List</a>
         <a th:href="sub-category">Sub Category List</a>
         <a th:href="size">Size List</a>
+        <a th:href="productlist">Product List</a>
+        <a th:href="product_image">Product Image List</a>
         <a th:href="coupon">Coupon List</a>
         <a th:href="order">Orders</a>
         <a th:href="setting">Settings</a>
@@ -36,15 +38,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="logoutModalLabel">Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="submit" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Are you sure you want to logout?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Logout</button>
-            </div>
+                <form id="logoutForm" th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-primary">Logout</button>
+                </form>            </div>
         </div>
     </div>
 </div>

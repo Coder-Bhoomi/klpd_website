@@ -101,7 +101,7 @@
                 <tbody>
                     <tr>
                         <th>Brand</th>
-                        <td>-</td>
+                        <td th:text="${product.brand}">-</td>
                     </tr>
                     <tr>
                         <th>Capacity</th>
@@ -109,12 +109,11 @@
                     </tr>
                     <tr>
                         <th>Type</th>
-                        <td>-</td>
+                        <td th:text="${product.finish}">-</td>
                     </tr>
                     <tr>
                         <th>Carton-dimension</th>
-                        <td th:text="${product.cartonDimension}">
-                        </td>
+                        <td th:text="${product.cartonDimension}"></td>
                     </tr>
                     <tr>
                         <th>Color</th>
@@ -134,11 +133,11 @@
                     </tr>
                     <tr>
                         <th>Length</th>
-                        <td>-</td>
+                        <td th:text="${product.length}">-</td>
                     </tr>
                     <tr>
                         <th>Height</th>
-                        <td>-</td>
+                        <td th:text="${product.height}">-</td>
                     </tr>
                     <tr>
                         <th>Weight</th>

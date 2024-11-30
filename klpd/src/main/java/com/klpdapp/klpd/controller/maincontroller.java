@@ -42,8 +42,6 @@ import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
 import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.dto.AdminDto;
-import com.klpdapp.klpd.dto.OrderDTO;
-import com.klpdapp.klpd.dto.OrderItemDto;
 import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
@@ -319,7 +317,6 @@ public class maincontroller {
     @GetMapping("/product/{pid}")
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
             Model model) {
-
         Product prod = pRepo.getById(pid);
 
         if (prod != null) {

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" th:replace="admin/adminbase :: layout (~{::main})">
+
 <head>
-    
+
 </head>
+
 <body>
 
     <!-- Main Content -->
@@ -34,40 +36,29 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="sub:${sub_category}">
-									    <form th:action="@{/admin/sub-category/update}" method="post">
-									        <!-- Hidden field for IDs -->
-									        <input type="hidden" name="subcategoryId" th:value="${sub.subcategoryId}"/>
-									        <td th:text="${sub.subcategoryId}"></td>
-
-									        <input type="hidden" name="category" th:value="${sub.category.categoryId}"/>
-									        <td th:text="${sub.category.categoryId}"></td>
-
-									        <td>
-									            <input type="text" class="form-control" name="subcategoryName" th:value="${sub.subcategoryName}"/>
-									        </td>
-									        <td>
-									            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-									            <button type="submit" class="btn btn-primary btn-sm">Save</button>
-									        </td>
-									    </form>
-									</tr>
-                                    <tr>
-                                        <td class="editable">2</td>
-                                        <td class="editable">2</td>
-                                        <td class="editable">Fry Pan</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="editable">3</td>
-                                        <td class="editable">3</td>
-                                        <td class="editable">Stewpot</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
-                                        </td>
+                                        <form th:action="@{/admin/sub-category/update}" method="post">
+                                            <!-- Hidden field for IDs -->
+                                            <input type="hidden" name="subcategoryId" th:value="${sub.subcategoryId}" />
+                                            <td th:text="${sub.subcategoryId}"></td>
+                                            <td>
+                                                <!-- Editable Category ID -->
+                                                <span class="category-id" th:text="${sub.category.categoryId}"></span>
+                                                <input type="text" class="form-control d-none" name="categoryId"
+                                                    th:value="${sub.category.categoryId}" />
+                                            </td>
+                                            <input type="hidden" name="category" th:value="${sub.category}" />
+                                            <td>
+                                                <!-- Editable SubCategory Name -->
+                                                <span class="subcategory-name" th:text="${sub.subcategoryName}"></span>
+                                                <input type="text" class="form-control d-none" name="subcategoryName"
+                                                    th:value="${sub.subcategoryName}" />
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                                <button type="submit"
+                                                    class="btn btn-primary btn-sm save-btn d-none">Save</button>
+                                            </td>
+                                        </form>
                                     </tr>
                                 </tbody>
                             </table>
@@ -76,64 +67,27 @@
                 </div>
             </div>
         </div>
-        
 
-    </div>
-</div>
+        <script>
+            document.querySelectorAll('.edit-btn').forEach((editBtn) => {
+                editBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const row = editBtn.closest('tr');
+
+                    row.querySelector('.subcategory-name').classList.add('d-none');
+                    row.querySelector('input[name="subcategoryName"]').classList.remove('d-none');
+
+                    row.querySelector('.category-id').classList.add('d-none');
+                    row.querySelector('input[name="categoryId"]').classList.remove('d-none');
 
 
-<!-- Logout Modal -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to log out?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="logout_page.html" class="btn btn-primary">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    const editButton = document.getElementById('editButton');
-    const saveButton = document.getElementById('saveButton');
-    const editableFields = document.querySelectorAll('.modal .editable');
-
-    document.querySelectorAll('.edit-btn').forEach((editBtn) => {
-        editBtn.addEventListener('click', () => {
-            const row = editBtn.closest('tr');
-            row.querySelectorAll('.editable').forEach(cell => {
-                const value = cell.textContent;
-                cell.innerHTML = `<input type="text" class="form-control" value="${value}">`;
+                    editBtn.classList.add('d-none');
+                    row.querySelector('.save-btn').classList.remove('d-none');
+                });
             });
-            editBtn.classList.add('d-none');
-            row.querySelector('.save-btn').classList.remove('d-none');
-        });
-    });
-
-    document.querySelectorAll('.save-btn').forEach((saveBtn) => {
-        saveBtn.addEventListener('click', () => {
-            const row = saveBtn.closest('tr');
-            row.querySelectorAll('.editable').forEach(cell => {
-                const input = cell.querySelector('input');
-                cell.textContent = input.value;
-            });
-            saveBtn.classList.add('d-none');
-            row.querySelector('.edit-btn').classList.remove('d-none');
-            alert('Row changes saved successfully!');
-        });
-    });
-</script>
+        </script>
+    </main>
 
 </body>
+
 </html>
