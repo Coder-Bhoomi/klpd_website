@@ -34,14 +34,23 @@
                                 </thead>
                                 <tbody>
                                     <tr th:each="sub:${sub_category}">
-											<td class="editable" th:text="${sub.subcategoryId}">1</td>
-											<td class="editable" th:text="${sub.category.categoryId}">1</td>
-											<td class="editable" th:text="${sub.subcategoryName}">Pressure Cooker</td>
-											<td>
-												<button class="btn btn-warning btn-sm edit-btn">Edit</button>
-												<button class="btn btn-primary btn-sm save-btn d-none">Save</button>
-											</td>
-										</tr>
+									    <form th:action="@{/admin/sub-category/update}" method="post">
+									        <!-- Hidden field for IDs -->
+									        <input type="hidden" name="subcategoryId" th:value="${sub.subcategoryId}"/>
+									        <td th:text="${sub.subcategoryId}"></td>
+
+									        <input type="hidden" name="category" th:value="${sub.category.categoryId}"/>
+									        <td th:text="${sub.category.categoryId}"></td>
+
+									        <td>
+									            <input type="text" class="form-control" name="subcategoryName" th:value="${sub.subcategoryName}"/>
+									        </td>
+									        <td>
+									            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+									            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+									        </td>
+									    </form>
+									</tr>
                                     <tr>
                                         <td class="editable">2</td>
                                         <td class="editable">2</td>
