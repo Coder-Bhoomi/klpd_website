@@ -200,10 +200,10 @@
                         <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
                             <button
-                                class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
-                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                                class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; color: grey; cursor: pointer; transition: all 0.3s; border: none !important;">
                             </button>
-                        </form> 
+                        </form>
                         <a th:href="@{/product/{pid}(pid=${product.pid})}"
                             style="text-decoration: none; color: inherit;">
                             <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">

@@ -19,9 +19,7 @@ import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
-import com.klpdapp.klpd.dto.CategoryDto;
 import com.klpdapp.klpd.model.Category;
-import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Size;
@@ -202,7 +200,7 @@ public class AdminController {
 		return "redirect:/admin/product";
 	}
 	
-	@PostMapping("/addCoupon")
+	/*@PostMapping("/addCoupon")
 	public String addCoupon(@RequestParam int couponId, @RequestParam String couponCode, @RequestParam String couponName, @RequestParam LocalDate validityDate, 
 							@RequestParam int discountRate, @RequestParam int uptoAmount, @RequestParam String couponDescription)
 	{
@@ -216,6 +214,6 @@ public class AdminController {
 		coupon.setCouponDescription(couponDescription);
 		cRepo.save(coupon);
 		return "redirect:/admin/product";
-	}
+	}*/
 
 }

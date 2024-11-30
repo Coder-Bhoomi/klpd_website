@@ -10,7 +10,7 @@
     <!-- Main Content -->
     <main>
 
-        <div class="p-4 px-5 border rounded" style="background-color: #1f1f1f;">
+        <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
             <!-- Form with th:action for submitting to the update profile endpoint -->
             <form id="personalInfoForm" th:action="@{/profile/update}" th:object="${userdto}" method="post">
                 <div class="d-flex justify-content-between">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </form>
-            <div class="mb-2">
+            <div class="mb-2 d-flex">
                 <form id="deactivateForm" th:action="@{/profile/deactivate}" method="post">
                     <button type="submit" class="btn btn-primary me-2">Deactivate Account</button>
                 </form>
