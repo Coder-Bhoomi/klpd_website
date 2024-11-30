@@ -10,16 +10,19 @@
     <main style="padding-bottom: 120px;">
         <!-- Main Content Placeholder -->
 
-
-        <!-- Best Selling Products -->
         <section class="best-selling container mt-1">
             <h2 class="text-center fw-bold my-3 mt-5"
                 th:text="${category != null ? category.categoryName : (query != null ? #strings.concat('Results for: ', query) : 'All Products')}">
             </h2>
 
             <!-- Filters and Sorting -->
-            <!-- Filters and Sorting -->
             <div class="d-flex mb-3 gap-3">
+
+                <!-- Clear Filter Button -->
+                <div class="d-flex align-items-center">
+                    <button class="btn p-2 text-secondary">Clear Filter</button>
+                    <div class="vr mx-3"></div>
+                </div>
 
                 <!-- Sort By Filter -->
                 <div class="dropdown">
