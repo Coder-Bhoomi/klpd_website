@@ -58,83 +58,24 @@
                 </div>
             </div>
 
-            <div id="product-1" class="card mb-4 p-3">
+            <div id="product-1" class="card mb-4 p-3" th:each="order : ${orderitems}">
                 <div class="row align-items-center d-flex">
-                    <div class="col-2">
-                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
+                    <div class="col-2"
+                        th:if="${order.product.images != null and not #lists.isEmpty(order.product.images)}">
+                        <img th:src="@{${order.product.images[0].imageUrl}}" alt="Product Image" class="img-fluid"
                             style="border-radius: 5px;">
                     </div>
                     <div class="col-7">
-                        <p class="text-light mb-2">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
+                        <p class="text-light mb-2" th:text="${order.product.prodName}">Kadhai - Cast Iron Blacksmith
+                            Hybrid Series</p>
                         <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
+                            <span class="text-danger" style="font-size: 1.2rem;">₹<span
+                                    th:text="${order.product.offerPrice}"></span></span>
                         </div>
                     </div>
                     <div class="col-3 text-end text-light">
-                        <p class="fw-bold">Delivered on Jan 21, 2023</p>
+                        <p class="fw-bold">Ordered on <span th:text="${order.order.orderDate}"></span></p>
                         <p style="font-size: 14px;">Your item has been delivered</p>
-                    </div>
-                </div>
-            </div>
-
-
-            <div id="product-2" class="card mb-4 p-3">
-                <div class="row align-items-center d-flex">
-                    <div class="col-2">
-                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
-                            style="border-radius: 5px;">
-                    </div>
-                    <div class="col-7">
-                        <p class="text-light mb-2">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
-                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
-                        </div>
-                    </div>
-                    <div class="col-3 text-end text-light">
-                        <p class="fw-bold">Delivered on Jan 21, 2023</p>
-                        <p style="font-size: 14px;">Your item has been delivered</p>
-                    </div>
-                </div>
-            </div>
-            <div id="product-3" class="card mb-4 p-3">
-                <div class="row align-items-center d-flex">
-                    <div class="col-2">
-                        <img src="images/deep fry pan.jpg" alt="Product Image" class="img-fluid"
-                            style="border-radius: 5px;">
-                    </div>
-                    <div class="col-7">
-                        <p class="text-light mb-2">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
-                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹699</span>
-                        </div>
-                    </div>
-                    <div class="col-3 text-end text-light">
-                        <p class="fw-bold">Delivered on Jan 21, 2023</p>
-                        <p style="font-size: 14px;">Your item has been delivered</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        </div>
-        </div>
-
-
-        <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" style="color:black;" id="confirmDeleteModalLabel">Confirm Remove</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" style="color:black;">
-                        Are you sure you want to remove this product?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button id="confirmDeleteBtn" type="button" class="btn btn-danger">Yes</button>
                     </div>
                 </div>
             </div>

@@ -4,7 +4,7 @@ public class OrderItemDto {
     private int orderItemId;
     private int productId;
     private int orderId;
-    private int prodQuantity;
+    private int prodQuantity; 
     public int getOrderItemId() {
         return orderItemId;
     }

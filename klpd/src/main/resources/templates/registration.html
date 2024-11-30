@@ -15,6 +15,9 @@
                 <form th:action="@{/submit}" th:object="${dto}" method="post">
                     <input type="hidden" name="actionType" value="login">
                     <h1>Login</h1>
+                    <div th:if="${msg}">
+                        <p th:text="${msg}" class="alert alert-success alert-dismissible"></p>
+                    </div>
                     <div class="input-box2">
                         <input type="email" placeholder="E-mail" th:field="${dto.email}" required>
                         <i class="fa-solid fa-envelope"></i>

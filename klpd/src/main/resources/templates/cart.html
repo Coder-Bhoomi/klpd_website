@@ -14,7 +14,7 @@
             <div id="cart-items">
                 <!-- Render Cart Items Dynamically -->
                 <div class="cart-item d-flex align-items-center" th:each="cartItem : ${cart}">
-                    
+                     
                     <div class="col-2">
                         <img th:src="@{${cartItem.product.images[0].imageUrl}}" alt="Product Image" class="img-fluid rounded">
                     </div>
@@ -70,7 +70,9 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons mt-4">
-                <button class="btn checkoutbutton d-block mx-auto p-2 w-100 mb-2" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Checkout</span></button>
+                <form th:action="@{/cart/checkout}" method="post">
+                <button type="submit" class="btn checkoutbutton d-block mx-auto p-2 w-100 mb-2" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Checkout</span></button>
+                </form>
                 <a href="/home" class="btn btn-outline-secondary d-block mx-auto p-2 w-100">Continue Shopping</a>
             </div>
         </div>

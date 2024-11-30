@@ -48,16 +48,13 @@
                     <div class="col-md-3" th:each="product : ${topProduct}">
                         <div class="product-card2 position-relative">
                             <!-- Heart Icon -->
-                            <!-- Hidden form that will be submitted when the icon is clicked -->
                             <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
                                 <input type="hidden" name="productId" th:value="${product.pid}" />
+                                <button
+                                    class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
+                                    style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                                </button>
                             </form>
-
-                            <!-- Icon with onclick to submit the form -->
-                            <i class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
-                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;"
-                                onclick="document.getElementById('wishlistForm').submit();">
-                            </i>
                             <a th:href="@{/product/{pid}(pid=${product.pid})}"
                                 style="text-decoration: none; color: inherit;">
                                 <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
@@ -137,9 +134,13 @@
                     <div class="col-md-3" th:each="product : ${newProduct}">
                         <div class="product-card2 position-relative">
                             <!-- Heart Icon -->
-                            <i class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
-                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
-                            </i>
+                            <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                                <input type="hidden" name="productId" th:value="${product.pid}" />
+                                <button
+                                    class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
+                                    style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                                </button>
+                            </form>
                             <a th:href="@{/product/{pid}(pid=${product.pid})}"
                                 style="text-decoration: none; color: inherit;">
                                 <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">

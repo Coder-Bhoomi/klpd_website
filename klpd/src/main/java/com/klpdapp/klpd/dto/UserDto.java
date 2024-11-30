@@ -5,6 +5,9 @@ import java.time.LocalDate;
 public class UserDto {
     private int userId;
     private String name;
+    private String firstName;
+    private String middleName;
+    private String lastName;
     private LocalDate dob;
     private String gender;
     private String email;
@@ -59,6 +62,24 @@ public class UserDto {
     }
     public void setStatus(String status) {
         this.status = status;
+    }
+    public String getFirstName() {
+        return firstName;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public String getMiddleName() {
+        return middleName;
+    }
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     

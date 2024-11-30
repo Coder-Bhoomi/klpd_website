@@ -43,7 +43,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                             <li th:each="category : ${categories}">
-                                <a class="dropdown-item" th:href="@{{id}(id=${category.categoryId})}"
+                                <a class="dropdown-item" th:href="@{/category/{id}(id=${category.categoryId})}"
                                     th:text="${category.categoryName}"></a>
                             </li>
                         </ul>
@@ -68,7 +68,7 @@
                 <a class="navbar-brand px-3" href="/wishlist">
                     <i class="fa-solid fa-heart" style="color: #ffff;"></i>
                 </a>
-                <a class="navbar-brand" href="/login">
+                <a class="navbar-brand" href="/profile">
                     <i class="fa-solid fa-user" style="color: #ffff;"></i>
                 </a>
             </div>

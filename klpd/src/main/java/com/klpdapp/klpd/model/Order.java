@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Table(name = "orders")
 public class Order {
 
-    @Id
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderId;
 

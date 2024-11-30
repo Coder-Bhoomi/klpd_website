@@ -12,28 +12,30 @@
         <div class="p-4 px-5 border rounded" style="background-color: #1f1f1f;">
 
             <h4 class="mb-4">My Wishlist</h4>
-            <div id="product-1" class="card mb-4 p-3">
-                <div class="row align-items-center d-flex" th:each="w : ${wishlist}">
+            <div id="product-1" class="card mb-4 p-3" th:each="w : ${wishlist}">
+                <div class="row align-items-center d-flex" >
                     <div class="col-2">
                         <div th:if="${w.product.images != null and not #lists.isEmpty(w.product.images)}">
-                            <img th:src="@{${w.product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"  style="border-radius: 5px;">
+                            <img th:src="@{${w.product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
+                                style="border-radius: 5px;">
                         </div>
-                       
+
                     </div>
                     <div class="col-8">
-                        <p class="text-light mb-1" th:text="${w.product.prodName}">Kadhai - Cast Iron Blacksmith Hybrid Series</p>
+                        <p class="text-light mb-1" th:text="${w.product.prodName}">Kadhai - Cast Iron Blacksmith Hybrid
+                            Series</p>
                         <div class="wishlist-rating">
                             ★★★★☆
                         </div>
                         <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;" th:text="${w.product.offerPrice}">₹699</span>
-                            <span class="text" style="color:#ccc;" th:text="${w.product.mrp}"><s>₹2,499</s></span>
-                            <span class="text-success" th:text="${w.product.percentage}">72% off</span>
+                            <span class="text-danger" style="font-size: 1.2rem;">₹<span th:text="${w.product.offerPrice}">699</span></span>
+                            <span class="text" style="color:#ccc;">₹<s  th:text="${w.product.mrp}">2,499</s></span>
+                            <span class="text-success"><span th:text="${w.product.percentage}">72</span>% off</span>
                         </div>
                     </div>
                     <div class="col-2 text-end">
-                        <button onclick="showDeleteModal(1)" class="btn btn-dark text-danger" data-bs-toggle="modal"
-                            data-bs-target="#confirmDeleteModal">
+                        <button data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                            th:data-bs-id="${w.wishlistId}" class="btn btn-dark text-danger">
                             <i class="bi bi-trash"></i>
                         </button>
                     </div>
@@ -41,32 +43,43 @@
             </div>
 
         </div>
-        
 
 
         <!-- Delete Confirmation Modal -->
         <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" style="color:black;" id="confirmDeleteModalLabel">Confirm Remove</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <form method="POST" action="/wishlist/delete">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" style="color:black;" id="confirmDeleteModalLabel">Confirm Remove
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="color:black;">
+                            Are you sure you want to remove this item from your wishlist?
+                            <!-- Hidden input to store the wishlist ID -->
+                            <input type="hidden" id="wishlistIdInput" name="wishlistId" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Yes</button>
+                        </div>
                     </div>
-                    <div class="modal-body" style="color:black;">
-                        Are you sure you want to remove this product?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button id="confirmDeleteBtn" type="button" class="btn btn-danger">Yes</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
 
-
         <script>
+            const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+            confirmDeleteModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget; // Button that triggered the modal
+                const wishlistId = button.getAttribute('data-bs-id'); // Extract wishlist ID
+                const wishlistIdInput = confirmDeleteModal.querySelector('#wishlistIdInput');
+                wishlistIdInput.value = wishlistId; // Set the hidden input value
+            });
+
             // Variable to store the ID of the product to delete
             let productIdToDelete = null;
 
@@ -94,7 +107,7 @@
             });
 
         </script>
-        
+
     </main>
 </body>
 

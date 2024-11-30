@@ -2,8 +2,10 @@ package com.klpdapp.klpd.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
+import com.klpdapp.klpd.Repository.OrderItemRepository;
+import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
@@ -31,16 +35,23 @@ import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
+import com.klpdapp.klpd.model.Order;
+import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
+import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.dto.AdminDto;
+import com.klpdapp.klpd.dto.OrderDTO;
+import com.klpdapp.klpd.dto.OrderItemDto;
 import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @Controller
 public class maincontroller {
@@ -66,11 +77,44 @@ public class maincontroller {
     @Autowired
     WishlistRepo wishlistRepo;
 
+    @Autowired
+    OrderRepository orderrepo;
+
+    @Autowired
+    OrderItemRepository orderitemrepo;
+
     @PersistenceContext
     private EntityManager EntityManager;
 
     private void addCategoriesToModel(Model model) {
         List<Category> categories = ctgRepo.findAll();
+        categories.sort(Comparator.comparing(Category::getCategoryName));
+
+        // Find and remove "Parts & Accessories" and "Others" from the list if they
+        // exist
+        Category partsAndAccessories = null;
+        Category others = null;
+
+        Iterator<Category> iterator = categories.iterator();
+        while (iterator.hasNext()) {
+            Category category = iterator.next();
+            if ("Parts & Accessories".equalsIgnoreCase(category.getCategoryName())) {
+                partsAndAccessories = category;
+                iterator.remove();
+            } else if ("Others".equalsIgnoreCase(category.getCategoryName())) {
+                others = category;
+                iterator.remove();
+            }
+        }
+
+        // Add "Parts & Accessories" and "Others" to the end of the list
+        if (partsAndAccessories != null) {
+            categories.add(partsAndAccessories);
+        }
+        if (others != null) {
+            categories.add(others);
+        }
+        // Add the modified categories list to the model
         model.addAttribute("categories", categories);
     }
 
@@ -267,7 +311,7 @@ public class maincontroller {
         return "category";
     }
 
-    @GetMapping("{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public String showCategory(@PathVariable String categoryId, Model model) {
         return "redirect:/products?categoryId=" + categoryId;
     }
@@ -286,16 +330,22 @@ public class maincontroller {
 
             List<String> sizes = pRepo.findDistinctSizesBySubcategoryId(prod.getSubcategory().getSubcategoryId());
 
-            /* Fetch products based on size
-            
-            if (selectedSize != null) {
-                prod = pRepo.findProductsBySizeAndSubcategory(prod.getSubcategory().getSubcategoryId(), selectedSize);
-            } else {
-                prod = pRepo.findBySubcategory_SubcategoryId(prod.getSubcategory().getSubcategoryId()); // All products for the
-                                                                                       // subcategory
-            }*/
+            /*
+             * Fetch products based on size
+             * 
+             * if (selectedSize != null) {
+             * prod =
+             * pRepo.findProductsBySizeAndSubcategory(prod.getSubcategory().getSubcategoryId
+             * (), selectedSize);
+             * } else {
+             * prod =
+             * pRepo.findBySubcategory_SubcategoryId(prod.getSubcategory().getSubcategoryId(
+             * )); // All products for the
+             * // subcategory
+             * }
+             */
             model.addAttribute("sizes", sizes);
-           
+
             model.addAttribute("relatedProducts", relatedProducts);
             model.addAttribute("categoryId", prod.getCategory().getCategoryId());
         }
@@ -307,7 +357,9 @@ public class maincontroller {
     @GetMapping("/cart")
     public String showCart(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
-            List<Cart> cartItems = cartRepository.findAll();
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartRepository.findByUser(user);
             float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
             float discount = 0.0f;
             float tax = subtotal * 0.10f;
@@ -344,6 +396,39 @@ public class maincontroller {
     public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
         cartRepository.deleteById(id);
         return "redirect:/cart";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String Checkout(HttpSession session, HttpServletResponse response) {
+        try {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            if (session.getAttribute("userid") != null) {
+                Integer userId = (Integer) session.getAttribute("userid");
+                User user = uRepo.findById(userId).orElse(null);
+                Order order = new Order();
+                List<Cart> carts = cartRepository.findByUser(user);
+                float subtotal = carts.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
+                float discount = 0.0f;
+                float tax = subtotal * 0.10f;
+                int total = (int) (subtotal + tax - discount);
+                order.setUser(user);
+                order.setTotalAmt(total);
+                order.setOrderDate(LocalDate.now());
+                orderrepo.save(order);
+                for (Cart cart : carts) {
+                    OrderItem orderitem = new OrderItem();
+                    orderitem.setOrder(order);
+                    orderitem.setProdQuantity(cart.getQuantity());
+                    orderitem.setProduct(cart.getProduct());
+                    orderitemrepo.save(orderitem);
+                }
+                cartRepository.deleteByUser(user);
+                return "redirect:/";
+            }
+            return "redirect:/";
+        } catch (Exception e) {
+            return "redirect:/";
+        }
     }
 
     @PostMapping("/cart/add")
@@ -385,15 +470,15 @@ public class maincontroller {
         return "redirect:/cart";
 
     }
-    
+
     @GetMapping("/wishlist")
     public String showwishlist(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-
             model.addAttribute("wishlist", wishlistItems);
+            model.addAttribute("user", user);
             addCategoriesToModel(model);
             return "wishlist";
         } else {
@@ -401,9 +486,9 @@ public class maincontroller {
         }
     }
 
-    @GetMapping({ "/wishlist/delete" })
-    public String DeletewishlistItem(@RequestParam int id, RedirectAttributes attrib) {
-        wishlistRepo.deleteById(id);
+    @PostMapping({ "/wishlist/delete" })
+    public String DeletewishlistItem(@RequestParam("wishlistId") int wishlistId, RedirectAttributes attrib) {
+        wishlistRepo.deleteById(wishlistId);
         return "redirect:/wishlist";
     }
 
@@ -418,15 +503,13 @@ public class maincontroller {
             if (product != null) {
                 Wishlist existingwishlistItem = wishlistRepo.findByProductAndUser(product, user).orElse(null);
 
-                if (existingwishlistItem != null) {
-                    // Update quantity and product total
-                    
-                } else {
+                if (existingwishlistItem == null) {
                     // Create a new wishlist item
                     Wishlist wishlist = new Wishlist();
                     wishlist.setUser(user);
                     wishlist.setProduct(product);
                     wishlistRepo.save(wishlist);
+                    System.out.println("added");
                 }
 
                 model.addAttribute("message", "Product added to wishlist!");
@@ -440,7 +523,6 @@ public class maincontroller {
         return "redirect:/wishlist";
 
     }
-
 
     @GetMapping({ "/login" })
     public String ShowLogin(Model model) {
@@ -470,13 +552,18 @@ public class maincontroller {
     public String validateLogin(@ModelAttribute UserDto udto, HttpSession session, RedirectAttributes attrib) {
         try {
             User us = uRepo.findByEmail(udto.getEmail());
+            if (us == null) {
+                attrib.addFlashAttribute("msg", "User doesn't exist!!");
+                return "redirect:/login";
+            }
             if (us.getPassword().equals(udto.getPassword())) {
+                attrib.addFlashAttribute("msg", "Valid User");
                 session.setAttribute("userid", us.getUserId());
                 return "redirect:/profile";
             } else {
                 attrib.addFlashAttribute("msg", "Invalid User");
+                return "redirect:/profile";
             }
-            return "redirect:/profile";
         } catch (EntityNotFoundException ex) {
             attrib.addFlashAttribute("msg", "User doesn't exist!!");
             return "redirect:/login";
@@ -508,43 +595,93 @@ public class maincontroller {
             User user = uRepo.findById(userId).orElse(null);
             model.addAttribute("user", user);
             addCategoriesToModel(model);
+            if (user != null) {
+                // Parse the name into firstName, middleName, and lastName
+                String[] nameParts = splitName(user.getName());
+                UserDto userDto = new UserDto();
+                userDto.setUserId(user.getUserId());
+                userDto.setDob(user.getDob());
+                userDto.setGender(user.getGender());
+                userDto.setEmail(user.getEmail());
+                userDto.setMobile(user.getMobile());
+                userDto.setStatus(user.getStatus());
+                userDto.setPassword(user.getPassword());
+                // Set parsed name fields
+                userDto.setFirstName(nameParts[0]);
+                userDto.setMiddleName(nameParts[1]);
+                userDto.setLastName(nameParts[2]);
+
+                // Add UserDto to the model
+                model.addAttribute("userdto", userDto);
+            }
             return "profile";
         } else {
             return "redirect:/login";
         }
     }
 
+    private String[] splitName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) {
+            return new String[] { "", "", "" };
+        }
+
+        String[] parts = fullName.trim().split("\\s+");
+        String firstName = parts.length > 0 ? parts[0] : "";
+        String middleName = "";
+        String lastName = "";
+
+        if (parts.length == 2) {
+            lastName = parts[1];
+        } else if (parts.length > 2) {
+            lastName = parts[parts.length - 1];
+            middleName = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length - 1));
+        }
+
+        return new String[] { firstName, middleName, lastName };
+    }
+
     @PostMapping("/profile/update")
-    public String updateProfile(@RequestParam("firstName") String firstName,
-            @RequestParam("middleName") String middleName,
-            @RequestParam("lastName") String lastName,
-            @RequestParam("dob") LocalDate dob,
-            @RequestParam("gender") String gender,
-            @RequestParam("email") String email,
-            @RequestParam("contactNumber") long contactNumber,
-            HttpSession session) {
+    public String updateProfile(@ModelAttribute UserDto udto, HttpSession session) {
+        System.out.println("Received UserDto: " + udto);
 
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User existingUser = uRepo.findById(userId).orElse(null);
-
+            System.out.println("Existing user before update: " + existingUser);
+            System.out.println("Gender: " + udto.getGender());
+            System.out.println("Dob: " + udto.getDob());
+            System.out.println("Number: " + udto.getMobile());
             if (existingUser != null) {
-                String fullName = firstName + (middleName.isEmpty() ? "" : " " + middleName) + " " + lastName;
+                String firstName = udto.getFirstName() != null ? udto.getFirstName() : "";
+                String middleName = udto.getMiddleName() != null ? udto.getMiddleName() : "";
+                String lastName = udto.getLastName() != null ? udto.getLastName() : "";
+
+                String fullName = firstName;
+                if (!middleName.isEmpty()) {
+                    fullName += " " + middleName;
+                }
+                if (!lastName.isEmpty()) {
+                    fullName += " " + lastName;
+                }
 
                 existingUser.setName(fullName);
-                existingUser.setDob(dob);
-                existingUser.setGender(gender);
-                existingUser.setEmail(email);
-                existingUser.setMobile(contactNumber);
+                existingUser.setEmail(
+                        (udto.getEmail() != null && !udto.getEmail().isEmpty())
+                                ? udto.getEmail()
+                                : existingUser.getEmail());
+                existingUser.setGender(udto.getGender());
+                existingUser.setDob(udto.getDob());
+                existingUser.setMobile(udto.getMobile());
 
                 uRepo.save(existingUser);
 
                 return "redirect:/profile";
             } else {
-
+                // If the user does not exist, redirect to login
                 return "redirect:/login";
             }
         } else {
+            // If no session is active, redirect to login
             return "redirect:/login";
         }
     }
@@ -554,6 +691,11 @@ public class maincontroller {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);
+            if (user != null) {
+                AddressDto aDto = new AddressDto();
+                aDto.setUserId(user.getUserId());
+                model.addAttribute("adto", aDto);
+            }
             model.addAttribute("user", user);
             addCategoriesToModel(model);
             return "address";
@@ -563,21 +705,67 @@ public class maincontroller {
     }
 
     @GetMapping("/coupon")
-    public String ShowCoupon(Model model) {
+    public String ShowCoupon(Model model, HttpSession session) {
         addCategoriesToModel(model);
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+        model.addAttribute("user", user);
         return "coupon";
     }
 
     @GetMapping("/order")
-    public String ShowOrder(Model model) {
+    public String ShowOrder(Model model, HttpSession session) {
         addCategoriesToModel(model);
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+        List<OrderItem> orderItems = orderitemrepo.findByOrder_User(user);
+        model.addAttribute("orderitems", orderItems);
+        model.addAttribute("user", user);
         return "order";
     }
 
     @GetMapping("/notification")
-    public String ShowNotification(Model model) {
+    public String ShowNotification(Model model, HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+        model.addAttribute("user", user);
         addCategoriesToModel(model);
         return "notification";
+    }
+
+    @GetMapping({ "/logout" })
+    public String Logout(HttpSession session, Model model) {
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+        model.addAttribute("user", user);
+        session.invalidate();
+        return "redirect:/login";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/login";
+    }
+
+    @PostMapping("/profile/deactivate")
+    public String deactivateAccount(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+        user.setStatus("Inactive");
+        uRepo.save(user);
+        return "redirect:/profile";
+    }
+
+    @Transactional
+    @PostMapping("/profile/delete")
+    public String deleteAccount(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userid");
+        wishlistRepo.deleteByUser_UserId(userId);
+        uRepo.deleteById(userId);
+        return "redirect:/login";
     }
 
     @GetMapping({ "/admin" })
@@ -587,7 +775,7 @@ public class maincontroller {
         addCategoriesToModel(model);
         return "/admin/login";
     }
-    
+
     @PostMapping("/admin")
     public String validateAdmLogin(@ModelAttribute AdminDto adto, HttpSession session, RedirectAttributes attrib) {
         try {

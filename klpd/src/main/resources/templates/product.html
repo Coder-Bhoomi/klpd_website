@@ -14,8 +14,13 @@
                 <!-- Image Section -->
                 <div class="col-md-6 d-flex flex-column align-items-center position-relative">
                     <!-- Heart Icon -->
-                    <i class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center" 
-                    style="top: 10px; right: 120px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                    <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${product.pid}" />
+                        <button
+                            class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center"
+                            style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s;">
+                        </button>
+                    </form>
                 </i> 
                     <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
                         class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
