@@ -244,13 +244,17 @@
                         </a>
                     </div>
 
-                    <form th:action="@{/cart/add}" method="post">
-                        <input type="hidden" name="productId" th:value="${product.pid}" />
-                        <input type="hidden" name="quantity" value="1" min="1" />
-                        <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                            style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
-                                Cart</span></button>
-                    </form>
+                    <div th:if="${!isProductInCart}">
+                        <!-- Form for adding the product to the cart -->
+                        <form th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <script>
