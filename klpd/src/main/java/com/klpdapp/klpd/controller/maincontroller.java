@@ -448,6 +448,7 @@ public class maincontroller {
             return "redirect:/login";
         }
     }
+    
 
     @PostMapping("/cart/update")
     public String updateCart(@RequestParam Integer cartId, @RequestParam Integer quantity, Model model) {

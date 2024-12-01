@@ -118,10 +118,15 @@ public class AdminController {
 		model.addAttribute("size", s);
 		return "admin/size";
 	}
+	
 
 	@PostMapping("/size/update")
-	public String updateSize(@ModelAttribute Size size) {
-		srepo.save(size); // Save updated size
+	public String updateSize(@RequestParam String subcategoryID, @ModelAttribute Size size) {
+		SubCategory subCategory = sCatRepo.findById(subcategoryID).orElse(null);
+		size.setSubcategory(subCategory);
+		System.out.println(size.getSubcategory());
+		srepo.save(size);
+
 		return "redirect:/admin/size";
 	}
 
@@ -134,8 +139,8 @@ public class AdminController {
 
 	@GetMapping({ "/coupon" })
 	public String ShowCoupon(Model model) {
-		List<Coupon> coupon= cRepo.findAll();
-        model.addAttribute("coupon", coupon);
+		List<Coupon> coupon = cRepo.findAll();
+		model.addAttribute("coupon", coupon);
 		return "admin/coupon";
 	}
 
@@ -172,7 +177,7 @@ public class AdminController {
 	public String addSize(@RequestParam("size") String size,
 			@RequestParam("sizeSubCategoryId") SubCategory sizeSubCategoryId) {
 		Size siz = new Size();
-		siz.setSize(size);
+		siz.setUnit(size);
 		siz.setSubcategory(sizeSubCategoryId);
 		srepo.save(siz);
 		return "redirect:/admin/product";
