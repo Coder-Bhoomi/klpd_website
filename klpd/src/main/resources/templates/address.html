@@ -25,8 +25,13 @@
                     <p th:text="${add.address}"></p>
                     <p>Phone: <span th:text="${add.number}"></span></p>
                     <p>Pincode: <span th:text="${add.pincode}"></span></p>
-                    <button class="btn btn-sm btn-primary me-2">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
+                    <div class="mb-2 d-flex">
+                        <button class="btn btn-sm btn-primary me-2 d-flex">Edit</button>
+                        <form method="post" th:action="@{/address/delete}">
+                            <input type="hidden" name="addressid" th:value="${add.addressId}">
+                            <button type="submit" class="btn btn-sm btn-danger d-flex">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
