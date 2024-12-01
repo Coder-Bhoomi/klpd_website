@@ -189,7 +189,6 @@ public class maincontroller {
         model.addAttribute("guarantees", sortedGuarantees);
         model.addAttribute("brands", sortedBrand);
 
-
     }
 
     private double calculateDiscount(double mrp, double offerPrice) {
@@ -369,7 +368,6 @@ public class maincontroller {
         Category category = ctgRepo.findById(categoryId).orElse(null);
         model.addAttribute("category", category);
         model.addAttribute("query", query);
-
 
         Products = p;
         addFilter(model);
@@ -771,7 +769,7 @@ public class maincontroller {
                 model.addAttribute("aDto", aDto);
             }
             List<Address> address = addressrepo.findByUser(user);
-            model.addAttribute("address",address);
+            model.addAttribute("address", address);
             model.addAttribute("user", user);
             addCategoriesToModel(model);
             return "address";
@@ -781,38 +779,39 @@ public class maincontroller {
     }
 
     @PostMapping("/address/add")
-public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto) {
-    if (session.getAttribute("userid") != null) {
-        Integer userId = (Integer) session.getAttribute("userid");
-        User user = uRepo.findById(userId).orElse(null);
+    public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto, RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            User user = uRepo.findById(userId).orElse(null);
 
-        if (user != null) {
+            if (user != null) {
 
-            Optional<Pincode> pincode = pincoderepo.findByPincode((Integer) aDto.getPincode());
-            if (pincode != null) {
-                // Pincode exists, proceed to save the address
-                Address a = new Address();
-                a.setUser(user);
-                a.setAddress(aDto.getAddress());
-                a.setName(aDto.getName());
-                a.setPincode(aDto.getPincode());
-                
-                addressrepo.save(a);
-                return "redirect:/address";
-            } else {
-                model.addAttribute("error", "Pincode not found. Please enter a valid pincode.");
-                return "redirect:/address"; 
+                Optional<Pincode> pincode = pincoderepo.findByPincode((Integer) aDto.getPincode());
+                if (pincode.isPresent()) {
+                    // Pincode exists, proceed to save the address
+                    Address a = new Address();
+                    a.setUser(user);
+                    a.setAddress(aDto.getAddress());
+                    a.setName(aDto.getName());
+                    a.setPincode(aDto.getPincode());
+
+                    addressrepo.save(a);
+                    return "redirect:/address";
+                } else {
+                    redirectAttributes.addFlashAttribute("error", "Pincode not found. Please enter a valid pincode.");
+                    return "redirect:/address";
+                }
             }
         }
+        return "redirect:/login";
     }
-    return "redirect:/login";
-}
+
     @GetMapping("/coupon")
     public String ShowCoupon(Model model, HttpSession session) {
         addCategoriesToModel(model);
         Integer userId = (Integer) session.getAttribute("userid");
         User user = uRepo.findById(userId).orElse(null);
-        List<Coupon> coupon= couponrepo.findAll();
+        List<Coupon> coupon = couponrepo.findAll();
         model.addAttribute("coupon", coupon);
         model.addAttribute("user", user);
         return "coupon";
