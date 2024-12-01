@@ -58,9 +58,10 @@
 			</div>
 		</div>
 		<script>
+			// For edit button
 			document.querySelectorAll('.edit-btn').forEach((editBtn) => {
 				editBtn.addEventListener('click', (event) => {
-					event.preventDefault();
+					event.preventDefault(); // Prevent form submission
 					const row = editBtn.closest('tr');
 
 					row.querySelector('.category-name').classList.add('d-none');
@@ -68,10 +69,30 @@
 
 					editBtn.classList.add('d-none');
 					row.querySelector('.save-btn').classList.remove('d-none');
-					alert('Row changes saved successfully!');
-
 				});
 			});
+
+			// For save button
+			document.querySelectorAll('.save-btn').forEach((saveBtn) => {
+				saveBtn.addEventListener('click', (event) => {
+					event.preventDefault(); // Prevent default form submission
+
+					const row = saveBtn.closest('tr');
+
+					const inputField = row.querySelector('input[name="categoryName"]');
+					const updatedValue = inputField.value;
+
+					row.querySelector('.category-name').textContent = updatedValue;
+					row.querySelector('.category-name').classList.remove('d-none');
+					inputField.classList.add('d-none');
+
+					saveBtn.classList.add('d-none');
+					row.querySelector('.edit-btn').classList.remove('d-none');
+
+					alert('Changes saved successfully!');
+				});
+			});
+
 		</script>
 	</main>
 </body>
