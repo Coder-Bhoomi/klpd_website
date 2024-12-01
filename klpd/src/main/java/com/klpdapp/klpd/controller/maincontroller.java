@@ -808,6 +808,13 @@ public class maincontroller {
         return "redirect:/login";
     }
 
+    @PostMapping("/address/delete")
+    public String AddressDelete(@RequestParam("addressid") int addressId, RedirectAttributes attrib) {
+        addressrepo.deleteById(addressId);
+        return "redirect:/address";
+
+    }
+
     @GetMapping("/coupon")
     public String ShowCoupon(Model model, HttpSession session) {
         addCategoriesToModel(model);
