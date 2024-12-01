@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,21 +24,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.klpdapp.klpd.Repository.AddressRepo;
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
+import com.klpdapp.klpd.Repository.PincodeRepo;
+import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
+import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
 import com.klpdapp.klpd.dto.AddressDto;
@@ -81,8 +88,19 @@ public class maincontroller {
     @Autowired
     OrderItemRepository orderitemrepo;
 
+    @Autowired
+    PincodeRepo pincoderepo;
+
+    @Autowired
+    AddressRepo addressrepo;
+
+    @Autowired
+    CouponRepo couponrepo;
+
     @PersistenceContext
     private EntityManager EntityManager;
+
+    private static List<Product> Products;
 
     private void addCategoriesToModel(Model model) {
         List<Category> categories = ctgRepo.findAll();
@@ -116,6 +134,64 @@ public class maincontroller {
         model.addAttribute("categories", categories);
     }
 
+    private static void addFilter(Model model) {
+        Set<String> colors = new HashSet<>();
+        Set<String> diameters = new HashSet<>();
+        Set<String> thicknesses = new HashSet<>();
+        Set<String> capacities = new HashSet<>();
+        Set<String> guarantees = new HashSet<>();
+        Set<String> brand = new HashSet<>();
+
+        for (Product product : Products) {
+            if (product.getColor() != null) {
+                colors.add(product.getColor().replace("-", "")); // Remove hyphen from color
+            }
+            if (product.getDiameter() != null) {
+                diameters.add(product.getDiameter().replace("-", "")); // Remove hyphen from diameter
+            }
+            if (product.getThickness() != null) {
+                thicknesses.add(product.getThickness().replace("-", "")); // Remove hyphen from thickness
+            }
+            if (product.getCapacity() != null) {
+                capacities.add(product.getCapacity().replace("-", "")); // Remove hyphen from capacity
+            }
+            if (product.getGuarantee() != null) {
+                guarantees.add(product.getGuarantee().replace("-", "")); // Remove hyphen from guarantee
+            }
+            if (product.getBrand() != null) {
+                brand.add(product.getBrand().replace("-", "")); // Remove hyphen from guarantee
+            }
+        }
+
+        // Sort the filter sets by converting them to lists
+        List<String> sortedColors = new ArrayList<>(colors);
+        sortedColors.sort(String::compareToIgnoreCase); // Sort alphabetically (case-insensitive)
+
+        List<String> sortedDiameters = new ArrayList<>(diameters);
+        sortedDiameters.sort(String::compareToIgnoreCase);
+
+        List<String> sortedThicknesses = new ArrayList<>(thicknesses);
+        sortedThicknesses.sort(String::compareToIgnoreCase);
+
+        List<String> sortedCapacities = new ArrayList<>(capacities);
+        sortedCapacities.sort(String::compareToIgnoreCase);
+
+        List<String> sortedGuarantees = new ArrayList<>(guarantees);
+        sortedGuarantees.sort(String::compareToIgnoreCase);
+        List<String> sortedBrand = new ArrayList<>(brand);
+        sortedBrand.sort(String::compareToIgnoreCase);
+
+        // Add data to the model for rendering
+        model.addAttribute("colors", sortedColors);
+        model.addAttribute("diameters", sortedDiameters);
+        model.addAttribute("thicknesses", sortedThicknesses);
+        model.addAttribute("capacities", sortedCapacities);
+        model.addAttribute("guarantees", sortedGuarantees);
+        model.addAttribute("brands", sortedBrand);
+
+
+    }
+
     private double calculateDiscount(double mrp, double offerPrice) {
         if (mrp > 0 && offerPrice > 0) {
             return ((mrp - offerPrice) / mrp) * 100;
@@ -133,27 +209,9 @@ public class maincontroller {
         return "index";
     }
 
-    @GetMapping("/products")
-    public String listProducts(@RequestParam(required = false) String query,
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String color,
-            @RequestParam(required = false) String categoryId,
-            @RequestParam(required = false) Integer minDiscount,
-            @RequestParam(required = false) Integer maxDiscount,
-            @RequestParam(required = false) String diameter,
-            @RequestParam(required = false) String thickness,
-            @RequestParam(required = false) String capacity,
-            @RequestParam(required = false) String guarantee,
-            Model model) {
-
-        List<Product> Products;
-
-        if (categoryId != null && !categoryId.isEmpty()) {
-            Products = pRepo.findByCategory_CategoryId(categoryId);
-            Category category = ctgRepo.findById(categoryId).orElse(null);
-            model.addAttribute("category", category);
-
-        } else if (query != null && !query.isEmpty()) {
+    @GetMapping("/search")
+    public String search(@RequestParam(required = false) String query, Model model) {
+        if (query != null && !query.isEmpty()) {
             try {
                 Search.session(EntityManager.unwrap(Session.class))
                         .massIndexer()
@@ -187,10 +245,35 @@ public class maincontroller {
                         .stream()
                         .distinct() // Ensures that only unique products are returned
                         .collect(Collectors.toList());
+                model.addAttribute("products", Products);
+                addFilter(model);
             }
         } else {
-            Products = pRepo.findAll();
+            List<Product> Products = pRepo.findAll();
+            model.addAttribute("products", Products);
+            addFilter(model);
+
         }
+        model.addAttribute("query", query);
+        addCategoriesToModel(model);
+        return "category";
+    }
+
+    @GetMapping("/products")
+    public String listProducts(@RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) Integer minDiscount,
+            @RequestParam(required = false) Integer maxDiscount,
+            @RequestParam(required = false) String diameter,
+            @RequestParam(required = false) String thickness,
+            @RequestParam(required = false) String capacity,
+            @RequestParam(required = false) String guarantee,
+            @RequestParam(required = false) String brand,
+            Model model) {
+
+        List<Product> p = Products;
 
         // Sorting
         if ("priceAsc".equals(sortBy)) {
@@ -268,42 +351,28 @@ public class maincontroller {
             }
             Products = guaranteeFiltered;
         }
-        Set<String> colors = new HashSet<>();
-        Set<String> diameters = new HashSet<>();
-        Set<String> thicknesses = new HashSet<>();
-        Set<String> capacities = new HashSet<>();
-        Set<String> guarantees = new HashSet<>();
-
-        for (Product Product : Products) {
-            if (Product.getColor() != null) {
-                colors.add(Product.getColor());
+        if (brand != null && !brand.isEmpty()) {
+            List<Product> brandFiltered = new ArrayList<>();
+            for (Product Product : Products) {
+                if (Product.getBrand() != null
+                        && Product.getBrand().equalsIgnoreCase(brand)) {
+                    brandFiltered.add(Product);
+                }
             }
-            if (Product.getDiameter() != null) {
-                diameters.add(Product.getDiameter());
-            }
-            if (Product.getThickness() != null) {
-                thicknesses.add(Product.getThickness());
-            }
-            if (Product.getCapacity() != null) {
-                capacities.add(Product.getCapacity());
-            }
-            if (Product.getGuarantee() != null) {
-                guarantees.add(Product.getGuarantee());
-            }
+            Products = brandFiltered;
         }
-
         // Add data to the model for rendering
         model.addAttribute("products", Products);
-        model.addAttribute("query", query);
         model.addAttribute("sortBy", sortBy);
-        model.addAttribute("colors", colors);
-        model.addAttribute("diameters", diameters);
-        model.addAttribute("thicknesses", thicknesses);
-        model.addAttribute("capacities", capacities);
-        model.addAttribute("guarantees", guarantees);
         model.addAttribute("minDiscount", minDiscount);
         model.addAttribute("maxDiscount", maxDiscount);
+        Category category = ctgRepo.findById(categoryId).orElse(null);
+        model.addAttribute("category", category);
+        model.addAttribute("query", query);
 
+
+        Products = p;
+        addFilter(model);
         addCategoriesToModel(model);
 
         return "category";
@@ -311,7 +380,15 @@ public class maincontroller {
 
     @GetMapping("/category/{categoryId}")
     public String showCategory(@PathVariable String categoryId, Model model) {
-        return "redirect:/products?categoryId=" + categoryId;
+        if (categoryId != null && !categoryId.isEmpty()) {
+            Products = pRepo.findByCategory_CategoryId(categoryId);
+            Category category = ctgRepo.findById(categoryId).orElse(null);
+            model.addAttribute("category", category);
+            model.addAttribute("products", Products);
+            addCategoriesToModel(model);
+            addFilter(model);
+        }
+        return "category";
     }
 
     @GetMapping("/product/{pid}")
@@ -691,8 +768,10 @@ public class maincontroller {
             if (user != null) {
                 AddressDto aDto = new AddressDto();
                 aDto.setUserId(user.getUserId());
-                model.addAttribute("adto", aDto);
+                model.addAttribute("aDto", aDto);
             }
+            List<Address> address = addressrepo.findByUser(user);
+            model.addAttribute("address",address);
             model.addAttribute("user", user);
             addCategoriesToModel(model);
             return "address";
@@ -701,11 +780,40 @@ public class maincontroller {
         }
     }
 
+    @PostMapping("/address/add")
+public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto) {
+    if (session.getAttribute("userid") != null) {
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+
+        if (user != null) {
+
+            Optional<Pincode> pincode = pincoderepo.findByPincode((Integer) aDto.getPincode());
+            if (pincode != null) {
+                // Pincode exists, proceed to save the address
+                Address a = new Address();
+                a.setUser(user);
+                a.setAddress(aDto.getAddress());
+                a.setName(aDto.getName());
+                a.setPincode(aDto.getPincode());
+                
+                addressrepo.save(a);
+                return "redirect:/address";
+            } else {
+                model.addAttribute("error", "Pincode not found. Please enter a valid pincode.");
+                return "redirect:/address"; 
+            }
+        }
+    }
+    return "redirect:/login";
+}
     @GetMapping("/coupon")
     public String ShowCoupon(Model model, HttpSession session) {
         addCategoriesToModel(model);
         Integer userId = (Integer) session.getAttribute("userid");
         User user = uRepo.findById(userId).orElse(null);
+        List<Coupon> coupon= couponrepo.findAll();
+        model.addAttribute("coupon", coupon);
         model.addAttribute("user", user);
         return "coupon";
     }

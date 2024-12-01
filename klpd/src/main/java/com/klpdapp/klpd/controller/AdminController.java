@@ -134,7 +134,8 @@ public class AdminController {
 
 	@GetMapping({ "/coupon" })
 	public String ShowCoupon(Model model) {
-
+		List<Coupon> coupon= cRepo.findAll();
+        model.addAttribute("coupon", coupon);
 		return "admin/coupon";
 	}
 

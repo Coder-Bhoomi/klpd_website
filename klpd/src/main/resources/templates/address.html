@@ -9,63 +9,78 @@
 
     <!-- Main Content -->
     <main>
-                <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
-                <h4 class="mb-4">Manage Addresses</h4>
+        <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
+            <h4 class="mb-4">Manage Addresses</h4>
 
-                <!-- Add Address Button -->
-                <div id="addAddressSection" class="add-address-card">
+            <!-- Add Address Button -->
+            <div id="addAddressSection" class="add-address-card">
 
-                    <h5><i class="bi bi-plus-circle"></i> Add New Address</h5>
+                <h5><i class="bi bi-plus-circle"></i> Add New Address</h5>
+            </div>
+
+            <!-- Address List Section -->
+            <div id="addressesContainer" th:each="add : ${address}">
+                <div class="address-card">
+                    <h5 th:text="${add.name}"></h5>
+                    <p th:text="${add.address}"></p>
+                    <p>Phone: <span th:text="${add.number}"></span></p>
+                    <p>Pincode: <span th:text="${add.pincode}"></span></p>
+                    <button class="btn btn-sm btn-primary me-2">Edit</button>
+                    <button class="btn btn-sm btn-danger">Delete</button>
                 </div>
+            </div>
 
-                <!-- Address List Section -->
-                <div id="addressesContainer"></div>
-
-                <!-- Modal for Adding/Editing Address -->
-                <div class="modal fade bg-dark" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content" style="background-color: #1f1f1f;">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-light" id="addressModalLabel">Add Address</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="addressForm">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label text-light">Name</label>
-                                        <input type="text" class="form-control bg-dark text-light" id="name"
-                                            placeholder="Enter Name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label text-light">Contact</label>
-                                        <input type="text" class="form-control bg-dark text-light" id="phone"
-                                            placeholder="Enter Contact Number" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="address" class="form-label text-light">Address</label>
-                                        <textarea class="form-control bg-dark text-light" id="address"
-                                            placeholder="Enter your Address" rows="3" required></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="pincode" class="form-label text-light">Pincode</label>
-                                        <input type="text" class="form-control bg-dark text-light" id="pincode"
-                                            placeholder="Enter Pincode" required>
-                                    </div>
-                                    <input type="hidden" id="editIndex" value="-1">
-                                    <button type="submit" class="btn btn-primary w-100">Save Address</button>
-                                </form>
-                            </div>
+            <!-- Modal for Adding/Editing Address -->
+            <div class="modal fade bg-dark" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" style="background-color: #1f1f1f;">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-light" id="addressModalLabel">Add Address</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addressForm" method="post" th:object="${aDto}" th:action="@{/address/add}">
+                                <div th:if="${error}" id="error-message" th:text="${error}" style="display:none;"></div>
+                                <div class="mb-3">
+                                    <label for="name" class="form-label text-light">Name</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="name"
+                                        placeholder="Enter Name" th:field="*{name}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label text-light">Contact</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="phone"
+                                        placeholder="Enter Contact Number" th:field="*{number}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label text-light">Address</label>
+                                    <textarea class="form-control bg-dark text-light" id="address"
+                                        placeholder="Enter your Address" rows="3" th:field="*{address}"
+                                        required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="pincode" class="form-label text-light">Pincode</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="pincode"
+                                        placeholder="Enter Pincode" th:field="*{pincode}" required>
+                                </div>
+                                <input type="hidden" id="editIndex" value="-1">
+                                <button type="submit" class="btn btn-primary w-100">Save Address</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
+
+
+
+        </div>
         </div>
         <script>
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage && errorMessage.textContent.trim() !== "") {
+                // Show alert with the error message
+                alert(errorMessage.textContent);
+            }
             // Address management script
             let addressList = [];
             let editIndex = -1;
@@ -86,7 +101,6 @@
 
             // Handle form submission
             document.getElementById('addressForm').addEventListener('submit', function (e) {
-                e.preventDefault();
 
                 const name = document.getElementById('name').value;
                 const phone = document.getElementById('phone').value;

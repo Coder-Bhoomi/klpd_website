@@ -13,90 +13,20 @@
 
       <!-- Page Heading -->
       <h4 class="mb-4">Available Coupons</h4>
-
-      <!-- Coupon Item -->
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <!-- Coupon Title -->
-            <div>
-              <h5 class="card-title mb-1">₹75 off on next 4 Orders</h5>
-              <p class="card-text small text-light">above ₹799 (Valid till: 11:59 PM, 31 Jan)</p>
-            </div>
-            <!-- Coupon Validity -->
-            <div>
-              <p class="mb-1 text-light">Valid till 31 Jan, 2025</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Coupon Item -->
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <!-- Coupon Title -->
-            <div>
-              <h5 class="card-title mb-1">Extra 15% off on Pans</h5>
-              <p class="card-text small text-light">Extra 15% off on Pans (Valid till: 11:59 PM, 30 Nov)</p>
-            </div>
-            <!-- Coupon Validity -->
-            <div>
-              <p class="mb-1 text-light">Valid till 30 Nov, 2024</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Coupon Item -->
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <!-- Coupon Title -->
-            <div>
-              <h5 class="card-title mb-1">Extra Off On Pressure Cooker</h5>
-              <p class="card-text small text-light">Extra 20% Off on Pressure Cooker (Valid till: 11:59 PM, 27 Nov)</p>
-            </div>
-            <!-- Coupon Validity -->
-            <div>
-              <p class="mb-1 text-light">Valid till 27 Nov, 2024</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- Coupon Item -->
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <!-- Coupon Title -->
-            <div>
-              <h5 class="card-title mb-1">Extra 20% Off on Tawa</h5>
-              <p class="card-text small text-light">above ₹799 (Valid till: 11:59 PM, 31 Jan)</p>
-            </div>
-            <!-- Coupon Validity -->
-            <div>
-              <p class="mb-1 text-light">Valid till 31 Jan, 2025</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Coupon Item -->
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <!-- Coupon Title -->
-            <div>
-              <h5 class="card-title mb-1">Extra Off on Kadhai</h5>
-              <p class="card-text small text-light">Extra 15% Off on Kadhai (Valid till: 11:59 PM, 30 Nov)</p>
-            </div>
-            <!-- Coupon Validity -->
-            <div>
-              <p class="mb-1 text-light">Valid till 30 Nov, 2024</p>
+      <div th:each="coupon : ${coupon}">
+        <!-- Coupon Item -->
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <!-- Coupon Title -->
+              <div>
+                <h5 class="card-title mb-1" th:text="${coupon.couponName}">₹75 off on next 4 Orders</h5>
+                <p class="card-text small text-light"><span th:text="${coupon.discountRate}"></span>% Off  Upto Rs <span th:text="${coupon.uptoAmount}"></span><br/><span th:text="${coupon.description}"></span></p>
+              </div>
+              <!-- Coupon Validity -->
+              <div>
+                <p class="mb-1 text-light">Valid till <span th:text="${coupon.expireDate}"></span></p>
+              </div>
             </div>
           </div>
         </div>

@@ -4,6 +4,10 @@ package com.klpdapp.klpd.dto;
 public class AddressDto {
     private int userId;
 
+    private String name;
+
+    private String number;
+    
     private String address;
    
     private String city;
@@ -70,6 +74,22 @@ public class AddressDto {
 
     public void setPincode(int pincode) {
         this.pincode = pincode;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
 }

@@ -13,20 +13,25 @@ public class Address {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    @Column(nullable = false,length = 250)
+    private String name;
+
+    @Column( length = 10)
+    private String number;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String address;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String city;
 
-    @Column(nullable = false, length = 60)
+    @Column( length = 60)
     private String state;
 
     @Column(columnDefinition = "TEXT")
     private String landmark;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String country;
 
     @Column(nullable = false)
@@ -96,5 +101,21 @@ public class Address {
 
     public void setPincode(int pincode) {
         this.pincode = pincode;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 }
