@@ -792,6 +792,7 @@ public class maincontroller {
                     // Pincode exists, proceed to save the address
                     Address a = new Address();
                     a.setUser(user);
+                    a.setNumber(aDto.getNumber());
                     a.setAddress(aDto.getAddress());
                     a.setName(aDto.getName());
                     a.setPincode(aDto.getPincode());
