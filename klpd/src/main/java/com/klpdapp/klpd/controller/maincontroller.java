@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,28 +28,28 @@ import com.klpdapp.klpd.Repository.AddressRepo;
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
+import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.PincodeRepo;
-import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.dto.AddressDto;
+import com.klpdapp.klpd.dto.AdminDto;
+import com.klpdapp.klpd.dto.UserDto;
 import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
+import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
-import com.klpdapp.klpd.dto.AddressDto;
-import com.klpdapp.klpd.dto.AdminDto;
-import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -101,6 +101,10 @@ public class maincontroller {
     private EntityManager EntityManager;
 
     private static List<Product> Products;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     private void addCategoriesToModel(Model model) {
         List<Category> categories = ctgRepo.findAll();
@@ -597,62 +601,46 @@ public class maincontroller {
 
     }
 
-    @GetMapping({ "/login" })
-    public String ShowLogin(Model model) {
+    @GetMapping({"/login"})
+    public String showLogin(Model model) {
         UserDto udto = new UserDto();
         model.addAttribute("dto", udto);
         addCategoriesToModel(model);
-        return "registration";
+        return "registration"; // This serves the combined login/registration page
     }
-
+    
     @PostMapping("/submit")
     public String handleFormSubmission(
             @ModelAttribute UserDto userDto,
             @RequestParam("actionType") String actionType,
             HttpSession session,
             RedirectAttributes attrib) {
-
+    
         if ("login".equals(actionType)) {
-            return validateLogin(userDto, session, attrib); // Delegate to login logic
+            // Let Spring Security handle the login process
+            return "redirect:/login"; 
         } else if ("register".equals(actionType)) {
-            return SubmitRegister(userDto, attrib, session); // Delegate to registration logic
+            return submitRegister(userDto, attrib, session);
         } else {
             attrib.addFlashAttribute("msg", "Invalid Action Type");
             return "redirect:/";
         }
     }
-
-    public String validateLogin(@ModelAttribute UserDto udto, HttpSession session, RedirectAttributes attrib) {
-        try {
-            User us = uRepo.findByEmail(udto.getEmail());
-            if (us == null) {
-                attrib.addFlashAttribute("msg", "User doesn't exist!!");
-                return "redirect:/login";
-            }
-            if (us.getPassword().equals(udto.getPassword())) {
-                attrib.addFlashAttribute("msg", "Valid User");
-                session.setAttribute("userid", us.getUserId());
-                return "redirect:/profile";
-            } else {
-                attrib.addFlashAttribute("msg", "Invalid User");
-                return "redirect:/profile";
-            }
-        } catch (EntityNotFoundException ex) {
-            attrib.addFlashAttribute("msg", "User doesn't exist!!");
-            return "redirect:/login";
-        }
-    }
-
-    public String SubmitRegister(@ModelAttribute UserDto userDto,
+    
+    public String submitRegister(@ModelAttribute UserDto userDto,
             RedirectAttributes redirectAttributes, HttpSession session) {
         try {
+            // Encode the password before saving
+            String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+    
             User user = new User();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
-            user.setPassword(userDto.getPassword());
+            user.setPassword(encodedPassword); // Save the encoded password
             user.setStatus("Active");
             uRepo.save(user);
-            session.setAttribute("userid", userDto.getUserId());
+    
+            session.setAttribute("userid", user.getUserId());
             redirectAttributes.addFlashAttribute("message", "Registered Successfully");
             return "redirect:/profile";
         } catch (Exception e) {
@@ -660,6 +648,7 @@ public class maincontroller {
             return "redirect:/";
         }
     }
+    
 
     @GetMapping("/profile")
     public String ShowProfile(Model model, HttpSession session) {

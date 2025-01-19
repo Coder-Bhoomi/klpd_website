@@ -22,7 +22,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 60)
     private String email;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 500)
     private String password;
 
     private long mobile;
@@ -32,6 +32,17 @@ public class User {
 
     @Column(length = 50)
     private String status;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public int getUserId() {
         return userId;
@@ -104,5 +115,4 @@ public class User {
     public void setStatus(String status) {
         this.status = status;
     }
-
 }
