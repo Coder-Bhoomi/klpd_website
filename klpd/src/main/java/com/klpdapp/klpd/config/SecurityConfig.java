@@ -26,12 +26,13 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
+    return http.getSharedObject(AuthenticationManagerBuilder.class)
+            .userDetailsService(userDetailsService) // CustomUserDetailsService
+            .passwordEncoder(passwordEncoder)
+            .and()
+            .build();
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,13 +40,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(
                                         "/login", "/submit", "/products", "/", "/search", 
-                                        "/category/{categoryId}", "/css/**", "/js/**", "/images/**")
+                                        "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
+                                        "/admin", "/admin/**")
                                 .permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/submit")
+                        .usernameParameter("email") 
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/profile", true)
                         .failureUrl("/login?error=true")
                         .permitAll())

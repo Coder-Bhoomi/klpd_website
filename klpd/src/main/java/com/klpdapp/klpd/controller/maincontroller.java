@@ -606,7 +606,7 @@ public class maincontroller {
         UserDto udto = new UserDto();
         model.addAttribute("dto", udto);
         addCategoriesToModel(model);
-        return "registration"; // This serves the combined login/registration page
+        return "registration"; 
     }
     
     @PostMapping("/submit")
@@ -616,6 +616,10 @@ public class maincontroller {
             HttpSession session,
             RedirectAttributes attrib) {
     
+                System.out.println("Action Type: " + actionType);
+    System.out.println("Email: " + userDto.getEmail());
+    System.out.println("Password: " + userDto.getPassword());
+
         if ("login".equals(actionType)) {
             // Let Spring Security handle the login process
             return "redirect:/login"; 
@@ -630,13 +634,12 @@ public class maincontroller {
     public String submitRegister(@ModelAttribute UserDto userDto,
             RedirectAttributes redirectAttributes, HttpSession session) {
         try {
-            // Encode the password before saving
             String encodedPassword = passwordEncoder.encode(userDto.getPassword());
     
             User user = new User();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
-            user.setPassword(encodedPassword); // Save the encoded password
+            user.setPassword(encodedPassword); 
             user.setStatus("Active");
             uRepo.save(user);
     
