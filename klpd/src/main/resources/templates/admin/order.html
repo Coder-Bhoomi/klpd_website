@@ -37,12 +37,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="order:${Orders}">
-                                        <td class="editable" th:text="${order.order.orderId}"></td>
-                                        <td class="editable" th:text="${order.order.user.userId}"></td>
-                                        <td class="editable" th:text="${order.order.paymentMode}"></td>
-                                        <td class="editable" th:text="${order.order.orderDate}"></td>
-                                        <td class="editable" th:text="${order.order.status}"></td>
+                                    <tr th:each="orders:${Orders}">
+                                        <td class="editable" th:text="${orders.orderId}"></td>
+                                        <td class="editable" th:text="${orders.user.userId}"></td>
+                                        <td class="editable" th:text="${orders.paymentMode}"></td>
+                                        <td class="editable" th:text="${orders.orderDate}"></td>
+                                        <td class="editable" th:text="${orders.status}"></td>
                                         <td>
                                             <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#tableModal">View Details</button>
