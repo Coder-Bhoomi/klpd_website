@@ -37,15 +37,15 @@
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody th:each="coupon :${coupon}">
+                                <tbody th:each="c :${coupon}">
                                     <tr>
-                                        <td class="editable" th:text="${coupon.couponId}">1</td>
-                                        <td class="editable" th:text="${coupon.couponCode}">001</td>
-                                        <td class="editable" th:text="${coupon.couponName}">001</td>
-                                        <td class="editable" th:text="${coupon.expireDate}">Hurry up</td>
-                                        <td class="editable" th:text="${coupon.discountRate}">15%</td>
-                                        <td class="editable" th:text="${coupon.uptoAmount}">1500</td>
-                                        <td class="editable" th:text="${coupon.description}">qwertyuiopadfghjklzxcvbnm</td>
+                                        <td class="editable" th:text="${c.couponId}">1</td>
+                                        <td class="editable" th:text="${c.couponCode}">001</td>
+                                        <td class="editable" th:text="${c.couponName}">001</td>
+                                        <td class="editable" th:text="${c.expireDate}">Hurry up</td>
+                                        <td class="editable" th:text="${c.discountRate}">15%</td>
+                                        <td class="editable" th:text="${c.uptoAmount}">1500</td>
+                                        <td class="editable" th:text="${c.description}">qwertyuiopadfghjklzxcvbnm</td>
                                         <td>
                                             <button class="btn btn-warning btn-sm edit-btn">Edit</button>
                                             <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
