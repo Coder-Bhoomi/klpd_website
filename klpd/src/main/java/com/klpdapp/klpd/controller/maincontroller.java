@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +41,7 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.Security.CustomUserDetails;
 import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.dto.AdminDto;
 import com.klpdapp.klpd.dto.UserDto;
@@ -99,6 +105,9 @@ public class maincontroller {
 
     @PersistenceContext
     private EntityManager EntityManager;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     private static List<Product> Products;
 
@@ -609,52 +618,53 @@ public class maincontroller {
         return "registration"; 
     }
     
-    @PostMapping("/submit")
-    public String handleFormSubmission(
-            @ModelAttribute UserDto userDto,
-            @RequestParam("actionType") String actionType,
-            HttpSession session,
-            RedirectAttributes attrib) {
-    
-                System.out.println("Action Type: " + actionType);
-    System.out.println("Email: " + userDto.getEmail());
-    System.out.println("Password: " + userDto.getPassword());
+    @PostMapping("/register")
+public String submitRegister(
+        @ModelAttribute UserDto userDto,
+        RedirectAttributes redirectAttributes,
+        HttpSession session) {
+    try {
+        // Encode the password
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
-        if ("login".equals(actionType)) {
-            // Let Spring Security handle the login process
-            return "redirect:/login"; 
-        } else if ("register".equals(actionType)) {
-            return submitRegister(userDto, attrib, session);
-        } else {
-            attrib.addFlashAttribute("msg", "Invalid Action Type");
-            return "redirect:/";
-        }
+        // Create a new User object
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(encodedPassword);
+        user.setStatus("Active");
+
+        // Save the user in the database
+        uRepo.save(user);
+
+        // Programmatically authenticate the user
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user.getEmail(),
+                userDto.getPassword() // Use the plain password here
+        );
+
+        // Authenticate using the AuthenticationManager
+        Authentication authResult = authenticationManager.authenticate(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authResult);
+
+        // Store userId in session for further use
+        session.setAttribute("userid", user.getUserId());
+
+        // Add a success message and redirect to the profile page
+        redirectAttributes.addFlashAttribute("message", "Registered Successfully and Logged In!");
+        return "redirect:/profile";
+
+    } catch (Exception e) {
+        // Handle errors and redirect back to the registration page
+        redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
+        return "redirect:/";
     }
-    
-    public String submitRegister(@ModelAttribute UserDto userDto,
-            RedirectAttributes redirectAttributes, HttpSession session) {
-        try {
-            String encodedPassword = passwordEncoder.encode(userDto.getPassword());
-    
-            User user = new User();
-            user.setName(userDto.getName());
-            user.setEmail(userDto.getEmail());
-            user.setPassword(encodedPassword); 
-            user.setStatus("Active");
-            uRepo.save(user);
-    
-            session.setAttribute("userid", user.getUserId());
-            redirectAttributes.addFlashAttribute("message", "Registered Successfully");
-            return "redirect:/profile";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
-            return "redirect:/";
-        }
-    }
-    
+}
+
 
     @GetMapping("/profile")
-    public String ShowProfile(Model model, HttpSession session) {
+    public String ShowProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model, HttpSession session) {
+        session.setAttribute("userid", userDetails.getUserId());
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);

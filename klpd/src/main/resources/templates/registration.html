@@ -12,14 +12,13 @@
         <div class="container2 mx-auto mt-5 mb-5">
             <!-- Render both forms -->
             <div class="form-box login" id="loginForm" >
-                <form th:action="@{/submit}" th:object="${dto}" method="post">
-                    <input type="hidden" name="actionType" value="login">
+                <form th:action="@{/submit}"  th:object="${dto}" method="post">
                     <h1>Login</h1>
-                    <div th:if="${msg}">
-                        <p th:text="${msg}" class="alert alert-success alert-dismissible mx-auto" style="background-color: #367D8A; border: #367D8A; color: white; width: 90%;"></p>
+                    <div th:if="${param.error}">
+                        <p th:text="${param.error}"  class="alert alert-success alert-dismissible mx-auto" style="background-color: #367D8A; border: #367D8A; color: white; width: 90%;"></p>
                     </div>
                     <div class="input-box2">
-                        <input type="email" name="username" placeholder="E-mail" th:field="${dto.email}" required>
+                        <input type="email" name="email" placeholder="E-mail" th:field="${dto.email}" required>
                         <i class="fa-solid fa-envelope"></i>
                     </div>
                     <div class="input-box2 pass">
@@ -33,17 +32,13 @@
                     <button type="submit" class="btn2">Login</button>
                     <p>or login with social platforms</p>
                     <div class="social-icons mt-4">  
-                        <a class="social" href="#"><i class="fa-brands fa-square-instagram"></i></a>
-                        <a class="social" href="#"><i class="fa-brands fa-square-x-twitter"></i></a>
-                        <a class="social" href="#"><i class="fa-brands fa-square-facebook"></i></a>
-                        <a class="social" href="#"><i class="fa-brands fa-square-whatsapp"></i></a>
+                        <a class="social" href="/oauth2/authorization/google"><i class="fa-brands fa-google"></i> Login with Google</a>
                     </div>
                 </form>
             </div>
 
             <div class="form-box register" id="registerForm">
-                <form th:action="@{/submit}" th:object="${dto}" method="post">
-                    <input type="hidden" name="actionType" value="register">
+                <form th:action="@{/register}" th:object="${dto}" method="post">
                     <h1>Registration</h1>
                     <div class="input-box2">
                         <input type="text" placeholder="Name" th:field="${dto.name}" required>

@@ -9,14 +9,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -26,38 +28,58 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder passwordEncoder) throws Exception {
-    return http.getSharedObject(AuthenticationManagerBuilder.class)
-            .userDetailsService(userDetailsService) // CustomUserDetailsService
+        System.out.println("Configuring AuthenticationManager");
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+            .userDetailsService(customUserDetailsService)
             .passwordEncoder(passwordEncoder)
             .and()
             .build();
     }
 
+    @Bean
+    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return (request, response, exception) -> {
+            System.out.println("Authentication failed: " + exception.getMessage());
+            response.sendRedirect("/login?error=true");
+        };
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                                .requestMatchers(
-                                        "/login", "/submit", "/products", "/", "/search", 
-                                        "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
-                                        "/admin", "/admin/**")
-                                .permitAll()
-                                .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/submit")
-                        .usernameParameter("email") 
-                        .passwordParameter("password")
-                        .defaultSuccessUrl("/profile", true)
-                        .failureUrl("/login?error=true")
-                        .permitAll())
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .permitAll());
+            .authorizeRequests(auth -> auth
+                .requestMatchers(
+                    "/login", "/submit", "/register", "/products", "/", "/search", 
+                    "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
+                    "/admin", "/admin/**")
+                .permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/submit")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .failureUrl("/login?error")
+                .permitAll())
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll())
+            // OAuth2 Login Configuration
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .successHandler(authenticationSuccessHandler())  
+                .failureHandler(customAuthenticationFailureHandler()) 
+            );
         return http.build();
     }
 
+    // Custom handler for OAuth2 login success (optional)
+    private AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            // You can add custom behavior here on successful login (e.g., redirect user to dashboard)
+            response.sendRedirect("/profile"); // Redirect to a custom page
+        };
+    }
 }
