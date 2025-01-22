@@ -64,7 +64,7 @@ public class AdminController {
 
 	@GetMapping("/order")
 	public String showOrders(Model model) {
-		List<OrderItem> orders = orderItemRepository.findAll();
+		List<Order> orders = orderRepo.findAll();
 		model.addAttribute("Orders", orders);
 		return "admin/order";
 	}
@@ -137,8 +137,8 @@ public class AdminController {
 
 	@GetMapping({ "/coupon" })
 	public String ShowCoupon(Model model) {
-		List<Coupon> coupon = cRepo.findAll();
-		model.addAttribute("coupon", coupon);
+		List<Coupon> c = cRepo.findAll();
+		model.addAttribute("coupon", c);
 		return "admin/coupon";
 	}
 
@@ -234,6 +234,7 @@ public class AdminController {
 		coupon.setIssueDate(validityDate);
 		coupon.setDiscountRate(discountRate);
 		coupon.setUptoAmount(uptoAmount);
+		coupon.setDescription(couponDescription);
 		cRepo.save(coupon);
 		return "redirect:/admin/product";
 	}
