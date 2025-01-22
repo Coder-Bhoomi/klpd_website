@@ -64,7 +64,7 @@ public class AdminController {
 
 	@GetMapping("/order")
 	public String showOrders(Model model) {
-		List<OrderItem> orders = orderItemRepository.findAll();
+		List<Order> orders = orderRepo.findAll();
 		model.addAttribute("Orders", orders);
 		return "admin/order";
 	}
