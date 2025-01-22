@@ -234,6 +234,7 @@ public class AdminController {
 		coupon.setIssueDate(validityDate);
 		coupon.setDiscountRate(discountRate);
 		coupon.setUptoAmount(uptoAmount);
+		coupon.setDescription(couponDescription);
 		cRepo.save(coupon);
 		return "redirect:/admin/product";
 	}
