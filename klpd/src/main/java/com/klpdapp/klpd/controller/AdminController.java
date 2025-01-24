@@ -188,7 +188,7 @@ public class AdminController {
 	public String addSize(@RequestParam("size") String size,
 			@RequestParam("sizeSubCategoryId") SubCategory sizeSubCategoryId) {
 		Size siz = new Size();
-		siz.setUnit(size);
+		siz.setSize(size);
 		siz.setSubcategory(sizeSubCategoryId);
 		srepo.save(siz);
 		return "redirect:/admin/product";

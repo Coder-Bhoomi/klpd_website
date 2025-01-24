@@ -207,7 +207,7 @@ public class maincontroller {
     }
 
     @GetMapping("/")
-    public String showIndex(Model model,HttpSession session) {
+    public String showIndex(Model model, HttpSession session) {
         List<Product> NewProducts = pRepo.findTop4ByOrderByCreatedAtDesc();
         List<Product> TopProducts = pRepo.findTop4ByOrderByHitsDesc();
         addCategoriesToModel(model);
@@ -251,7 +251,7 @@ public class maincontroller {
                                         .matching(query + "*")
                                         .boost(3.0f)) // Prefix match to capture terms starting with the query
                                 .should(f.match()
-                                        .fields("prodName", "brand", "description")
+                                        .fields("prodName", "brand")
                                         .matching(query)
                                         .fuzzy()
                                         .boost(1.0f)) // Fuzzy match for variations and typos
@@ -294,7 +294,7 @@ public class maincontroller {
             @RequestParam(required = false) String capacity,
             @RequestParam(required = false) String guarantee,
             @RequestParam(required = false) String brand,
-            Model model,HttpSession session) {
+            Model model, HttpSession session) {
 
         List<Product> p = Products;
 
@@ -390,7 +390,7 @@ public class maincontroller {
         model.addAttribute("minDiscount", minDiscount);
         model.addAttribute("maxDiscount", maxDiscount);
         Category category = Products.get(0).getCategory();
-        model.addAttribute("category",category);
+        model.addAttribute("category", category);
         model.addAttribute("query", query);
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
@@ -408,7 +408,7 @@ public class maincontroller {
     }
 
     @GetMapping("/category/{categoryId}")
-    public String showCategory(@PathVariable String categoryId, Model model,HttpSession session) {
+    public String showCategory(@PathVariable String categoryId, Model model, HttpSession session) {
         if (categoryId != null && !categoryId.isEmpty()) {
             Products = pRepo.findByCategory_CategoryId(categoryId);
             Category category = ctgRepo.findById(categoryId).orElse(null);
@@ -417,44 +417,42 @@ public class maincontroller {
             addCategoriesToModel(model);
             addFilter(model);
             Integer userId = (Integer) session.getAttribute("userid");
-        if (userId != null) {
-            User user = uRepo.findById(userId).orElse(null);
-            List<Cart> cartItems = cartRepository.findByUser(user);
-            model.addAttribute("cart", cartItems);
-            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
-        }
+            if (userId != null) {
+                User user = uRepo.findById(userId).orElse(null);
+                List<Cart> cartItems = cartRepository.findByUser(user);
+                model.addAttribute("cart", cartItems);
+                List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+                model.addAttribute("wishlist", wishlistItems);
+            }
         }
         return "category";
     }
 
     @GetMapping("/product/{pid}")
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
+            @RequestParam(required = false) String selectedSubcategoryId,
             Model model, HttpSession session) {
+        System.out.println("pid="+pid);
         Product prod = pRepo.getById(pid);
+
+        // Check if size and subcategory are selected
+        if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
+            prod = pRepo.findProductBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+        }
+        else {
+            prod = pRepo.getById(pid);
+        }
 
         if (prod != null) {
             model.addAttribute("product", prod);
+            System.out.println("pid="+prod.getPid());
+
             List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
                     prod.getCategory().getCategoryId(),
                     prod.getPid());
 
-            List<String> sizes = pRepo.findDistinctSizesBySubcategoryId(prod.getSubcategory().getSubcategoryId());
+            List<String> sizes = sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
 
-            /*
-             * Fetch products based on size
-             * 
-             * if (selectedSize != null) {
-             * prod =
-             * pRepo.findProductsBySizeAndSubcategory(prod.getSubcategory().getSubcategoryId
-             * (), selectedSize);
-             * } else {
-             * prod =
-             * pRepo.findBySubcategory_SubcategoryId(prod.getSubcategory().getSubcategoryId(
-             * )); // All products for the
-             * // subcategory
-             * }
-             */
             model.addAttribute("sizes", sizes);
 
             model.addAttribute("relatedProducts", relatedProducts);

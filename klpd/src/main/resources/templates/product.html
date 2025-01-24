@@ -2,7 +2,7 @@
 <html lang="en" th:replace="base::layout(~{::main})">
 
 <head>
-    
+
 </head>
 
 <body>
@@ -21,18 +21,14 @@
                             style="top: 12px; right: 115px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;">
                         </button>
                     </form>
-                </i> 
+                    </i>
                     <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
                         class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
-                        <div class="d-flex justify-content-center flex-row" style="width: 70%;">
-                            <img th:each="image : ${product.images}" 
-                                 th:src="@{${image.imageUrl}}" 
-                                 alt="Thumbnail" 
-                                 class="img-thumbnail m-1" 
-                                 style="width: 20%; cursor: pointer;" 
-                                 onclick="changeImage(this)">
-                        </div>
-                        
+                    <div class="d-flex justify-content-center flex-row" style="width: 70%;">
+                        <img th:each="image : ${product.images}" th:src="@{${image.imageUrl}}" alt="Thumbnail"
+                            class="img-thumbnail m-1" style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
+                    </div>
+
                 </div>
 
                 <!-- Details Section (Single Product) -->
@@ -63,26 +59,30 @@
                     </div>
 
                     <!-- Size Dropdown -->
-                    <div class="d-flex align-items-center mb-3">
-                        <label for="sizeSelect" class="form-label fw-bold me-2 mb-0">Size:</label>
-                        <select id="sizeSelect" class="form-select custom-dropdown">
-                            <option selected disabled>Choose</option>
-                            <option value="small">Small</option>
-                            <option value="medium">Medium</option>
-                            <option value="large">Large</option>
-                        </select>
-                    </div>
-                    <!--option> <a th:each="size : ${sizes}" 
-                        th:href="@{/products/filter(size=${size.size}, subcategoryId=${subcategoryId})}" 
-                        class="btn btn-outline-primary btn-sm me-2 mb-2"
-                        th:text="${size.size}"></a></option-->
-                    
+                    <form th:action="@{/product/{pid}(pid=${product.pid})}" method="get">
+                        <div class="d-flex align-items-center mb-3">
+
+                            <label for="size" class="form-label fw-bold me-2 mb-0">Select Size:</label>
+                            <select id="size" class="form-select custom-dropdown" name="selectedSize"
+                                onchange="this.form.submit()">
+                                <option value="" disabled selected>Select a size</option>
+                                <option th:each="size : ${sizes}" th:value="${size}" th:text="${size}">
+                                </option>
+                            </select>
+                            <input type="hidden" name="selectedSubcategoryId"
+                                th:value="${product.subcategory.subcategoryId}" />
+                        </div>
+                    </form>
+
+
                     <!-- Action Buttons -->
                     <div class="action-buttons d-flex gap-3 mt-4">
                         <form th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
-                            <button type="submit" class="btn cartbutton d-block p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
+                            <button type="submit" class="btn cartbutton d-block p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
+                                    Cart</span></button>
                         </form>
                         <a href="/cart"></a>
                     </div>
@@ -152,7 +152,7 @@
             <h2 class="text-center fw-bold my-3">Related Product</h2>
             <div class="row mb-5">
                 <div class="col-md-3" th:each="rp : ${relatedProducts}">
-                    
+
                     <div class="product-card2 position-relative">
                         <!-- Heart Icon -->
                         <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
@@ -161,12 +161,11 @@
                                 class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
                                 style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;">
                             </button>
-                        </form> 
-                        <a th:href="@{/product/{pid}(pid=${rp.pid})}"
-                            style="text-decoration: none; color: inherit;">
+                        </form>
+                        <a th:href="@{/product/{pid}(pid=${rp.pid})}" style="text-decoration: none; color: inherit;">
                             <div th:if="${rp.images != null and not #lists.isEmpty(rp.images)}">
                                 <img th:src="@{${rp.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
-                                style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                    style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                             </div>
                             <p class="text-center p-2" th:text="${rp.prodName}">Product Name</p>
                             <p class="text-center">
@@ -178,48 +177,50 @@
                                     Price: <span class="text-danger" th:text="${rp.mrp}">Rs.1800</span>
                                 </span>
                             </p>
-                        </a>    
+                        </a>
                     </div>
-                    
+
                     <form th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="productId" th:value="${rp.pid}" />
                         <input type="hidden" name="quantity" value="1" min="1" />
-                        <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to Cart</span></button>
+                        <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                            style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
+                                Cart</span></button>
                     </form>
                 </div>
             </div>
             <a th:href="@{/{categoryId}(categoryId=${product.category.categoryId})}">
                 <button type="button" class="btn button d-block mx-auto p-2 mt-5 rounded-pill"
-                        style="background-color: #367D8A; color: #fff; font-size: 14px;">
+                    style="background-color: #367D8A; color: #fff; font-size: 14px;">
                     <span>View All</span>
                 </button>
             </a>
-            
+
             <script>
                 // Function to calculate the discount percentage
                 function calculateDiscount() {
                     const mrp = parseFloat(document.querySelector("[th\\:text='${product.mrp}']").innerText.replace('Rs.', '').trim());
                     const offerPrice = parseFloat(document.querySelector("[th\\:text='${product.offerPrice}']").innerText.replace('Rs.', '').trim());
-        
+
                     if (mrp && offerPrice && mrp > 0) {
                         const discount = ((mrp - offerPrice) / mrp) * 100;
                         document.getElementById('discountPercentage').innerText = `${discount.toFixed(2)}% OFF`;
                     }
                 }
                 window.onload = calculateDiscount;
-        
+
                 //wishlist toggle
                 document.addEventListener('DOMContentLoaded', () => {
-                        document.querySelectorAll('.heart-icon').forEach(icon => {
-                            icon.addEventListener('click', function () {
-                                this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
-                            });
+                    document.querySelectorAll('.heart-icon').forEach(icon => {
+                        icon.addEventListener('click', function () {
+                            this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
                         });
                     });
+                });
             </script>
         </section>
     </main>
-    
+
 </body>
 
 </html>
