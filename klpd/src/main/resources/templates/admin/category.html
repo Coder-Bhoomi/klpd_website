@@ -61,7 +61,7 @@
 			// For edit button
 			document.querySelectorAll('.edit-btn').forEach((editBtn) => {
 				editBtn.addEventListener('click', (event) => {
-					event.preventDefault(); // Prevent form submission
+					event.preventDefault();
 					const row = editBtn.closest('tr');
 
 					row.querySelector('.category-name').classList.add('d-none');
@@ -75,7 +75,7 @@
 			// For save button
 			document.querySelectorAll('.save-btn').forEach((saveBtn) => {
 				saveBtn.addEventListener('click', (event) => {
-					event.preventDefault(); // Prevent default form submission
+					event.preventDefault();
 
 					const row = saveBtn.closest('tr');
 
