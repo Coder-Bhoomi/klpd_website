@@ -23,7 +23,7 @@ public class Size {
     }
 
     @Column(name = "size")
-    private String unit;
+    private String size;
 
     public Long getId() {
         return id;
@@ -33,12 +33,12 @@ public class Size {
         this.id = id;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getSize() {
+        return size;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setSize(String size) {
+        this.size = size;
     }
 
 }

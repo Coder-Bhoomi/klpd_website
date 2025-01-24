@@ -12,7 +12,7 @@
 
         <section class="best-selling container mt-1">
             <h2 class="text-center fw-bold my-3 mt-5"
-                th:text="${categoryid != null ? category.categoryName : (query != null ? #strings.concat('Results for: ', query) : 'All Products')}">
+                th:text="${category != null ? category.categoryName : (query != null ? #strings.concat('Results for: ', query) : 'All Products')}">
             </h2>
 
             <!-- Filters and Sorting -->
@@ -138,7 +138,7 @@
                         <li>
                             <a class="dropdown-item"
                                 th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=null, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
-                                All Thicknesses
+                                All Thickness
                             </a>
                         </li>
                         <li th:each="thickness : ${thicknesses}">
@@ -204,7 +204,7 @@
                         <li>
                             <a class="dropdown-item"
                                 th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=50, maxDiscount=100)}">
-                                50% and Above Off
+                                50% and Above
                             </a>
                         </li>
                     </ul>
@@ -234,11 +234,11 @@
                             <p class="text-center p-2" th:text="${product.prodName}">Product Name</p>
                             <p class="text-center">
                                 <span th:if="${product.offerPrice != null}">
-                                    Price: <s th:text="${product.mrp}">Rs.1800</s>
-                                    <span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                                    Price: ₹<s th:text="${product.mrp}">Rs.1800</s>
+                                    ₹<span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
                                 </span>
                                 <span th:if="${product.offerPrice == null}">
-                                    Price: <span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                                    Price: ₹<span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
                                 </span>
                             </p>
                         </a>
@@ -268,3 +268,4 @@
 </body>
 
 </html>
+

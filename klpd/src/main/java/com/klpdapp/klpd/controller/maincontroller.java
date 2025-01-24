@@ -13,8 +13,13 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,28 +33,29 @@ import com.klpdapp.klpd.Repository.AddressRepo;
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
+import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.PincodeRepo;
-import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.Security.CustomUserDetails;
+import com.klpdapp.klpd.dto.AddressDto;
+import com.klpdapp.klpd.dto.AdminDto;
+import com.klpdapp.klpd.dto.UserDto;
 import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
+import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
-import com.klpdapp.klpd.dto.AddressDto;
-import com.klpdapp.klpd.dto.AdminDto;
-import com.klpdapp.klpd.dto.UserDto;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -98,16 +104,20 @@ public class maincontroller {
     CouponRepo couponrepo;
 
     @PersistenceContext
-    private EntityManager EntityManager;
+    EntityManager EntityManager;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     private static List<Product> Products;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     private void addCategoriesToModel(Model model) {
         List<Category> categories = ctgRepo.findAll();
         categories.sort(Comparator.comparing(Category::getCategoryName));
 
-        // Find and remove "Parts & Accessories" and "Others" from the list if they
-        // exist
         Category partsAndAccessories = null;
         Category others = null;
 
@@ -123,14 +133,12 @@ public class maincontroller {
             }
         }
 
-        // Add "Parts & Accessories" and "Others" to the end of the list
         if (partsAndAccessories != null) {
             categories.add(partsAndAccessories);
         }
         if (others != null) {
             categories.add(others);
         }
-        // Add the modified categories list to the model
         model.addAttribute("categories", categories);
     }
 
@@ -144,7 +152,7 @@ public class maincontroller {
 
         for (Product product : Products) {
             if (product.getColor() != null) {
-                colors.add(product.getColor().replace("-", "")); // Remove hyphen from color
+                colors.add(product.getColor().replace("-", ""));
             }
             if (product.getDiameter() != null) {
                 diameters.add(product.getDiameter().replace("-", "")); // Remove hyphen from diameter
@@ -199,17 +207,25 @@ public class maincontroller {
     }
 
     @GetMapping("/")
-    public String showIndex(Model model) {
+    public String showIndex(Model model, HttpSession session) {
         List<Product> NewProducts = pRepo.findTop4ByOrderByCreatedAtDesc();
         List<Product> TopProducts = pRepo.findTop4ByOrderByHitsDesc();
         addCategoriesToModel(model);
         model.addAttribute("topProduct", TopProducts);
         model.addAttribute("newProduct", NewProducts);
+        Integer userId = (Integer) session.getAttribute("userid");
+        if (userId != null) {
+            User user = uRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartRepository.findByUser(user);
+            model.addAttribute("cart", cartItems);
+            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+            model.addAttribute("wishlist", wishlistItems);
+        }
         return "index";
     }
 
     @GetMapping("/search")
-    public String search(@RequestParam(required = false) String query, Model model) {
+    public String search(@RequestParam(required = false) String query, Model model, HttpSession usersession) {
         if (query != null && !query.isEmpty()) {
             try {
                 Search.session(EntityManager.unwrap(Session.class))
@@ -235,7 +251,7 @@ public class maincontroller {
                                         .matching(query + "*")
                                         .boost(3.0f)) // Prefix match to capture terms starting with the query
                                 .should(f.match()
-                                        .fields("prodName", "brand", "description")
+                                        .fields("prodName", "brand")
                                         .matching(query)
                                         .fuzzy()
                                         .boost(1.0f)) // Fuzzy match for variations and typos
@@ -255,6 +271,14 @@ public class maincontroller {
         }
         model.addAttribute("query", query);
         addCategoriesToModel(model);
+        Integer userId = (Integer) usersession.getAttribute("userid");
+        if (userId != null) {
+            User user = uRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartRepository.findByUser(user);
+            model.addAttribute("cart", cartItems);
+            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+            model.addAttribute("wishlist", wishlistItems);
+        }
         return "category";
     }
 
@@ -270,7 +294,7 @@ public class maincontroller {
             @RequestParam(required = false) String capacity,
             @RequestParam(required = false) String guarantee,
             @RequestParam(required = false) String brand,
-            Model model) {
+            Model model, HttpSession session) {
 
         List<Product> p = Products;
 
@@ -365,10 +389,17 @@ public class maincontroller {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("minDiscount", minDiscount);
         model.addAttribute("maxDiscount", maxDiscount);
-        Category category = ctgRepo.findById(categoryId).orElse(null);
+        Category category = Products.get(0).getCategory();
         model.addAttribute("category", category);
         model.addAttribute("query", query);
-
+        Integer userId = (Integer) session.getAttribute("userid");
+        if (userId != null) {
+            User user = uRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartRepository.findByUser(user);
+            model.addAttribute("cart", cartItems);
+            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+            model.addAttribute("wishlist", wishlistItems);
+        }
         Products = p;
         addFilter(model);
         addCategoriesToModel(model);
@@ -377,7 +408,7 @@ public class maincontroller {
     }
 
     @GetMapping("/category/{categoryId}")
-    public String showCategory(@PathVariable String categoryId, Model model) {
+    public String showCategory(@PathVariable String categoryId, Model model, HttpSession session) {
         if (categoryId != null && !categoryId.isEmpty()) {
             Products = pRepo.findByCategory_CategoryId(categoryId);
             Category category = ctgRepo.findById(categoryId).orElse(null);
@@ -385,41 +416,55 @@ public class maincontroller {
             model.addAttribute("products", Products);
             addCategoriesToModel(model);
             addFilter(model);
+            Integer userId = (Integer) session.getAttribute("userid");
+            if (userId != null) {
+                User user = uRepo.findById(userId).orElse(null);
+                List<Cart> cartItems = cartRepository.findByUser(user);
+                model.addAttribute("cart", cartItems);
+                List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+                model.addAttribute("wishlist", wishlistItems);
+            }
         }
         return "category";
     }
 
     @GetMapping("/product/{pid}")
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
-            Model model) {
+            @RequestParam(required = false) String selectedSubcategoryId,
+            Model model, HttpSession session) {
+        System.out.println("pid="+pid);
         Product prod = pRepo.getById(pid);
+
+        // Check if size and subcategory are selected
+        if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
+            prod = pRepo.findProductBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+        }
+        else {
+            prod = pRepo.getById(pid);
+        }
 
         if (prod != null) {
             model.addAttribute("product", prod);
+            System.out.println("pid="+prod.getPid());
+
             List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
                     prod.getCategory().getCategoryId(),
                     prod.getPid());
 
-            List<String> sizes = pRepo.findDistinctSizesBySubcategoryId(prod.getSubcategory().getSubcategoryId());
+            List<String> sizes = sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
 
-            /*
-             * Fetch products based on size
-             * 
-             * if (selectedSize != null) {
-             * prod =
-             * pRepo.findProductsBySizeAndSubcategory(prod.getSubcategory().getSubcategoryId
-             * (), selectedSize);
-             * } else {
-             * prod =
-             * pRepo.findBySubcategory_SubcategoryId(prod.getSubcategory().getSubcategoryId(
-             * )); // All products for the
-             * // subcategory
-             * }
-             */
             model.addAttribute("sizes", sizes);
 
             model.addAttribute("relatedProducts", relatedProducts);
             model.addAttribute("categoryId", prod.getCategory().getCategoryId());
+        }
+        Integer userId = (Integer) session.getAttribute("userid");
+        if (userId != null) {
+            User user = uRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartRepository.findByUser(user);
+            model.addAttribute("cart", cartItems);
+            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+            model.addAttribute("wishlist", wishlistItems);
         }
         addCategoriesToModel(model);
 
@@ -427,7 +472,8 @@ public class maincontroller {
     }
 
     @GetMapping("/cart")
-    public String showCart(Model model, HttpSession session) {
+    public String showCart(@AuthenticationPrincipal CustomUserDetails userDetails, Model model, HttpSession session) {
+        session.setAttribute("userid", userDetails.getUserId());
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);
@@ -448,7 +494,6 @@ public class maincontroller {
             return "redirect:/login";
         }
     }
-    
 
     @PostMapping("/cart/update")
     public String updateCart(@RequestParam Integer cartId, @RequestParam Integer quantity, Model model) {
@@ -545,7 +590,9 @@ public class maincontroller {
     }
 
     @GetMapping("/wishlist")
-    public String showwishlist(Model model, HttpSession session) {
+    public String showwishlist(@AuthenticationPrincipal CustomUserDetails userDetails, Model model,
+            HttpSession session) {
+        session.setAttribute("userid", userDetails.getUserId());
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);
@@ -598,71 +645,66 @@ public class maincontroller {
     }
 
     @GetMapping({ "/login" })
-    public String ShowLogin(Model model) {
+    public String showLogin(Model model, HttpSession session) {
         UserDto udto = new UserDto();
         model.addAttribute("dto", udto);
         addCategoriesToModel(model);
+        String errorMessage = (String) session.getAttribute("errorMessage");
+        if (errorMessage != null) {
+            model.addAttribute("errorMessage", errorMessage);
+        }
         return "registration";
     }
 
-    @PostMapping("/submit")
-    public String handleFormSubmission(
+    @PostMapping("/register")
+    public String submitRegister(
             @ModelAttribute UserDto userDto,
-            @RequestParam("actionType") String actionType,
-            HttpSession session,
-            RedirectAttributes attrib) {
-
-        if ("login".equals(actionType)) {
-            return validateLogin(userDto, session, attrib); // Delegate to login logic
-        } else if ("register".equals(actionType)) {
-            return SubmitRegister(userDto, attrib, session); // Delegate to registration logic
-        } else {
-            attrib.addFlashAttribute("msg", "Invalid Action Type");
-            return "redirect:/";
-        }
-    }
-
-    public String validateLogin(@ModelAttribute UserDto udto, HttpSession session, RedirectAttributes attrib) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         try {
-            User us = uRepo.findByEmail(udto.getEmail());
-            if (us == null) {
-                attrib.addFlashAttribute("msg", "User doesn't exist!!");
-                return "redirect:/login";
-            }
-            if (us.getPassword().equals(udto.getPassword())) {
-                attrib.addFlashAttribute("msg", "Valid User");
-                session.setAttribute("userid", us.getUserId());
-                return "redirect:/profile";
-            } else {
-                attrib.addFlashAttribute("msg", "Invalid User");
-                return "redirect:/profile";
-            }
-        } catch (EntityNotFoundException ex) {
-            attrib.addFlashAttribute("msg", "User doesn't exist!!");
-            return "redirect:/login";
-        }
-    }
+            // Encode the password
+            String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
-    public String SubmitRegister(@ModelAttribute UserDto userDto,
-            RedirectAttributes redirectAttributes, HttpSession session) {
-        try {
+            // Create a new User object
             User user = new User();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
-            user.setPassword(userDto.getPassword());
+            user.setPassword(encodedPassword);
             user.setStatus("Active");
+
+            // Save the user in the database
             uRepo.save(user);
-            session.setAttribute("userid", userDto.getUserId());
-            redirectAttributes.addFlashAttribute("message", "Registered Successfully");
+
+            // Programmatically authenticate the user
+            // Inside RegisterController after authentication
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
+
+            if (authentication.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("Session ID: " + session.getId());
+
+                System.out.println("User authenticated successfully.");
+            } else {
+                System.out.println("Authentication failed.");
+            }
+
+            session.setAttribute("userid", user.getUserId());
+            redirectAttributes.addFlashAttribute("message", "Registered Successfully and Logged In!");
             return "redirect:/profile";
+
         } catch (Exception e) {
+            // Handle errors and redirect back to the registration page
             redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
+            System.out.println("exception=" + e);
             return "redirect:/";
         }
     }
 
     @GetMapping("/profile")
-    public String ShowProfile(Model model, HttpSession session) {
+    public String ShowProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model,
+            HttpSession session) {
+        session.setAttribute("userid", userDetails.getUserId());
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);
@@ -780,7 +822,8 @@ public class maincontroller {
     }
 
     @PostMapping("/address/add")
-    public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto, RedirectAttributes redirectAttributes) {
+    public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto,
+            RedirectAttributes redirectAttributes) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);

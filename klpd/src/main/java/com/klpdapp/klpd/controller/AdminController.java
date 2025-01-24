@@ -17,12 +17,12 @@ import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ImagesRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
+import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
-import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
@@ -59,14 +59,25 @@ public class AdminController {
 	@Autowired
 	CouponRepo cRepo;
 
-	@GetMapping({ "/dashboard" })
+	@Autowired
+	OrderRepository orderRepo;
+
+	public OrderRepository getOrderRepo() {
+    	return orderRepo;
+    }
+
+    public void setOrderRepo(OrderRepository orderRepo) {
+        this.orderRepo = orderRepo;
+    }
+
+@GetMapping({ "/dashboard" })
 	public String showIndex(Model model) {
 		return "admin/dashboard";
 	}
 
 	@GetMapping("/order")
 	public String showOrders(Model model) {
-		List<OrderItem> orders = orderItemRepository.findAll();
+		List<Order> orders = orderRepo.findAll();
 		model.addAttribute("Orders", orders);
 		return "admin/order";
 	}
@@ -139,8 +150,8 @@ public class AdminController {
 
 	@GetMapping({ "/coupon" })
 	public String ShowCoupon(Model model) {
-		List<Coupon> coupon = cRepo.findAll();
-		model.addAttribute("coupon", coupon);
+		List<Coupon> c = cRepo.findAll();
+		model.addAttribute("coupon", c);
 		return "admin/coupon";
 	}
 
@@ -177,7 +188,7 @@ public class AdminController {
 	public String addSize(@RequestParam("size") String size,
 			@RequestParam("sizeSubCategoryId") SubCategory sizeSubCategoryId) {
 		Size siz = new Size();
-		siz.setUnit(size);
+		siz.setSize(size);
 		siz.setSubcategory(sizeSubCategoryId);
 		srepo.save(siz);
 		return "redirect:/admin/product";
@@ -236,6 +247,7 @@ public class AdminController {
 		coupon.setIssueDate(validityDate);
 		coupon.setDiscountRate(discountRate);
 		coupon.setUptoAmount(uptoAmount);
+		coupon.setDescription(couponDescription);
 		cRepo.save(coupon);
 		return "redirect:/admin/product";
 	}

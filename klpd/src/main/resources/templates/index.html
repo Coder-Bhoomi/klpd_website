@@ -74,14 +74,32 @@
                                 </p>
                             </a>
                         </div>
+                        <!--div th:if="${product.isInCart}">
+                            <div class="quantity-container">
+                                <form th:action="@{/cart/update}" method="post">
+                                    <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                    <button type="submit" class="btn minus" name="action" value="minus"
+                                        id="minus-btn">-</button>
+                                    <span id="quantity-display" th:text="${cartItem.quantity}">1</span>
+                                    <button type="submit" class="btn plus" name="action" value="plus"
+                                        id="plus-btn">+</button>
+                                </form>
+                            </div>
+                        </div-->
 
-                        <form th:action="@{/cart/add}" method="post">
-                            <input type="hidden" name="productId" th:value="${product.pid}" />
-                            <input type="hidden" name="quantity" value="1" min="1" />
-                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                                style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
-                                    Cart</span></button>
-                        </form>
+                        <!-- If the product is NOT in the cart -->
+                        <!--div th:unless="${product.isInCart}"-->
+                            <form th:action="@{/cart/add}" method="post">
+                                <input type="hidden" name="productId" th:value="${product.pid}" />
+                                <input type="hidden" name="quantity" value="1" min="1" />
+                                <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                    style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                    <span>Add to Cart</span>
+                                </button>
+                            </form>
+                        <!--/div-->
+
+
                     </div>
                 </div>
                 <script>
@@ -95,7 +113,7 @@
 
                 </script>
             </div>
-            
+
         </section>
 
         <!-- Safety -->
@@ -159,27 +177,41 @@
                                 </p>
                             </a>
                         </div>
+                        <!--div th:if="${product.isInCart}">
+                            <div class="quantity-container">
+                                <form th:action="@{/cart/update}" method="post">
+                                    <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                    <button type="submit" class="btn minus" name="action" value="minus"
+                                        id="minus-btn">-</button>
+                                    <span id="quantity-display" th:text="${cartItem.quantity}">1</span>
+                                    <button type="submit" class="btn plus" name="action" value="plus"
+                                        id="plus-btn">+</button>
+                                </form>
+                            </div>
+                        </div-->
 
-                        <form th:action="@{/cart/add}" method="post">
-                            <input type="hidden" name="productId" th:value="${product.pid}" />
-                            <input type="hidden" name="quantity" value="1" min="1" />
-                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                                style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
-                                    Cart</span></button>
-                        </form>
-                    </div>
-                </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        document.querySelectorAll('.heart-icon').forEach(icon => {
-                            icon.addEventListener('click', function () {
-                                this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
+                        <!-- If the product is NOT in the cart -->
+                        <!--div th:unless="${product.isInCart}"-->
+                            <form th:action="@{/cart/add}" method="post">
+                                <input type="hidden" name="productId" th:value="${product.pid}" />
+                                <input type="hidden" name="quantity" value="1" min="1" />
+                                <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                    style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                    <span>Add to Cart</span>
+                                </button>
+                            </form>
+                        <!--/div-->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                document.querySelectorAll('.heart-icon').forEach(icon => {
+                                    icon.addEventListener('click', function () {
+                                        this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
+                                    });
+                                });
                             });
-                        });
-                    });
 
-                </script>
-            </div>
+                        </script>
+                    </div>
         </section>
 
         <!-- About Us -->

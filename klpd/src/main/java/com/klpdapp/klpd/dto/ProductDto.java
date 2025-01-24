@@ -31,6 +31,9 @@ public class ProductDto {
     private String material;
     private String finish;
     private int rating;
+    private boolean isInCart;
+    private int quantity;
+    private boolean isInWishlist;
     public int getPid() {
         return pid;
     }
@@ -192,6 +195,27 @@ public class ProductDto {
     }
     public void setRating(int rating) {
         this.rating = rating;
+    }
+    public void setMrp(Float mrp) {
+        this.mrp = mrp;
+    }
+    public boolean isInCart() {
+        return isInCart;
+    }
+    public void setInCart(boolean isInCart) {
+        this.isInCart = isInCart;
+    }
+    public int getQuantity() {
+        return quantity;
+    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    public boolean isInWishlist() {
+        return isInWishlist;
+    }
+    public void setInWishlist(boolean isInWishlist) {
+        this.isInWishlist = isInWishlist;
     }
 
     // Getters and Setters

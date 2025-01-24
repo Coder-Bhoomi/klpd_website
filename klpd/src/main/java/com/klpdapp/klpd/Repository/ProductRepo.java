@@ -24,19 +24,10 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
 
     List<Product> findTop4ByOrderByHitsDesc();
 
-    @Query("SELECT DISTINCT p.capacity AS size FROM Product p WHERE p.subcategory.subcategoryId = :subcategoryId AND p.capacity IS NOT NULL " +
-       "UNION SELECT DISTINCT p.thickness FROM Product p WHERE p.subcategory.subcategoryId = :subcategoryId AND p.thickness IS NOT NULL " +
-       "UNION SELECT DISTINCT p.weight FROM Product p WHERE p.subcategory.subcategoryId = :subcategoryId AND p.weight IS NOT NULL " +
-       "UNION SELECT DISTINCT p.diameter FROM Product p WHERE p.subcategory.subcategoryId = :subcategoryId AND p.diameter IS NOT NULL")
-List<String> findDistinctSizesBySubcategoryId(@Param("subcategoryId") String subcategoryId);
-
-@Query("SELECT p FROM Product p WHERE p.subcategory.subcategoryId = :subcategoryId AND " +
-       "(p.capacity = :selectedSize OR p.thickness = :selectedSize OR p.weight = :selectedSize OR p.diameter = :selectedSize)")
-Product findProductsBySizeAndSubcategory(
-        @Param("subcategoryId") String subcategoryId,
-        @Param("selectedSize") String selectedSize);
-
-Product findBySubcategory_SubcategoryId(String subcategoryId);
+    @Query("SELECT p FROM Product p WHERE (p.capacity = :size OR p.thickness = :size OR p.diameter = :size) AND p.subcategory.subcategoryId = :subcategoryId")
+    Product findProductBySizeAndSubcategory(@Param("size") String size, @Param("subcategoryId") String subcategoryId);
+    
+    Product findBySubcategory_SubcategoryId(String subcategoryId);
 
 
 }
