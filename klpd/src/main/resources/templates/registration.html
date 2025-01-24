@@ -15,8 +15,9 @@
                 <form th:action="@{/submit}"  th:object="${dto}" method="post">
                     <h1>Login</h1>
                     <div th:if="${param.error}">
-                        <p th:text="${param.error}"  class="alert alert-success alert-dismissible mx-auto" style="background-color: #367D8A; border: #367D8A; color: white; width: 90%;"></p>
-                    </div>
+                        <p th:text="${session.errorMessage}" class="alert alert-success alert-dismissible mx-auto" 
+                           style="background-color: #367D8A; border: #367D8A; color: white; width: 90%;"></p>
+                    </div>                    
                     <div class="input-box2">
                         <input type="email" name="email" placeholder="E-mail" th:field="${dto.email}" required>
                         <i class="fa-solid fa-envelope"></i>

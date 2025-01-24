@@ -17,11 +17,13 @@ import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ImagesRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
+import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
+import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Size;
@@ -57,7 +59,18 @@ public class AdminController {
 	@Autowired
 	CouponRepo cRepo;
 
-	@GetMapping({ "/dashboard" })
+	@Autowired
+	OrderRepository orderRepo;
+
+	public OrderRepository getOrderRepo() {
+    	return orderRepo;
+    }
+
+    public void setOrderRepo(OrderRepository orderRepo) {
+        this.orderRepo = orderRepo;
+    }
+
+@GetMapping({ "/dashboard" })
 	public String showIndex(Model model) {
 		return "admin/dashboard";
 	}
