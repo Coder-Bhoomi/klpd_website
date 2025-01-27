@@ -156,19 +156,19 @@ public class maincontroller {
                 colors.add(product.getColor().replace("-", ""));
             }
             if (product.getDiameter() != null) {
-                diameters.add(product.getDiameter().replace("-", "")); // Remove hyphen from diameter
+                diameters.add(product.getDiameter().replace("-", "")); 
             }
             if (product.getThickness() != null) {
-                thicknesses.add(product.getThickness().replace("-", "")); // Remove hyphen from thickness
+                thicknesses.add(product.getThickness().replace("-", "")); // Remove hyphen 
             }
             if (product.getCapacity() != null) {
-                capacities.add(product.getCapacity().replace("-", "")); // Remove hyphen from capacity
+                capacities.add(product.getCapacity().replace("-", ""));
             }
             if (product.getGuarantee() != null) {
-                guarantees.add(product.getGuarantee().replace("-", "")); // Remove hyphen from guarantee
+                guarantees.add(product.getGuarantee().replace("-", ""));
             }
             if (product.getBrand() != null) {
-                brand.add(product.getBrand().replace("-", "")); // Remove hyphen from guarantee
+                brand.add(product.getBrand().replace("-", "")); 
             }
         }
 
@@ -259,7 +259,7 @@ public class maincontroller {
                         )
                         .fetchAllHits()
                         .stream()
-                        .distinct() // Ensures that only unique products are returned
+                        .distinct() 
                         .collect(Collectors.toList());
                 model.addAttribute("products", Products);
                 addFilter(model);
@@ -440,22 +440,19 @@ public class maincontroller {
         if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
             boolean isInductionBase = false;
 
-            // Check if the current product name contains "induction"
             if (prod.getProdName().toLowerCase().contains("induction")) {
                 isInductionBase = true;
             }
             List<Product> products; 
 
             if (isInductionBase) {
-                // Fetch induction-based products
                 products = pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
             } else {
-                // Fetch non-induction products
                 products = pRepo.findNonInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
             }
 
             if (!products.isEmpty()) {
-                prod = products.get(0);  // For example, if you need only the first product
+                prod = products.get(0);  
             }
         } else {
             prod = pRepo.getById(pid);
@@ -733,7 +730,6 @@ public class maincontroller {
             return "redirect:/profile";
 
         } catch (Exception e) {
-            // Handle errors and redirect back to the registration page
             redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
             System.out.println("exception=" + e);
             return "redirect:/";
