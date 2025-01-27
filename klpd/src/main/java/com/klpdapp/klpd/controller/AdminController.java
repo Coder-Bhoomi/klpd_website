@@ -24,7 +24,6 @@ import com.klpdapp.klpd.Repository.SubCategoryRepo;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Order;
-import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Size;
 import com.klpdapp.klpd.model.SubCategory;

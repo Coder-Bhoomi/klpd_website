@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
@@ -432,27 +433,65 @@ public class maincontroller {
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
             @RequestParam(required = false) String selectedSubcategoryId,
             Model model, HttpSession session) {
-        System.out.println("pid="+pid);
+        System.out.println("pid=" + pid);
         Product prod = pRepo.getById(pid);
 
         // Check if size and subcategory are selected
         if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
-            prod = pRepo.findProductBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
-        }
-        else {
+            boolean isInductionBase = false;
+
+            // Check if the current product name contains "induction"
+            if (prod.getProdName().toLowerCase().contains("induction")) {
+                isInductionBase = true;
+            }
+            List<Product> products; 
+
+            if (isInductionBase) {
+                // Fetch induction-based products
+                products = pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+            } else {
+                // Fetch non-induction products
+                products = pRepo.findNonInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+            }
+
+            if (!products.isEmpty()) {
+                prod = products.get(0);  // For example, if you need only the first product
+            }
+        } else {
             prod = pRepo.getById(pid);
         }
 
         if (prod != null) {
             model.addAttribute("product", prod);
-            System.out.println("pid="+prod.getPid());
+            System.out.println("pid=" + prod.getPid());
 
             List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
                     prod.getCategory().getCategoryId(),
                     prod.getPid());
 
-            List<String> sizes = sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
+            // List<String> sizes =
+            // sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
 
+            //List<String> sizes  = new ArrayList<>();
+
+            List<String> sizes;
+
+            boolean isInductionBase = false;
+
+            // Check if the current product name contains "induction"
+            if (prod.getProdName().toLowerCase().contains("induction")) {
+                isInductionBase = true;
+            }
+
+            if (isInductionBase) {
+                // Fetch induction-based product sizes
+                sizes = pRepo.findInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
+            } else {
+                // Fetch non-induction products sizes
+                sizes = pRepo.findNonInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
+            }
+            
+            sizes.removeIf(size -> size.trim().equals("-")); // Remove hyphens from the list
             model.addAttribute("sizes", sizes);
 
             model.addAttribute("relatedProducts", relatedProducts);
