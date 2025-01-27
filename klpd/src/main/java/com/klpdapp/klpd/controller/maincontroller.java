@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.Collections;
 
 import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
@@ -39,7 +38,6 @@ import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.PincodeRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
-import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.Security.CustomUserDetails;
@@ -79,9 +77,6 @@ public class maincontroller {
 
     @Autowired
     UserRepo uRepo;
-
-    @Autowired
-    SizeRepo sizeRepo;
 
     @Autowired
     AdminRepo adRepo;

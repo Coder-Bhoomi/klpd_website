@@ -19,13 +19,11 @@ import com.klpdapp.klpd.Repository.ImagesRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
-import com.klpdapp.klpd.Repository.SizeRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.Size;
 import com.klpdapp.klpd.model.SubCategory;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,9 +43,6 @@ public class AdminController {
 
 	@Autowired
 	ProductRepo prepo;
-
-	@Autowired
-	SizeRepo srepo;
 
 	@Autowired
 	ImagesRepo imgRepo;
@@ -122,24 +117,6 @@ public class AdminController {
 		return "admin/product";
 	}
 
-	@GetMapping({ "/size" })
-	public String ShowSize(Model model) {
-		List<Size> s = srepo.findAll();
-		model.addAttribute("size", s);
-		return "admin/size";
-	}
-	
-
-	@PostMapping("/size/update")
-	public String updateSize(@RequestParam String subcategoryID, @ModelAttribute Size size) {
-		SubCategory subCategory = sCatRepo.findById(subcategoryID).orElse(null);
-		size.setSubcategory(subCategory);
-		System.out.println(size.getSubcategory());
-		srepo.save(size);
-
-		return "redirect:/admin/size";
-	}
-
 	@GetMapping({ "/productlist" })
 	public String ShowProductList(Model model) {
 		List<Product> p = prepo.findAll();
@@ -180,16 +157,6 @@ public class AdminController {
 		subCat.setSubcategoryName(SubCategoryName);
 		subCat.setCategory(scCategoryId);
 		sCatRepo.save(subCat);
-		return "redirect:/admin/product";
-	}
-
-	@PostMapping("/addSize")
-	public String addSize(@RequestParam("size") String size,
-			@RequestParam("sizeSubCategoryId") SubCategory sizeSubCategoryId) {
-		Size siz = new Size();
-		siz.setSize(size);
-		siz.setSubcategory(sizeSubCategoryId);
-		srepo.save(siz);
 		return "redirect:/admin/product";
 	}
 
