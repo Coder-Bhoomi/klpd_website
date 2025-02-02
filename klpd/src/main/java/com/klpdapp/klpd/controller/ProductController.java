@@ -1,0 +1,121 @@
+package com.klpdapp.klpd.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.klpdapp.klpd.Repository.CartRepo;
+import com.klpdapp.klpd.Repository.ProductRepo;
+import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.Services.CategoryService;
+import com.klpdapp.klpd.model.Cart;
+import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wishlist;
+
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+@RequestMapping("/product")
+public class ProductController {
+    
+    @Autowired
+    ProductRepo pRepo;
+
+    @Autowired
+    UserRepo uRepo;
+
+    @Autowired
+    CartRepo cartRepository;
+
+    @Autowired
+    WishlistRepo wishlistRepo;
+
+    @Autowired
+    CategoryService CategoryService;
+    
+    @GetMapping("/{pid}")
+    public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
+            @RequestParam(required = false) String selectedSubcategoryId,
+            Model model, HttpSession session) {
+        System.out.println("pid=" + pid);
+        Product prod = pRepo.getById(pid);
+
+        // Check if size and subcategory are selected
+        if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
+            boolean isInductionBase = false;
+
+            if (prod.getProdName().toLowerCase().contains("induction")) {
+                isInductionBase = true;
+            }
+            List<Product> products; 
+
+            if (isInductionBase) {
+                products = pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+            } else {
+                products = pRepo.findNonInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+            }
+
+            if (!products.isEmpty()) {
+                prod = products.get(0);  
+            }
+        } else {
+            prod = pRepo.getById(pid);
+        }
+
+        if (prod != null) {
+            model.addAttribute("product", prod);
+            System.out.println("pid=" + prod.getPid());
+
+            List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
+                    prod.getCategory().getCategoryId(),
+                    prod.getPid());
+
+            // List<String> sizes =
+            // sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
+
+            //List<String> sizes  = new ArrayList<>();
+
+            List<String> sizes;
+
+            boolean isInductionBase = false;
+
+            // Check if the current product name contains "induction"
+            if (prod.getProdName().toLowerCase().contains("induction")) {
+                isInductionBase = true;
+            }
+
+            if (isInductionBase) {
+                // Fetch induction-based product sizes
+                sizes = pRepo.findInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
+            } else {
+                // Fetch non-induction products sizes
+                sizes = pRepo.findNonInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
+            }
+            
+            sizes.removeIf(size -> size.trim().equals("-")); // Remove hyphens from the list
+            model.addAttribute("sizes", sizes);
+
+            model.addAttribute("relatedProducts", relatedProducts);
+            model.addAttribute("categoryId", prod.getCategory().getCategoryId());
+        }
+        Integer userId = (Integer) session.getAttribute("userid");
+        if (userId != null) {
+            User user = uRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartRepository.findByUser(user);
+            model.addAttribute("cart", cartItems);
+            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+            model.addAttribute("wishlist", wishlistItems);
+        }
+        CategoryService.addCategoriesToModel(model);
+
+        return "product";
+    }
+}

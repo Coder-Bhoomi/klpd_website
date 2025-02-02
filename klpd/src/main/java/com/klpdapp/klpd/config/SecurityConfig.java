@@ -57,8 +57,7 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll())
-                        // Google login is not working properly
-                .oauth2Login(oauth2 -> oauth2
+=                .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .failureHandler(customAuthenticationFailureHandler()))
                 .sessionManagement()

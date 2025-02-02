@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -40,7 +39,7 @@ import com.klpdapp.klpd.Repository.PincodeRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
-import com.klpdapp.klpd.Security.CustomUserDetails;
+import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.dto.AdminDto;
 import com.klpdapp.klpd.dto.UserDto;
@@ -105,38 +104,13 @@ public class maincontroller {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    CategoryService CategoryService;
+
     private static List<Product> Products;
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    private void addCategoriesToModel(Model model) {
-        List<Category> categories = ctgRepo.findAll();
-        categories.sort(Comparator.comparing(Category::getCategoryName));
-
-        Category partsAndAccessories = null;
-        Category others = null;
-
-        Iterator<Category> iterator = categories.iterator();
-        while (iterator.hasNext()) {
-            Category category = iterator.next();
-            if ("Parts & Accessories".equalsIgnoreCase(category.getCategoryName())) {
-                partsAndAccessories = category;
-                iterator.remove();
-            } else if ("Others".equalsIgnoreCase(category.getCategoryName())) {
-                others = category;
-                iterator.remove();
-            }
-        }
-
-        if (partsAndAccessories != null) {
-            categories.add(partsAndAccessories);
-        }
-        if (others != null) {
-            categories.add(others);
-        }
-        model.addAttribute("categories", categories);
-    }
 
     private static void addFilter(Model model) {
         Set<String> colors = new HashSet<>();
@@ -206,7 +180,7 @@ public class maincontroller {
     public String showIndex(Model model, HttpSession session) {
         List<Product> NewProducts = pRepo.findTop4ByOrderByCreatedAtDesc();
         List<Product> TopProducts = pRepo.findTop4ByOrderByHitsDesc();
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
         model.addAttribute("topProduct", TopProducts);
         model.addAttribute("newProduct", NewProducts);
         Integer userId = (Integer) session.getAttribute("userid");
@@ -266,7 +240,7 @@ public class maincontroller {
 
         }
         model.addAttribute("query", query);
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
         Integer userId = (Integer) usersession.getAttribute("userid");
         if (userId != null) {
             User user = uRepo.findById(userId).orElse(null);
@@ -398,7 +372,7 @@ public class maincontroller {
         }
         Products = p;
         addFilter(model);
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
 
         return "category";
     }
@@ -410,7 +384,7 @@ public class maincontroller {
             Category category = ctgRepo.findById(categoryId).orElse(null);
             model.addAttribute("category", category);
             model.addAttribute("products", Products);
-            addCategoriesToModel(model);
+            CategoryService.addCategoriesToModel(model);
             addFilter(model);
             Integer userId = (Integer) session.getAttribute("userid");
             if (userId != null) {
@@ -424,473 +398,9 @@ public class maincontroller {
         return "category";
     }
 
-    @GetMapping("/product/{pid}")
-    public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
-            @RequestParam(required = false) String selectedSubcategoryId,
-            Model model, HttpSession session) {
-        System.out.println("pid=" + pid);
-        Product prod = pRepo.getById(pid);
-
-        // Check if size and subcategory are selected
-        if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
-            boolean isInductionBase = false;
-
-            if (prod.getProdName().toLowerCase().contains("induction")) {
-                isInductionBase = true;
-            }
-            List<Product> products; 
-
-            if (isInductionBase) {
-                products = pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
-            } else {
-                products = pRepo.findNonInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
-            }
-
-            if (!products.isEmpty()) {
-                prod = products.get(0);  
-            }
-        } else {
-            prod = pRepo.getById(pid);
-        }
-
-        if (prod != null) {
-            model.addAttribute("product", prod);
-            System.out.println("pid=" + prod.getPid());
-
-            List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
-                    prod.getCategory().getCategoryId(),
-                    prod.getPid());
-
-            // List<String> sizes =
-            // sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
-
-            //List<String> sizes  = new ArrayList<>();
-
-            List<String> sizes;
-
-            boolean isInductionBase = false;
-
-            // Check if the current product name contains "induction"
-            if (prod.getProdName().toLowerCase().contains("induction")) {
-                isInductionBase = true;
-            }
-
-            if (isInductionBase) {
-                // Fetch induction-based product sizes
-                sizes = pRepo.findInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
-            } else {
-                // Fetch non-induction products sizes
-                sizes = pRepo.findNonInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
-            }
-            
-            sizes.removeIf(size -> size.trim().equals("-")); // Remove hyphens from the list
-            model.addAttribute("sizes", sizes);
-
-            model.addAttribute("relatedProducts", relatedProducts);
-            model.addAttribute("categoryId", prod.getCategory().getCategoryId());
-        }
-        Integer userId = (Integer) session.getAttribute("userid");
-        if (userId != null) {
-            User user = uRepo.findById(userId).orElse(null);
-            List<Cart> cartItems = cartRepository.findByUser(user);
-            model.addAttribute("cart", cartItems);
-            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
-        }
-        addCategoriesToModel(model);
-
-        return "product";
-    }
-
-    @GetMapping("/cart")
-    public String showCart(@AuthenticationPrincipal CustomUserDetails userDetails, Model model, HttpSession session) {
-        session.setAttribute("userid", userDetails.getUserId());
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            List<Cart> cartItems = cartRepository.findByUser(user);
-            float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
-            float discount = 0.0f;
-            float tax = subtotal * 0.10f;
-            float total = subtotal + tax - discount;
-
-            model.addAttribute("cart", cartItems);
-            model.addAttribute("subtotal", subtotal);
-            model.addAttribute("discount", discount);
-            model.addAttribute("tax", tax);
-            model.addAttribute("total", total);
-            addCategoriesToModel(model);
-            return "cart";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-    @PostMapping("/cart/update")
-    public String updateCart(@RequestParam Integer cartId, @RequestParam Integer quantity, Model model) {
-        Cart cartItem = cartRepository.getById(cartId);
-        if (cartItem != null) {
-
-            Product Product = cartItem.getProduct();
-            cartItem.setQuantity(quantity);
-            cartItem.setProductTotal(
-                    quantity * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
-            cartRepository.save(cartItem);
-            model.addAttribute("message", "Cart updated successfully.");
-        }
-        return "redirect:/cart";
-    }
-
-    @GetMapping({ "/cart/delete" })
-    public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
-        cartRepository.deleteById(id);
-        return "redirect:/cart";
-    }
-
-    @PostMapping("/cart/checkout")
-    public String Checkout(HttpSession session, HttpServletResponse response) {
-        try {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            if (session.getAttribute("userid") != null) {
-                Integer userId = (Integer) session.getAttribute("userid");
-                User user = uRepo.findById(userId).orElse(null);
-                Order order = new Order();
-                List<Cart> carts = cartRepository.findByUser(user);
-                float subtotal = carts.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
-                float discount = 0.0f;
-                float tax = subtotal * 0.10f;
-                int total = (int) (subtotal + tax - discount);
-                order.setUser(user);
-                order.setTotalAmt(total);
-                order.setOrderDate(LocalDate.now());
-                orderrepo.save(order);
-                for (Cart cart : carts) {
-                    OrderItem orderitem = new OrderItem();
-                    orderitem.setOrder(order);
-                    orderitem.setProdQuantity(cart.getQuantity());
-                    orderitem.setProduct(cart.getProduct());
-                    orderitemrepo.save(orderitem);
-                }
-                cartRepository.deleteByUser(user);
-                return "redirect:/";
-            }
-            return "redirect:/";
-        } catch (Exception e) {
-            return "redirect:/";
-        }
-    }
-
-    @PostMapping("/cart/add")
-    public String addToCart(HttpSession session, @RequestParam Integer productId, @RequestParam Integer quantity,
-            Model model) {
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            Product product = pRepo.findById(productId).orElse(null);
-
-            if (product != null) {
-                Cart existingCartItem = cartRepository.findByProductAndUser(product, user).orElse(null);
-
-                if (existingCartItem != null) {
-                    // Update quantity and product total
-                    existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-                    float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
-                    existingCartItem.setProductTotal(price * existingCartItem.getQuantity());
-                    cartRepository.save(existingCartItem);
-                } else {
-                    // Create a new cart item
-                    Cart cart = new Cart();
-                    cart.setUser(user);
-                    cart.setProduct(product);
-                    cart.setQuantity(quantity);
-                    float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
-                    cart.setProductTotal(price * quantity);
-                    cartRepository.save(cart);
-                }
-
-                model.addAttribute("message", "Product added to cart!");
-            } else {
-                model.addAttribute("message", "Product not found.");
-            }
-        } else {
-            return "redirect:/login";
-        }
-
-        return "redirect:/cart";
-
-    }
-
-    @GetMapping("/wishlist")
-    public String showwishlist(@AuthenticationPrincipal CustomUserDetails userDetails, Model model,
-            HttpSession session) {
-        session.setAttribute("userid", userDetails.getUserId());
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
-            model.addAttribute("user", user);
-            addCategoriesToModel(model);
-            return "wishlist";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-    @PostMapping({ "/wishlist/delete" })
-    public String DeletewishlistItem(@RequestParam("wishlistId") int wishlistId, RedirectAttributes attrib) {
-        wishlistRepo.deleteById(wishlistId);
-        return "redirect:/wishlist";
-    }
-
-    @PostMapping("/wishlist/add")
-    public String addTowishlist(HttpSession session, @RequestParam Integer productId,
-            Model model) {
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            Product product = pRepo.findById(productId).orElse(null);
-
-            if (product != null) {
-                Wishlist existingwishlistItem = wishlistRepo.findByProductAndUser(product, user).orElse(null);
-
-                if (existingwishlistItem == null) {
-                    // Create a new wishlist item
-                    Wishlist wishlist = new Wishlist();
-                    wishlist.setUser(user);
-                    wishlist.setProduct(product);
-                    wishlistRepo.save(wishlist);
-                    System.out.println("added");
-                }
-
-                model.addAttribute("message", "Product added to wishlist!");
-            } else {
-                model.addAttribute("message", "Product not found.");
-            }
-        } else {
-            return "redirect:/login";
-        }
-
-        return "redirect:/wishlist";
-
-    }
-
-    @GetMapping({ "/login" })
-    public String showLogin(Model model, HttpSession session) {
-        UserDto udto = new UserDto();
-        model.addAttribute("dto", udto);
-        addCategoriesToModel(model);
-        String errorMessage = (String) session.getAttribute("errorMessage");
-        if (errorMessage != null) {
-            model.addAttribute("errorMessage", errorMessage);
-        }
-        return "registration";
-    }
-
-    @PostMapping("/register")
-    public String submitRegister(
-            @ModelAttribute UserDto userDto,
-            RedirectAttributes redirectAttributes,
-            HttpSession session) {
-        try {
-            // Encode the password
-            String encodedPassword = passwordEncoder.encode(userDto.getPassword());
-
-            // Create a new User object
-            User user = new User();
-            user.setName(userDto.getName());
-            user.setEmail(userDto.getEmail());
-            user.setPassword(encodedPassword);
-            user.setStatus("Active");
-
-            // Save the user in the database
-            uRepo.save(user);
-
-            // Programmatically authenticate the user
-            // Inside RegisterController after authentication
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword()));
-
-            if (authentication.isAuthenticated()) {
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                System.out.println("Session ID: " + session.getId());
-
-                System.out.println("User authenticated successfully.");
-            } else {
-                System.out.println("Authentication failed.");
-            }
-
-            session.setAttribute("userid", user.getUserId());
-            redirectAttributes.addFlashAttribute("message", "Registered Successfully and Logged In!");
-            return "redirect:/profile";
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
-            System.out.println("exception=" + e);
-            return "redirect:/";
-        }
-    }
-
-    @GetMapping("/profile")
-    public String ShowProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model,
-            HttpSession session) {
-        session.setAttribute("userid", userDetails.getUserId());
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            model.addAttribute("user", user);
-            addCategoriesToModel(model);
-            if (user != null) {
-                // Parse the name into firstName, middleName, and lastName
-                String[] nameParts = splitName(user.getName());
-                UserDto userDto = new UserDto();
-                userDto.setUserId(user.getUserId());
-                userDto.setDob(user.getDob());
-                userDto.setGender(user.getGender());
-                userDto.setEmail(user.getEmail());
-                userDto.setMobile(user.getMobile());
-                userDto.setStatus(user.getStatus());
-                userDto.setPassword(user.getPassword());
-                // Set parsed name fields
-                userDto.setFirstName(nameParts[0]);
-                userDto.setMiddleName(nameParts[1]);
-                userDto.setLastName(nameParts[2]);
-
-                // Add UserDto to the model
-                model.addAttribute("userdto", userDto);
-            }
-            return "profile";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-    private String[] splitName(String fullName) {
-        if (fullName == null || fullName.trim().isEmpty()) {
-            return new String[] { "", "", "" };
-        }
-
-        String[] parts = fullName.trim().split("\\s+");
-        String firstName = parts.length > 0 ? parts[0] : "";
-        String middleName = "";
-        String lastName = "";
-
-        if (parts.length == 2) {
-            lastName = parts[1];
-        } else if (parts.length > 2) {
-            lastName = parts[parts.length - 1];
-            middleName = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length - 1));
-        }
-
-        return new String[] { firstName, middleName, lastName };
-    }
-
-    @PostMapping("/profile/update")
-    public String updateProfile(@ModelAttribute UserDto udto, HttpSession session) {
-        System.out.println("Received UserDto: " + udto);
-
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User existingUser = uRepo.findById(userId).orElse(null);
-            System.out.println("Existing user before update: " + existingUser);
-            System.out.println("Gender: " + udto.getGender());
-            System.out.println("Dob: " + udto.getDob());
-            System.out.println("Number: " + udto.getMobile());
-            if (existingUser != null) {
-                String firstName = udto.getFirstName() != null ? udto.getFirstName() : "";
-                String middleName = udto.getMiddleName() != null ? udto.getMiddleName() : "";
-                String lastName = udto.getLastName() != null ? udto.getLastName() : "";
-
-                String fullName = firstName;
-                if (!middleName.isEmpty()) {
-                    fullName += " " + middleName;
-                }
-                if (!lastName.isEmpty()) {
-                    fullName += " " + lastName;
-                }
-
-                existingUser.setName(fullName);
-                existingUser.setEmail(
-                        (udto.getEmail() != null && !udto.getEmail().isEmpty())
-                                ? udto.getEmail()
-                                : existingUser.getEmail());
-                existingUser.setGender(udto.getGender());
-                existingUser.setDob(udto.getDob());
-                existingUser.setMobile(udto.getMobile());
-
-                uRepo.save(existingUser);
-
-                return "redirect:/profile";
-            } else {
-                // If the user does not exist, redirect to login
-                return "redirect:/login";
-            }
-        } else {
-            // If no session is active, redirect to login
-            return "redirect:/login";
-        }
-    }
-
-    @GetMapping("/address")
-    public String ShowAddress(Model model, HttpSession session) {
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            if (user != null) {
-                AddressDto aDto = new AddressDto();
-                aDto.setUserId(user.getUserId());
-                model.addAttribute("aDto", aDto);
-            }
-            List<Address> address = addressrepo.findByUser(user);
-            model.addAttribute("address", address);
-            model.addAttribute("user", user);
-            addCategoriesToModel(model);
-            return "address";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-    @PostMapping("/address/add")
-    public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto,
-            RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("userid") != null) {
-            Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-
-            if (user != null) {
-
-                Optional<Pincode> pincode = pincoderepo.findByPincode((Integer) aDto.getPincode());
-                if (pincode.isPresent()) {
-                    // Pincode exists, proceed to save the address
-                    Address a = new Address();
-                    a.setUser(user);
-                    a.setNumber(aDto.getNumber());
-                    a.setAddress(aDto.getAddress());
-                    a.setName(aDto.getName());
-                    a.setPincode(aDto.getPincode());
-
-                    addressrepo.save(a);
-                    return "redirect:/address";
-                } else {
-                    redirectAttributes.addFlashAttribute("error", "Pincode not found. Please enter a valid pincode.");
-                    return "redirect:/address";
-                }
-            }
-        }
-        return "redirect:/login";
-    }
-
-    @PostMapping("/address/delete")
-    public String AddressDelete(@RequestParam("addressid") int addressId, RedirectAttributes attrib) {
-        addressrepo.deleteById(addressId);
-        return "redirect:/address";
-
-    }
-
     @GetMapping("/coupon")
     public String ShowCoupon(Model model, HttpSession session) {
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
         Integer userId = (Integer) session.getAttribute("userid");
         User user = uRepo.findById(userId).orElse(null);
         List<Coupon> coupon = couponrepo.findAll();
@@ -901,7 +411,7 @@ public class maincontroller {
 
     @GetMapping("/order")
     public String ShowOrder(Model model, HttpSession session) {
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
         Integer userId = (Integer) session.getAttribute("userid");
         User user = uRepo.findById(userId).orElse(null);
         List<OrderItem> orderItems = orderitemrepo.findByOrder_User(user);
@@ -915,7 +425,7 @@ public class maincontroller {
         Integer userId = (Integer) session.getAttribute("userid");
         User user = uRepo.findById(userId).orElse(null);
         model.addAttribute("user", user);
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
         return "notification";
     }
 
@@ -928,37 +438,12 @@ public class maincontroller {
         return "redirect:/login";
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
-        return "redirect:/login";
-    }
-
-    @PostMapping("/profile/deactivate")
-    public String deactivateAccount(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute("userid");
-        User user = uRepo.findById(userId).orElse(null);
-        user.setStatus("Inactive");
-        uRepo.save(user);
-        return "redirect:/profile";
-    }
-
-    @Transactional
-    @PostMapping("/profile/delete")
-    public String deleteAccount(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute("userid");
-        wishlistRepo.deleteByUser_UserId(userId);
-        uRepo.deleteById(userId);
-        return "redirect:/login";
-    }
-
+    
     @GetMapping({ "/admin" })
     public String ShowAdmLogin(Model model) {
         AdminDto addto = new AdminDto();
         model.addAttribute("dto", addto);
-        addCategoriesToModel(model);
+        CategoryService.addCategoriesToModel(model);
         return "/admin/login";
     }
 

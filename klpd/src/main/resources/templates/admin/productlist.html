@@ -34,38 +34,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="p : ${product}">
-                                        <td class="editable" th:text="${p.pid}" >1</td>
-                                        <td class="editable" th:text="${p.hapPid}">CL01</td>
-                                        <td class="editable" th:text="${p.prodName}">Pressure Cooker</td>
-                                        <td class="editable" th:text="${p.Brand}">Hawkins</td>
-                                        <td class="editable" th:text="${p.offerPrice}">₹1500 </td>
+                                    <tr th:each="product : ${product}">
+                                        <td th:text="${product.pid}"></td>
+                                        <td th:text="${product.hapPid}"></td>
+                                        <td th:text="${product.prodName}"></td>
+                                        <td th:text="${product.brand}"></td>
+                                        <td th:text="${product.offerPrice}"></td>
                                         <td>
-                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tableModal">View Details</button>
-                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="editable">2</td>
-                                        <td class="editable">CL02</td>
-                                        <td class="editable">Fry Pan</td>
-                                        <td class="editable">Hawkins</td>
-                                        <td class="editable">₹1200</td>
-                                        <td>
-                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tableModal">View Details</button>
-                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="editable">3</td>
-                                        <td class="editable">CL03</td>
-                                        <td class="editable">Stewpot</td>
-                                        <td class="editable">Hawkins</td>
-                                        <td class="editable">₹1800</td>
-                                        <td>
-                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#tableModal">View Details</button>
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                th:data-bs-target="'#productModal' + ${product.pid}">View Details</button>
                                             <button class="btn btn-warning btn-sm edit-btn">Edit</button>
                                             <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
                                         </td>
@@ -82,11 +59,13 @@
     </div>
 </div>                                                                                                      
 <!-- Modal with Vertical Table -->
-<div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div th:each="product : ${product}">
+    <div th:id="'productModal' + ${product.pid}" class="modal fade" tabindex="-1"
+        aria-labelledby="productModalLabel" aria-hidden="true">    
+        <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tableModalLabel">Product Details</h5>
+                <h5 class="modal-title" id="tableModalLabel" th:text="${product.prodName}">Product Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -95,87 +74,83 @@
                     <tbody id="verticalTable">
                         <tr>
                             <th>Product ID</th>
-                            <td><span class="editable" id="id">1</span></td>
+                            <td><span class="editable" id="id" th:text="${product.pid}">1</span></td>
                         </tr>
                         <tr>
                             <th>Category ID</th>
-                            <td><span class="editable" id="categoryId">C01</span></td>
+                            <td><span class="editable" id="categoryId" th:text="${product.category.categoryId}">C01</span></td>
                         </tr>
                         <tr>
                             <th>Sub Category ID</th>
-                            <td><span class="editable" id="subCategoryId">SC01</span></td>
+                            <td><span class="editable" id="subCategoryId" th:text="${product.subcategory.subcategoryId}">SC01</span></td>
                         </tr>
                         <tr>
                             <th>Description</th>
-                            <td><span class="editable" id="description">Cooker</span></td>
+                            <td><span class="editable" id="description" th:text="${product.description}">Cooker</span></td>
                         </tr>
                         <tr>
                             <th>Stock</th>
-                            <td><span class="editable" id="availability">100</span></td>
+                            <td><span class="editable" id="availability" th:text="${product.stock}">100</span></td>
                         </tr>
                         <tr>
                             <th>Created At</th>
-                            <td><span class="editable" id="createdAt">01-01-2001</span></td>
+                            <td><span class="editable" id="createdAt" th:text="${product.createdAt}">01-01-2001</span></td>
                         </tr>
                         <tr>
                             <th>percentage</th>
-                            <td><span class="editable" id="description">15%</span></td>
+                            <td><span class="editable" id="description"><span th:text="${product.percentage}">15</span>%</span></td>
                         </tr>
                         <tr>
                             <th>Diameter</th>
-                            <td><span class="editable" id="description">10cm</span></td>
+                            <td><span class="editable" id="description" th:text="${product.diameter}"></span></td>
                         </tr>
                         <tr>
                             <th>Thickness</th>
-                            <td><span class="editable" id="description">5mm</span></td>
+                            <td><span class="editable" id="description" th:text="${product.thickness}">5mm</span></td>
                         </tr>
                         <tr>
                             <th>Capacity</th>
-                            <td><span class="editable" id="description">5L</span></td>
+                            <td><span class="editable" id="description" th:text="${product.capacity}">5L</span></td>
                         </tr>
                         <tr>
-                            <th>Modal</th>
-                            <td><span class="editable" id="description">Induction</span></td>
+                            <th>Model</th>
+                            <td><span class="editable" id="description" th:text="${product.model}">Induction</span></td>
                         </tr>
                         <tr>
                             <th>Length</th>
-                            <td><span class="editable" id="description">10cm</span></td>
+                            <td><span class="editable" id="description" th:text="${product.length}">10cm</span></td>
                         </tr>
                         <tr>
                             <th>Height</th>
-                            <td><span class="editable" id="description">10cm</span></td>
+                            <td><span class="editable" id="description" th:text="${product.height}">10cm</span></td>
                         </tr>
                         <tr>
                             <th>Weight</th>
-                            <td><span class="editable" id="description">5kg</span></td>
+                            <td><span class="editable" id="description" th:text="${product.weight}">5kg</span></td>
                         </tr>
                         <tr>
                             <th>Carton Dimension</th>
-                            <td><span class="editable" id="description">10cm</span></td>
+                            <td><span class="editable" id="description" th:text="${product.cartonDimension}">10cm</span></td>
                         </tr>
                         <tr>
                             <th>Guarantee</th>
-                            <td><span class="editable" id="description">5 Years</span></td>
+                            <td><span class="editable" id="description" th:text="${product.guarantee}">5 Years</span></td>
                         </tr>
                         <tr>
                             <th>Warranty</th>
-                            <td><span class="editable" id="description">1 Year</span></td>
+                            <td><span class="editable" id="description" th:text="${product.warranty}">1 Year</span></td>
                         </tr>
                         <tr>
                             <th>Color</th>
-                            <td><span class="editable" id="description">Black</span></td>
+                            <td><span class="editable" id="description" th:text="${product.color}">Black</span></td>
                         </tr>
                         <tr>
                             <th>Material</th>
-                            <td><span class="editable" id="description">Steel</span></td>
+                            <td><span class="editable" id="description" th:text="${product.material}">Steel</span></td>
                         </tr>
                         <tr>
                             <th>Finish</th>
-                            <td><span class="editable" id="description">Good</span></td>
-                        </tr>
-                        <tr>
-                            <th>Description</th>
-                            <td><span class="editable" id="description">Induction Pressure Cooker</span></td>
+                            <td><span class="editable" id="description" th:text="${product.finish}">Good</span></td>
                         </tr>
 
                     </tbody>
@@ -189,6 +164,7 @@
         </div>
     </div>
 </div> 
+</div>
 <script>
     const editButton = document.getElementById('editButton');
     const saveButton = document.getElementById('saveButton');

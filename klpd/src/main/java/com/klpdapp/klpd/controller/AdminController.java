@@ -173,7 +173,8 @@ public class AdminController {
 			@RequestParam("weight") String weight, @RequestParam("cartonDimension") String cartonDimension,
 			@RequestParam("guarantee") String guarantee, @RequestParam("warranty") String warranty,
 			@RequestParam("color") String color, @RequestParam("material") String material,
-			@RequestParam("finish") String finish, @RequestParam("description") String description) {
+			@RequestParam("finish") String finish, @RequestParam("dimension") String dimension, 
+			@RequestParam("description") String description) {
 		Product prod = new Product();
 		prod.setPid(productId);
 		prod.setCompanyPid(id);
@@ -185,15 +186,16 @@ public class AdminController {
 		prod.setCreatedAt(createdAt);
 		prod.setStock(stock);
 		prod.setMrp(price);
+		prod.setDimension(dimension);
 		prod.setPercentage(percentage);
 		prod.setOfferPrice(offeredPrice);
-		prod.setDiameter(diameter);
-		prod.setThickness(thickness);
-		prod.setCapacity(capacity);
-		prod.setWeight(weight);
+		prod.setDiameter(diameter + "cm");
+		prod.setThickness(thickness + "mm");
+		prod.setCapacity(capacity + "litre");
+		prod.setWeight(weight + "kg");
 		prod.setCartonDimension(cartonDimension);
-		prod.setGuarantee(guarantee);
-		prod.setWarranty(warranty);
+		prod.setGuarantee(guarantee + "years");
+		prod.setWarranty(warranty + "years");
 		prod.setColor(color);
 		prod.setMaterial(material);
 		prod.setFinish(finish);
