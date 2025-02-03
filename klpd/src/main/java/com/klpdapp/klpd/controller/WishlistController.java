@@ -38,8 +38,7 @@ public class WishlistController {
     WishlistRepo wishlistRepo;
 
     @GetMapping //("/wishlist")
-    public String showwishlist(Model model,
-            HttpSession session) {
+    public String showwishlist(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             User user = uRepo.findById(userId).orElse(null);

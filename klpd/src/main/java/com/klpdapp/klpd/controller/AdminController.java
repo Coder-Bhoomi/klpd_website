@@ -161,7 +161,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/addNewProduct")
-	public String addNewProduct(@RequestParam("id") String id, @RequestParam("productId") int productId,
+	public String addNewProduct(@RequestParam("id") String id,
 			@RequestParam("hapId") String hapId,
 			@RequestParam("pcategoryId") Category pcategoryId,
 			@RequestParam("psubCategoryId") SubCategory psubCategoryId, @RequestParam("brand") String brand,
@@ -176,7 +176,6 @@ public class AdminController {
 			@RequestParam("finish") String finish, @RequestParam("dimension") String dimension, 
 			@RequestParam("description") String description) {
 		Product prod = new Product();
-		prod.setPid(productId);
 		prod.setCompanyPid(id);
 		prod.setHapPid(hapId);
 		prod.setCategory(pcategoryId);
@@ -205,11 +204,10 @@ public class AdminController {
 	}
 
 	@PostMapping("/addCoupon")
-	public String addCoupon(@RequestParam int couponId, @RequestParam String couponCode,
+	public String addCoupon(@RequestParam String couponCode,
 			@RequestParam String couponName, @RequestParam LocalDate validityDate,
 			@RequestParam int discountRate, @RequestParam int uptoAmount, @RequestParam String couponDescription) {
 		Coupon coupon = new Coupon();
-		coupon.setCouponId(couponId);
 		coupon.setCouponCode(couponCode);
 		coupon.setCouponName(couponName);
 		coupon.setIssueDate(validityDate);

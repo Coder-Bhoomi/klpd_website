@@ -84,7 +84,7 @@ public class ProfileController {
         return new String[] { firstName, middleName, lastName };
     }
 
-    @PostMapping("/profile/update")
+    @PostMapping("/update")
     public String updateProfile(@ModelAttribute UserDto udto, HttpSession session) {
         System.out.println("Received UserDto: " + udto);
 
@@ -132,7 +132,7 @@ public class ProfileController {
 
     
 
-    @PostMapping("/profile/deactivate")
+    @PostMapping("/deactivate")
     public String deactivateAccount(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userid");
         User user = uRepo.findById(userId).orElse(null);
@@ -142,7 +142,7 @@ public class ProfileController {
     }
 
     @Transactional
-    @PostMapping("/profile/delete")
+    @PostMapping("/delete")
     public String deleteAccount(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userid");
         wishlistRepo.deleteByUser_UserId(userId);
