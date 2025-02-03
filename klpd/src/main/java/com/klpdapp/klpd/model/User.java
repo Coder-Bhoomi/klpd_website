@@ -33,6 +33,9 @@ public class User {
     @Column(length = 50)
     private String status;
 
+    @Column(unique = true, length = 50)
+    private String googleId;
+
     @Column(nullable = false)
     private boolean enabled = true;
 
@@ -114,5 +117,13 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 }

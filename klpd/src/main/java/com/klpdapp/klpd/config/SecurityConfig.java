@@ -61,8 +61,8 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .failureHandler(customAuthenticationFailureHandler()))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Ensure sessions are created as needed
-                .maximumSessions(1) // Optional: limit to one session per user
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) 
+                .maximumSessions(1) 
                 .expiredUrl("/login?expired=true");
         return http.build();
     }
