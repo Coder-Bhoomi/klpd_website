@@ -43,6 +43,221 @@
                             </div>
                             <button type="submit" id="addCategoryBtn" class="btn btn-primary">Add Category</button>
                         </form>
+
+                                <button type="submit" class="btn btn-primary">Add Size</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Entry -->
+                <div class="col-md-12 mb-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Add New Product</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/admin/addNewProduct" method="post">
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="id" name="id" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Product Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="productId" name="productId" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">HAP Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="hapId" name="hapId" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Category Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="pcategoryId" name="pcategoryId" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">SubCategory Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="psubCategoryId" name="psubCategoryId" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Brand</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="brand" name="brand" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Product Name</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="productName" name="productName" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Created At</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="createdAt" name="createdAt" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Stocks</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="stock" name="stock" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Price</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="price" name="price" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Percentage(%)</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="percentage" name="percentage" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Offered Price</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="offeredPrice" name="offeredPrice" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Diameter</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="diameter" name="diameter" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Thickness</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="thickness" name="thickness" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Capacity</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="capacity" name="capacity" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Weight</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="weight" name="weight" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Carton dimension</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="cartonDimension" name="cartonDimension" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Guarantee</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="guarantee" name="guarantee" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Warranty</label>
+                                        <input type="number" class="form-control bg-dark text-light" id="warranty" name="warranty" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Color</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="color" name="color" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Material</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="material" name="material" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <label for="productName" class="form-label">Finish</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="finish" name="finish" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="productName" class="form-label">Description</label>
+                                        <textarea type="text" class="form-control bg-dark text-light" id="description" name="description" required></textarea>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Product</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- images -->
+                <div class="col-md-12 mb-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Add New Product_Images</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="#" method="post">
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <label for="productName" class="form-label">Product Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="imageProductId" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="productName" class="form-label">Image Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="imageId" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label for="productImage" class="form-label">Primary Image</label>
+                                        <input type="file" class="form-control bg-dark" id="primaryImg" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-5">
+                                    <div class="col-6">
+                                        <label for="productImage" class="form-label">2nd Image (Optional)</label>
+                                        <input type="file" class="form-control bg-dark" id="secondaryImg" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="productImage" class="form-label">3rd Image (Optional)</label>
+                                        <input type="file" class="form-control bg-dark" id="2secondaryImg" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Product Image</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coupon -->
+                <div class="col-md-12 mb-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Add New Coupon</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="/admin/addCoupon" method="post">
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Coupon Id</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="couponId" name="couponId" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Coupon Code</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="couponCode" name="couponCode" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productImage" class="form-label">Coupon Name</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="couponName" name="couponName" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Validity Date</label>
+                                        <input type="date" class="form-control bg-dark text-light" id="validityDate" name="validityDate" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productName" class="form-label">Discount Rate</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="discountRate" name="discountRate" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="productImage" class="form-label">Upto Amount</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="uptoAmount" name="uptoAmount" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label for="productImage" class="form-label">Description</label>
+                                        <textarea class="form-control bg-dark text-light" id="couponDescription" name="couponDescription" required></textarea>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Coupon</button>
+                            </form>
+                        </div>
+>>>>>>> 6b8dbc10c0999b20724d3c3ed5b1c1af5ae8b579
                     </div>
                 </div>
             </div>
