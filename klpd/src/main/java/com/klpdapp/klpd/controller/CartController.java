@@ -69,7 +69,7 @@ public class CartController {
         }
     }
 
-    @PostMapping("/cart/update")
+    @PostMapping("/update")
     public String updateCart(@RequestParam Integer cartId, @RequestParam Integer quantity, Model model) {
         Cart cartItem = cartRepository.getById(cartId);
         if (cartItem != null) {
@@ -84,13 +84,13 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    @DeleteMapping({ "/cart/delete" })
+    @DeleteMapping({ "/delete" })
     public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
         cartService.deleteCartItem(id);
         return "redirect:/cart";
     }
 
-    @PostMapping("/cart/checkout")
+    @PostMapping("/checkout")
     public String Checkout(HttpSession session, HttpServletResponse response) {
         try {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -106,7 +106,7 @@ public class CartController {
         }
     }
 
-    @PostMapping("/cart/add")
+    @PostMapping("/add")
     public String addToCart(HttpSession session, @RequestParam Integer productId, @RequestParam Integer quantity,
             Model model) {
         if (session.getAttribute("userid") != null) {

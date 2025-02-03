@@ -52,13 +52,13 @@ public class WishlistController {
         }
     }
 
-    @PostMapping({ "/wishlist/delete" })
+    @PostMapping({ "/delete" })
     public String DeletewishlistItem(@RequestParam("wishlistId") int wishlistId, RedirectAttributes attrib) {
         wishlistRepo.deleteById(wishlistId);
         return "redirect:/wishlist";
     }
 
-    @PostMapping("/wishlist/add")
+    @PostMapping("/add")
     public String addTowishlist(HttpSession session, @RequestParam Integer productId,
             Model model) {
         if (session.getAttribute("userid") != null) {

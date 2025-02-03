@@ -60,7 +60,7 @@ public class AddressController {
         }
     }
 
-    @PostMapping("/address/add")
+    @PostMapping("/add")
     public String AddAddress(Model model, HttpSession session, @ModelAttribute AddressDto aDto,
             RedirectAttributes redirectAttributes) {
         if (session.getAttribute("userid") != null) {
@@ -90,7 +90,7 @@ public class AddressController {
         return "redirect:/login";
     }
 
-    @PostMapping("/address/delete")
+    @PostMapping("/delete")
     public String AddressDelete(@RequestParam("addressid") int addressId, RedirectAttributes attrib) {
         addressrepo.deleteById(addressId);
         return "redirect:/address";
