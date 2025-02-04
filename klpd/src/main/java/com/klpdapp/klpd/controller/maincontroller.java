@@ -359,9 +359,12 @@ public class maincontroller {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("minDiscount", minDiscount);
         model.addAttribute("maxDiscount", maxDiscount);
-        Category category = Products.get(0).getCategory();
-        model.addAttribute("category", category);
-        model.addAttribute("query", query);
+        if (Products != null && !Products.isEmpty()) {
+            Category category = Products.get(0).getCategory();
+            model.addAttribute("category", category);
+            model.addAttribute("query", query);
+
+        } 
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
             User user = uRepo.findById(userId).orElse(null);
