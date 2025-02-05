@@ -189,7 +189,11 @@ public class maincontroller {
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
+            Set<Integer> wishlistProductIds = new HashSet<>();
+            for (Wishlist item : wishlistItems) {
+                wishlistProductIds.add(item.getProduct().getPid()); 
+            }        
+            model.addAttribute("wishlistProductIds", wishlistProductIds);
         }
         return "index";
     }
@@ -247,8 +251,11 @@ public class maincontroller {
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
-        }
+            Set<Integer> wishlistProductIds = new HashSet<>();
+            for (Wishlist item : wishlistItems) {
+                wishlistProductIds.add(item.getProduct().getPid()); 
+            }        
+            model.addAttribute("wishlistProductIds", wishlistProductIds);        }
         return "category";
     }
 
@@ -371,8 +378,11 @@ public class maincontroller {
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
-        }
+            Set<Integer> wishlistProductIds = new HashSet<>();
+            for (Wishlist item : wishlistItems) {
+                wishlistProductIds.add(item.getProduct().getPid()); 
+            }        
+            model.addAttribute("wishlistProductIds", wishlistProductIds);        }
         Products = p;
         addFilter(model);
         CategoryService.addCategoriesToModel(model);
@@ -395,8 +405,11 @@ public class maincontroller {
                 List<Cart> cartItems = cartRepository.findByUser(user);
                 model.addAttribute("cart", cartItems);
                 List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-                model.addAttribute("wishlist", wishlistItems);
-            }
+                Set<Integer> wishlistProductIds = new HashSet<>();
+                for (Wishlist item : wishlistItems) {
+                    wishlistProductIds.add(item.getProduct().getPid()); 
+                }        
+                model.addAttribute("wishlistProductIds", wishlistProductIds);            }
         }
         return "category";
     }

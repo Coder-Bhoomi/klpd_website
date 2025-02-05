@@ -1,6 +1,8 @@
 package com.klpdapp.klpd.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -112,8 +114,11 @@ public class ProductController {
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            model.addAttribute("wishlist", wishlistItems);
-        }
+            Set<Integer> wishlistProductIds = new HashSet<>();
+            for (Wishlist item : wishlistItems) {
+                wishlistProductIds.add(item.getProduct().getPid()); 
+            }        
+            model.addAttribute("wishlistProductIds", wishlistProductIds);        }
         CategoryService.addCategoriesToModel(model);
 
         return "product";
