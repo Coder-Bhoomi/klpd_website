@@ -18,17 +18,17 @@
                     <div class="col-2">
                         <img th:src="@{${cartItem.product.images[0].imageUrl}}" alt="Product Image" class="img-fluid rounded">
                     </div>
-                    <div class="col-3">
+                    <div class="col-4">
                         <p class="mb-1 mx-5" th:text="${cartItem.product.prodName}">Product Name</p>
                     </div>
-                    <div class="col-2">
+                    <div class="col-1">
                         <form th:action="@{/cart/update}" method="post">
                             <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                            <input type="number" class="form-control quantity-input w-2" min="1" th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
+                            <input type="number" class="form-control quantity-input" style="width: 60px;" min="1" th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
                         </form>
                     </div>
-                    <div class="col-2 text-success fw-bold item-price text-center" th:text="${cartItem.productTotal}">Price</div>
-                    <div class="col-2 text-end">
+                    <div class="col-3 text-success fw-bold item-price text-center mx-4" th:text="${cartItem.productTotal}">Price</div>
+                    <div class="col-1 text-end">
                         <a th:href="@{cart/delete(id=${cartItem.cartId})}">
                         <button class="btn btn-outline-danger btn-sm">Delete</button>
                         </a>
