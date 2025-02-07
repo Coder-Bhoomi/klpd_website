@@ -1,8 +1,6 @@
 package com.klpdapp.klpd.controller;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale.Category;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,11 +17,10 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Services.CartService;
 import com.klpdapp.klpd.model.Cart;
-import com.klpdapp.klpd.model.Order;
-import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
@@ -70,18 +67,25 @@ public class CartController {
     }
 
     @PostMapping("/update")
-    public String updateCart(@RequestParam Integer cartId, @RequestParam Integer quantity, Model model) {
+    public String updateCart(HttpServletRequest request,@RequestParam Integer cartId,@RequestParam(required=false) String action, @RequestParam Integer quantity, Model model) {
         Cart cartItem = cartRepository.getById(cartId);
         if (cartItem != null) {
-
+            if ("minus".equals(action) && cartItem.getQuantity() > 1) {
+                cartItem.setQuantity(cartItem.getQuantity() - 1);
+            } else if ("plus".equals(action)) {
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+            }
+            else {
+                cartItem.setQuantity(quantity);            
+            }
             Product Product = cartItem.getProduct();
-            cartItem.setQuantity(quantity);
             cartItem.setProductTotal(
                     quantity * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
             cartRepository.save(cartItem);
             model.addAttribute("message", "Cart updated successfully.");
         }
-        return "redirect:/cart";
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 
     @DeleteMapping({ "/delete" })

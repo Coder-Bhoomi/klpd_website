@@ -78,14 +78,26 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons d-flex gap-3 mt-4">
-                        <form th:action="@{/cart/add}" method="post">
+                        <div th:each="cartItem : ${cartItem}">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display">
+                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                            </form>
+                        </div>
+
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
-                            <button type="submit" class="btn cartbutton d-block p-2 px-4"
-                                style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
-                                    Cart</span></button>
+                            <button type="submit" class="btn cartbutton d-block  p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
                         </form>
-                        <a href="/cart"></a>
                     </div>
 
                     <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
@@ -149,11 +161,11 @@
                     <div class="product-card2 position-relative">
                         <!-- Heart Icon -->
                         <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
-                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="productId" th:value="${rp.pid}" />
                             <button
                                 class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
                                 style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
-                                    th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
+                                    th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(rp.pid)} ? 'color: red;' : ''">
                             </button>
                         </form>
                         <a th:href="@{/product/{pid}(pid=${rp.pid})}" style="text-decoration: none; color: inherit;">
@@ -174,16 +186,29 @@
                         </a>
                     </div>
 
-                    <form th:action="@{/cart/add}" method="post">
+                    <div th:each="cartItem : ${cartItem}">
+                        <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}"
+                            method="post">
+                            <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                            <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                            <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                id="quantity-display">
+                            <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                        </form>
+                    </div>
+
+                    <form th:if="${cartProductIds == null or not cartProductIds.contains(rp.pid)}"
+                        th:action="@{/cart/add}" method="post">
                         <input type="hidden" name="productId" th:value="${rp.pid}" />
                         <input type="hidden" name="quantity" value="1" min="1" />
                         <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                            style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Add to
-                                Cart</span></button>
+                            style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                            <span>Add to Cart</span>
+                        </button>
                     </form>
                 </div>
             </div>
-            <a th:href="@{/{categoryId}(categoryId=${product.category.categoryId})}">
+            <a th:href="@{/category/{id}(id=${product.category.categoryId})}">
                 <button type="button" class="btn button d-block mx-auto p-2 mt-5 rounded-pill"
                     style="background-color: #367D8A; color: #fff; font-size: 14px;">
                     <span>View All</span>

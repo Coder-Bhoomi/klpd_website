@@ -14,7 +14,6 @@ import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
-import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
 
 @Service

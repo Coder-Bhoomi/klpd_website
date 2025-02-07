@@ -1,13 +1,9 @@
 package com.klpdapp.klpd.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,9 +11,6 @@ import org.hibernate.Session;
 import org.hibernate.search.mapper.orm.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,17 +33,12 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.Services.CategoryService;
-import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.dto.AdminDto;
-import com.klpdapp.klpd.dto.UserDto;
-import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
-import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
-import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
@@ -58,9 +46,7 @@ import com.klpdapp.klpd.model.Wishlist;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 
 @Controller
 public class maincontroller {
@@ -183,18 +169,23 @@ public class maincontroller {
         CategoryService.addCategoriesToModel(model);
         model.addAttribute("topProduct", TopProducts);
         model.addAttribute("newProduct", NewProducts);
+        Set<Integer> cartProductIds = new HashSet<>();
+        Set<Integer> wishlistProductIds = new HashSet<>();
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
             User user = uRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartRepository.findByUser(user);
-            model.addAttribute("cart", cartItems);
+            for (Cart item : cartItems) {
+                cartProductIds.add(item.getProduct().getPid()); 
+            }        
+            model.addAttribute("cartItem", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
-            Set<Integer> wishlistProductIds = new HashSet<>();
             for (Wishlist item : wishlistItems) {
                 wishlistProductIds.add(item.getProduct().getPid()); 
             }        
-            model.addAttribute("wishlistProductIds", wishlistProductIds);
         }
+        model.addAttribute("cartProductIds", cartProductIds);
+        model.addAttribute("wishlistProductIds", wishlistProductIds);
         return "index";
     }
 

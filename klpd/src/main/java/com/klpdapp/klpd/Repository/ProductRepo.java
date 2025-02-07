@@ -72,4 +72,6 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
 
        Product findBySubcategory_SubcategoryId(String subcategoryId);
 
+    List<Product> findTop4BySubcategorySubcategoryIdAndPidNot(String subcategoryId, int pid);
+
 }

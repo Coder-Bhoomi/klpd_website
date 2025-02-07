@@ -76,31 +76,26 @@
                                 </p>
                             </a>
                         </div>
-                        <!--div th:if="${product.isInCart}">
-                            <div class="quantity-container">
-                                <form th:action="@{/cart/update}" method="post">
-                                    <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                    <button type="submit" class="btn minus" name="action" value="minus"
-                                        id="minus-btn">-</button>
-                                    <span id="quantity-display" th:text="${cartItem.quantity}">1</span>
-                                    <button type="submit" class="btn plus" name="action" value="plus"
-                                        id="plus-btn">+</button>
-                                </form>
-                            </div>
-                        </div-->
-
-                        <!-- If the product is NOT in the cart -->
-                        <!--div th:unless="${product.isInCart}"-->
-                            <form th:action="@{/cart/add}" method="post">
-                                <input type="hidden" name="productId" th:value="${product.pid}" />
-                                <input type="hidden" name="quantity" value="1" min="1" />
-                                <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                                    style="background-color: #367D8A; color: #ffff; font-size: 16px;">
-                                    <span>Add to Cart</span>
-                                </button>
+                        <div th:each="cartItem : ${cartItem}">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display">
+                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
                             </form>
-                        <!--/div-->
+                        </div>
 
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
 
                     </div>
                 </div>
@@ -180,30 +175,26 @@
                                 </p>
                             </a>
                         </div>
-                        <!--div th:if="${product.isInCart}">
-                            <div class="quantity-container">
-                                <form th:action="@{/cart/update}" method="post">
-                                    <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                    <button type="submit" class="btn minus" name="action" value="minus"
-                                        id="minus-btn">-</button>
-                                    <span id="quantity-display" th:text="${cartItem.quantity}">1</span>
-                                    <button type="submit" class="btn plus" name="action" value="plus"
-                                        id="plus-btn">+</button>
-                                </form>
-                            </div>
-                        </div-->
-
-                        <!-- If the product is NOT in the cart -->
-                        <!--div th:unless="${product.isInCart}"-->
-                            <form th:action="@{/cart/add}" method="post">
-                                <input type="hidden" name="productId" th:value="${product.pid}" />
-                                <input type="hidden" name="quantity" value="1" min="1" />
-                                <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                                    style="background-color: #367D8A; color: #ffff; font-size: 16px;">
-                                    <span>Add to Cart</span>
-                                </button>
+                        <div th:each="cartItem : ${cartItem}">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display">
+                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
                             </form>
-                        <!--/div-->
+                        </div>
+
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
                         <script>
                             document.addEventListener('DOMContentLoaded', () => {
                                 document.querySelectorAll('.heart-icon').forEach(icon => {
@@ -255,7 +246,8 @@
                         width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
-                    <p class="px-5 text-center">4C/1130 ADC Tower Near Panacea Hospital Gomti Nagar Extension, Lucknow</p>
+                    <p class="px-5 text-center">4C/1130 ADC Tower Near Panacea Hospital Gomti Nagar Extension, Lucknow
+                    </p>
                 </div>
                 <div class="col-md-6 mt-5">
                     <h4 class="fw-bold text-center">Store 2</h4>
@@ -263,8 +255,9 @@
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28472.202189208623!2d80.93656767431641!3d26.8709381!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399bfd3a117ca8f1%3A0xdb255e5c53f579f1!2sKanhaiya%20Lal%20Prag%20Das%20Bartan%20Wale!5e0!3m2!1sen!2sin!4v1737727534410!5m2!1sen!2sin"
                         width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    <p class="px-5 text-center">Pratap Complex Faizabad Road Near Lekhraj Metro Station Indira Nagar, Lucknow</p>
-                    
+                    <p class="px-5 text-center">Pratap Complex Faizabad Road Near Lekhraj Metro Station Indira Nagar,
+                        Lucknow</p>
+
                 </div>
             </div>
         </section>

@@ -76,8 +76,8 @@ public class ProductController {
             model.addAttribute("product", prod);
             System.out.println("pid=" + prod.getPid());
 
-            List<Product> relatedProducts = pRepo.findTop4ByCategoryCategoryIdAndPidNot(
-                    prod.getCategory().getCategoryId(),
+            List<Product> relatedProducts = pRepo.findTop4BySubcategorySubcategoryIdAndPidNot(
+                    prod.getSubcategory().getSubcategoryId(),
                     prod.getPid());
 
             // List<String> sizes =
