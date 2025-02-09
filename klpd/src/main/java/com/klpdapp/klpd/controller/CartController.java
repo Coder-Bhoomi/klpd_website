@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +67,7 @@ public class CartController {
 
     @PostMapping("/update")
     public String updateCart(HttpServletRequest request,@RequestParam Integer cartId,@RequestParam(required=false) String action, @RequestParam Integer quantity, Model model) {
-        Cart cartItem = cartRepository.getById(cartId);
+        Cart cartItem = cartRepository.findById(cartId).orElse(null);
         if (cartItem != null) {
             if ("minus".equals(action) && cartItem.getQuantity() > 1) {
                 cartItem.setQuantity(cartItem.getQuantity() - 1);
@@ -88,7 +87,7 @@ public class CartController {
         return "redirect:" + referer;
     }
 
-    @DeleteMapping({ "/delete" })
+    @GetMapping({ "/delete" })
     public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
         cartService.deleteCartItem(id);
         return "redirect:/cart";

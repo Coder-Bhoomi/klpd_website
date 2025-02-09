@@ -2,6 +2,7 @@ package com.klpdapp.klpd.controller;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.Services.CategoryService;
+import com.klpdapp.klpd.Services.ProductService;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
@@ -42,13 +44,18 @@ public class ProductController {
 
     @Autowired
     CategoryService CategoryService;
+
+    @Autowired
+    ProductService productService;
     
     @GetMapping("/{pid}")
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
             @RequestParam(required = false) String selectedSubcategoryId,
             Model model, HttpSession session) {
-        System.out.println("pid=" + pid);
-        Product prod = pRepo.getById(pid);
+        Product prod = pRepo.findById(pid).orElse(null);
+
+        // Increasing hits on product
+        productService.incrementProductHits(prod.getPid());
 
         // Check if size and subcategory are selected
         if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
@@ -58,7 +65,7 @@ public class ProductController {
                 isInductionBase = true;
             }
             List<Product> products; 
-
+            // fetch the product based on size and subcatory with respect to induction or non-induction
             if (isInductionBase) {
                 products = pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
             } else {
@@ -66,24 +73,19 @@ public class ProductController {
             }
 
             if (!products.isEmpty()) {
-                prod = products.get(0);  
+                prod = (products.get(0));  
             }
         } else {
-            prod = pRepo.getById(pid);
+            prod = pRepo.findById(pid).orElse(null);
         }
 
         if (prod != null) {
             model.addAttribute("product", prod);
-            System.out.println("pid=" + prod.getPid());
 
+            // Get the related products to the current product in same subcategory
             List<Product> relatedProducts = pRepo.findTop4BySubcategorySubcategoryIdAndPidNot(
                     prod.getSubcategory().getSubcategoryId(),
                     prod.getPid());
-
-            // List<String> sizes =
-            // sizeRepo.findDistinctSizesBySubcategorySubcategoryId(prod.getSubcategory().getSubcategoryId());
-
-            //List<String> sizes  = new ArrayList<>();
 
             List<String> sizes;
 
