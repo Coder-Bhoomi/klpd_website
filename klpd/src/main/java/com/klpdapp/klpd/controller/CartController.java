@@ -15,7 +15,10 @@ import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Services.CartService;
+import com.klpdapp.klpd.Services.CouponService;
+import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.model.Cart;
+import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
 
@@ -34,13 +37,16 @@ public class CartController {
     UserRepo uRepo;
 
     @Autowired
-    com.klpdapp.klpd.Services.CategoryService CategoryService;
+    CategoryService CategoryService;
 
     @Autowired
     CartRepo cartRepository;
 
     @Autowired
     ProductRepo pRepo;
+
+    @Autowired
+    CouponService couponService;
 
     @GetMapping
     public String showCart(Model model, HttpSession session) {
@@ -50,7 +56,7 @@ public class CartController {
             List<Cart> cartItems = cartService.getCartItems(user);
             float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
             float discount = 0.0f;
-            float tax = subtotal * 0.10f;
+            float tax = subtotal * 0.02f;
             float total = subtotal + tax - discount;
 
             model.addAttribute("cart", cartItems);
@@ -65,17 +71,48 @@ public class CartController {
         }
     }
 
+    @PostMapping("/apply-coupon")
+    public String applyCoupon(@RequestParam String couponCode, Model model, HttpSession session) {
+        Coupon coupon = couponService.getCouponByCode(couponCode).orElse(null);
+        Integer userId = (Integer) session.getAttribute("userid");
+        User user = uRepo.findById(userId).orElse(null);
+        List<Cart> cartItems = cartService.getCartItems(user);
+        float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
+        int items = cartItems.size();
+        if (coupon.getMinQuantity() <= items & coupon.getMinCartValue() <= subtotal) {
+            float discount = 0.0f;
+            float discountbypercentage = (subtotal * coupon.getDiscountRate()) / 100;
+            if (coupon.getUptoAmount() > 0) {
+                discount = Math.min(discountbypercentage, coupon.getUptoAmount());
+            } else {
+                discount = discountbypercentage;
+            }
+            System.out.println("Discount"+discount);
+            float tax = subtotal * 0.10f;
+            float total = subtotal + tax - discount;
+            model.addAttribute("cart", cartItems);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("discount", discount);
+            model.addAttribute("tax", tax);
+            model.addAttribute("total", total);
+            model.addAttribute("coupon", coupon);
+        } else {
+            model.addAttribute("message", "Coupon not applicable.");
+        }
+        return "cart";
+    }
+
     @PostMapping("/update")
-    public String updateCart(HttpServletRequest request,@RequestParam Integer cartId,@RequestParam(required=false) String action, @RequestParam Integer quantity, Model model) {
+    public String updateCart(HttpServletRequest request, @RequestParam Integer cartId,
+            @RequestParam(required = false) String action, @RequestParam Integer quantity, Model model) {
         Cart cartItem = cartRepository.findById(cartId).orElse(null);
         if (cartItem != null) {
             if ("minus".equals(action) && cartItem.getQuantity() > 1) {
                 cartItem.setQuantity(cartItem.getQuantity() - 1);
             } else if ("plus".equals(action)) {
                 cartItem.setQuantity(cartItem.getQuantity() + 1);
-            }
-            else {
-                cartItem.setQuantity(quantity);            
+            } else {
+                cartItem.setQuantity(quantity);
             }
             Product Product = cartItem.getProduct();
             cartItem.setProductTotal(
@@ -149,5 +186,4 @@ public class CartController {
 
     }
 
-    
 }

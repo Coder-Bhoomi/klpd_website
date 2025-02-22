@@ -2,8 +2,15 @@ package com.klpdapp.klpd.model;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table (name ="coupon")
 public class Coupon {
@@ -30,69 +37,9 @@ public class Coupon {
 	private int discountRate;
 	
 	private int uptoAmount;
+
+	private int minCartValue;
+
+	private int minQuantity;
 	
-	public int getCouponId() {
-		return couponId;
-	}
-
-	public void setCouponId(int couponId) {
-		this.couponId = couponId;
-	}
-
-	public String getCouponCode() {
-		return couponCode;
-	}
-
-	public void setCouponCode(String couponCode) {
-		this.couponCode = couponCode;
-	}
-
-	public String getCouponName() {
-		return couponName;
-	}
-
-	public void setCouponName(String couponName) {
-		this.couponName = couponName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public LocalDate getIssueDate() {
-		return issueDate;
-	}
-
-	public void setIssueDate(LocalDate issueDate) {
-		this.issueDate = issueDate;
-	}
-
-	public LocalDate getExpireDate() {
-		return expireDate;
-	}
-
-	public void setExpireDate(LocalDate expireDate) {
-		this.expireDate = expireDate;
-	}
-
-	public int getDiscountRate() {
-		return discountRate;
-	}
-
-	public void setDiscountRate(int discountRate) {
-		this.discountRate = discountRate;
-	}
-
-	public int getUptoAmount() {
-		return uptoAmount;
-	}
-
-	public void setUptoAmount(int uptoAmount) {
-		this.uptoAmount = uptoAmount;
-	}
-
 }
