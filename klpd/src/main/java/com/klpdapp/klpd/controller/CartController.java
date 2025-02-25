@@ -137,6 +137,7 @@ public class CartController {
             if (session.getAttribute("userid") != null) {
                 Integer userId = (Integer) session.getAttribute("userid");
                 User user = uRepo.findById(userId).orElse(null);
+                
                 cartService.checkout(user);
                 return "redirect:/";
             }

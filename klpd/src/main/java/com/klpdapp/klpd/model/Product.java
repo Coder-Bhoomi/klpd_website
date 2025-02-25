@@ -134,6 +134,8 @@ public class Product {
 
     private int rating;
 
+    private int sales;
+
     @OneToMany(mappedBy = "pid", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @IndexedEmbedded 
     private List<Images> images;

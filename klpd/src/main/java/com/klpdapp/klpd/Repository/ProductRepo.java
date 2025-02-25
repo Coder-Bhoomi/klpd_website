@@ -25,6 +25,10 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
        @Query("UPDATE Product p SET p.hits = p.hits + 1 WHERE p.pid = :pid")
        void incrementHits(@Param("pid") Integer pid);
 
+       @Modifying
+       @Query("Update Product p Set p.sales=p.sales + 1 where p.pid = :pid")
+       void incrementSales(int pid);
+
        @Query("SELECT p FROM Product p WHERE (" +
                      "LOWER(CONCAT(COALESCE(p.capacity, ''), ' | ', COALESCE(p.diameter, ''))) LIKE LOWER(CONCAT('%', :size, '%')) "
                      +
@@ -74,5 +78,7 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
        Product findBySubcategory_SubcategoryId(String subcategoryId);
 
     List<Product> findTop4BySubcategorySubcategoryIdAndPidNot(String subcategoryId, int pid);
+
+    List<Product> findTop4ByOrderBySalesDesc();
     
 }

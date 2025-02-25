@@ -2,7 +2,6 @@ package com.klpdapp.klpd.controller;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class ProductController {
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
             @RequestParam(required = false) String selectedSubcategoryId,
             Model model, HttpSession session) {
-        Product prod = pRepo.findById(pid).orElse(null);
+        Product prod = productService.findById(pid);
 
         // Increasing hits on product
         productService.incrementProductHits(prod.getPid());

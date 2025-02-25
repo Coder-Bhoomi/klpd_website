@@ -165,7 +165,7 @@ public class maincontroller {
     @GetMapping("/")
     public String showIndex(Model model, HttpSession session) {
         List<Product> NewProducts = pRepo.findTop4ByOrderByCreatedAtDesc();
-        List<Product> TopProducts = pRepo.findTop4ByOrderByHitsDesc();
+        List<Product> TopProducts = pRepo.findTop4ByOrderBySalesDesc();
         CategoryService.addCategoriesToModel(model);
         model.addAttribute("topProduct", TopProducts);
         model.addAttribute("newProduct", NewProducts);
