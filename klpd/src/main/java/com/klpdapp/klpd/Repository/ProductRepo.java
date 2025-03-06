@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 
 import com.klpdapp.klpd.model.Product;
@@ -16,13 +17,17 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
 
        List<Product> findByCategory_CategoryIdOrderByMrpDesc(String categoryId);
 
-       List<Product> findByProdNameContainingIgnoreCase(String query);
-
-       List<Product> findTop4ByCategoryCategoryIdAndPidNot(String categoryId, int pid);
-
        List<Product> findTop4ByOrderByCreatedAtDesc();
 
        List<Product> findTop4ByOrderByHitsDesc();
+       
+       @Modifying
+       @Query("UPDATE Product p SET p.hits = p.hits + 1 WHERE p.pid = :pid")
+       void incrementHits(@Param("pid") Integer pid);
+
+       @Modifying
+       @Query("Update Product p Set p.sales=p.sales + 1 where p.pid = :pid")
+       void incrementSales(int pid);
 
        @Query("SELECT p FROM Product p WHERE (" +
                      "LOWER(CONCAT(COALESCE(p.capacity, ''), ' | ', COALESCE(p.diameter, ''))) LIKE LOWER(CONCAT('%', :size, '%')) "
@@ -74,4 +79,6 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
 
     List<Product> findTop4BySubcategorySubcategoryIdAndPidNot(String subcategoryId, int pid);
 
+    List<Product> findTop4ByOrderBySalesDesc();
+    
 }

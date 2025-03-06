@@ -20,6 +20,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <!-- Coupon Title -->
               <div>
+                <h4 th:text="${coupon.couponCode}"></h4>
                 <h5 class="card-title mb-1" th:text="${coupon.couponName}">₹75 off on next 4 Orders</h5>
                 <p class="card-text small text-light"><span th:text="${coupon.discountRate}"></span>% Off  Upto Rs <span th:text="${coupon.uptoAmount}"></span><br/><span th:text="${coupon.description}"></span></p>
               </div>

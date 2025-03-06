@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en" th:replace="base::layout(~{::main})">
+
 <head>
 
 </head>
@@ -14,9 +15,10 @@
             <div id="cart-items">
                 <!-- Render Cart Items Dynamically -->
                 <div class="cart-item d-flex align-items-center" th:each="cartItem : ${cart}">
-                     
+
                     <div class="col-2">
-                        <img th:src="@{${cartItem.product.images[0].imageUrl}}" alt="Product Image" class="img-fluid rounded">
+                        <img th:src="@{${cartItem.product.images[0].imageUrl}}" alt="Product Image"
+                            class="img-fluid rounded">
                     </div>
                     <div class="col-4">
                         <p class="mb-1 mx-5" th:text="${cartItem.product.prodName}">Product Name</p>
@@ -24,13 +26,15 @@
                     <div class="col-1">
                         <form th:action="@{/cart/update}" method="post">
                             <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                            <input type="number" class="form-control quantity-input" style="width: 60px;" min="1" th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
+                            <input type="number" class="form-control quantity-input" style="width: 60px;" min="1"
+                                th:value="${cartItem.quantity}" name="quantity" onchange="this.form.submit()">
                         </form>
                     </div>
-                    <div class="col-3 text-success fw-bold item-price text-center mx-4" th:text="${cartItem.productTotal}">Price</div>
+                    <div class="col-3 text-success fw-bold item-price text-center mx-4"
+                        th:text="${cartItem.productTotal}">Price</div>
                     <div class="col-1 text-end">
                         <a th:href="@{cart/delete(id=${cartItem.cartId})}">
-                        <button class="btn btn-outline-danger btn-sm">Delete</button>
+                            <button class="btn btn-outline-danger btn-sm">Delete</button>
                         </a>
                     </div>
                 </div>
@@ -39,36 +43,11 @@
             <!-- Coupon Section -->
             <div class="coupon-section mt-4">
                 <h5 class="fw-bold mx-1">Coupon</h5>
-                <div class="input-group">
-                    <input type="text" class="form-control bg-dark text-light" placeholder="Coupon Code">
-                    <button class="btn btn-primary">Apply</button>
-                </div>
-                <p class="mt-2 text-muted mx-1">Discount will be applied here.</p>
-            
-                <!-- Coupon Design -->
-                <div class="dummy-coupon mt-3" style="background-color: #1f1f1f;">
-                    <div class="d-flex justify-content-between align-items-center rounded p-2" style=" border: 1px dashed #ced4da;">
-                        <div>
-                            <h6 class="fw-bold mb-1">Get 20% OFF</h6>
-                            <p class="text-muted mb-0">On orders above ₹500. Use code: <span class="fw-bold text-light">3fk8bd</span></p>
-                            <span class="badge bg-primary text-light px-3 py-2 mt-2">SAVE20</span>
-                        </div>
-                        <div>
-                            <img src="https://via.placeholder.com/50" alt="Discount Icon" class="rounded-circle">
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center rounded mt-3 p-2" style=" border: 1px dashed #ced4da;">
-                        <div>
-                            <h6 class="fw-bold mb-1">Get 20% OFF</h6>
-                            <p class="text-muted mb-0">On orders above ₹500. Use code: <span class="fw-bold text-light">3fk8bd</span></p>
-                            <span class="badge bg-primary text-light px-3 py-2 mt-2">SAVE20</span>
-                        </div>
-                        <div>
-                            <img src="https://via.placeholder.com/50" alt="Discount Icon" class="rounded-circle">
-                        </div>
-                    </div>
-                </div>
-            </div>            
+                <form class="input-group" th:action="@{/cart/apply-coupon}" method="post">
+                    <input type="text" class="form-control bg-dark text-light" name="couponCode" placeholder="Coupon Code">
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </form>
+            </div>
 
             <!-- Summary Section -->
             <div class="summary-section mt-4">
@@ -82,7 +61,7 @@
                     <p id="discount-price" class="fw-bold" th:text="${discount}">$0.00</p>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <p>Tax (10%)</p>
+                    <p>Tax (2%)</p>
                     <p id="tax-price" class="fw-bold" th:text="${tax}">$0.00</p>
                 </div>
                 <hr>
@@ -95,7 +74,8 @@
             <!-- Action Buttons -->
             <div class="action-buttons mt-4">
                 <form th:action="@{/cart/checkout}" method="post">
-                <button type="submit" class="btn checkoutbutton d-block mx-auto p-2 w-100 mb-2" style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Checkout</span></button>
+                    <button type="submit" class="btn checkoutbutton d-block mx-auto p-2 w-100 mb-2"
+                        style="background-color: #367D8A; color: #ffff; font-size: 16px;"><span>Checkout</span></button>
                 </form>
                 <a href="/" class="btn btn-outline-secondary d-block mx-auto p-2 w-100">Continue Shopping</a>
             </div>
@@ -103,19 +83,20 @@
     </main>
     <script>
         function updateCart(element, cartId) {
-    const quantity = element.value;
-    fetch(`/cart/update?cartId=${cartId}&quantity=${quantity}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+            const quantity = element.value;
+            fetch(`/cart/update?cartId=${cartId}&quantity=${quantity}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload();  // Reload page after updating the cart
+                }
+            });
         }
-    }).then(response => {
-        if (response.ok) {
-            window.location.reload();  // Reload page after updating the cart
-        }
-    });
-}
 
     </script>
 </body>
+
 </html>

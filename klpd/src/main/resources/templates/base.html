@@ -92,13 +92,12 @@
                 <div class="col-md-3 mt-4">
                     <h5 class="fw-bold">Product Series</h5>
                     <ul class="list-unstyled">
-                        <li th:each="category, iterStat : ${categories}">
+                        <li th:each="category, iterStat : ${categories}" th:if="${iterStat.index < 5}">
                             <a class="dropdown-item text-white" 
-                               th:if="${iterStat.index < 5}" 
                                th:href="@{/category/{id}(id=${category.categoryId})}"
                                th:text="${category.categoryName}"></a>
                         </li>
-                    </ul>                    
+                    </ul>                                        
                 </div>
 
                 <!-- Quick Links -->

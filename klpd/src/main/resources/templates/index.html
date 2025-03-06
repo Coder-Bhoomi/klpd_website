@@ -234,11 +234,11 @@
                                 <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name</p>
                                 <p class="text-center">
                                     <span th:if="${product.offerPrice != null}">
-                                        Price: <s th:text="${product.mrp}">Rs.1800</s>
-                                        <span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                                        Price: <s th:text="${product.mrp}">1800</s>
+                                        Rs.<span class="text-danger" th:text="${product.offerPrice}">1620</span>
                                     </span>
                                     <span th:if="${product.offerPrice == null}">
-                                        Price: <span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                                        Price: Rs.<span class="text-danger" th:text="${product.mrp}">1800</span>
                                     </span>
                                 </p>
                                 <div th:each="cartItem : ${cartItem}">
@@ -333,11 +333,11 @@
                                 <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name</p>
                                 <p class="text-center">
                                     <span th:if="${product.offerPrice != null}">
-                                        Price: <s th:text="${product.mrp}">Rs.1800</s>
-                                        <span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                                        Price: Rs.<s th:text="${product.mrp}">1800</s>
+                                        Rs.<span class="text-danger" th:text="${product.offerPrice}">1620</span>
                                     </span>
                                     <span th:if="${product.offerPrice == null}">
-                                        Price: <span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                                        Price: Rs.<span class="text-danger" th:text="${product.mrp}">1800</span>
                                     </span>
                                 </p>
                                 <div th:each="cartItem : ${cartItem}">

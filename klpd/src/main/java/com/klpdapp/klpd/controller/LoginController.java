@@ -1,24 +1,28 @@
 package com.klpdapp.klpd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.dto.UserDto;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.Security.CustomUserDetailsService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/login")
 public class LoginController {
 
     @Autowired
@@ -30,7 +34,10 @@ public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
+    @GetMapping("/login")
     public String showLogin(Model model, HttpSession session) {
         UserDto udto = new UserDto();
         model.addAttribute("dto", udto);
@@ -61,8 +68,18 @@ public class LoginController {
             // Save the user in the database
             uRepo.save(user);
 
+            //Authentication manually
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+
+            SecurityContext securityContext = SecurityContextHolder.getContext();
+            securityContext.setAuthentication(authentication);
+
+            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
             session.setAttribute("userid", user.getUserId());
-            redirectAttributes.addFlashAttribute("message", "Registered Successfully and Logged In!");
+
+            redirectAttributes.addFlashAttribute("message", "Registered Successfully!");
             return "redirect:/profile";
 
         } catch (Exception e) {

@@ -11,10 +11,12 @@ import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.Services.ProductService;
 
 @Service
 public class CartService {
@@ -33,6 +35,9 @@ public class CartService {
 
     @Autowired
     OrderItemRepository orderitemrepo;
+
+    @Autowired
+    ProductService productService;
 
     public List<Cart> getCartItems(User user) {
         return cartRepository.findByUser(user);
@@ -74,6 +79,8 @@ public class CartService {
             orderItem.setProdQuantity(cart.getQuantity());
             orderItem.setProduct(cart.getProduct());
             orderitemrepo.save(orderItem);
+            Product product = productService.findById(cart.getProduct().getPid());
+            productService.incrementSales(product.getPid());
         }
 
         cartRepository.deleteByUser(user);

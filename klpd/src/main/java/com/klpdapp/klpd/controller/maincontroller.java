@@ -165,7 +165,7 @@ public class maincontroller {
     @GetMapping("/")
     public String showIndex(Model model, HttpSession session) {
         List<Product> NewProducts = pRepo.findTop4ByOrderByCreatedAtDesc();
-        List<Product> TopProducts = pRepo.findTop4ByOrderByHitsDesc();
+        List<Product> TopProducts = pRepo.findTop4ByOrderBySalesDesc();
         CategoryService.addCategoriesToModel(model);
         model.addAttribute("topProduct", TopProducts);
         model.addAttribute("newProduct", NewProducts);
@@ -206,7 +206,12 @@ public class maincontroller {
                                 .should(f.match()
                                         .fields("prodName")
                                         .matching(query)
-                                        .boost(5.0f)) // Exact match on prodName with the highest boost
+                                        .boost(10.0f)) 
+                                .should(f.match()
+                                        .fields("prodName", "brand")
+                                        .matching(query)
+                                        .fuzzy()
+                                        .boost(5.0f)) 
                                 .should(f.match()
                                         .fields("brand", "description")
                                         .matching(query)
@@ -215,11 +220,6 @@ public class maincontroller {
                                         .fields("prodName")
                                         .matching(query + "*")
                                         .boost(3.0f)) // Prefix match to capture terms starting with the query
-                                .should(f.match()
-                                        .fields("prodName", "brand")
-                                        .matching(query)
-                                        .fuzzy()
-                                        .boost(1.0f)) // Fuzzy match for variations and typos
                         )
                         .fetchAllHits()
                         .stream()
