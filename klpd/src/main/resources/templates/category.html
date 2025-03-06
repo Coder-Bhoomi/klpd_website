@@ -16,7 +16,7 @@
             </h2>
 
             <!-- Filters and Sorting -->
-            <div class="d-flex mb-3 gap-3">
+            <div class="d-flex mb-2 gap-3 mt-5">
 
                 <!-- Clear Filter Button -->
                 <div class="d-flex align-items-center">
@@ -215,14 +215,14 @@
 
             <hr>
             <div class="row mb-5">
-                <div class="col-md-3" th:each="product : ${products}">
+                <div class="col-md-3 mt-5" th:each="product : ${products}">
                     <div class="product-card2 position-relative">
                         <!-- Heart Icon -->
                         <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
                             <button
                                 class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
-                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
+                                style="top: 15px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: white; color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
                                     th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
                             </button>
                         </form>
@@ -232,7 +232,7 @@
                                 <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
                             </div>
 
-                            <p class="text-center p-2" th:text="${product.prodName}">Product Name</p>
+                            <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name</p>
                             <p class="text-center">
                                 <span th:if="${product.offerPrice != null}">
                                     Price: ₹<s th:text="${product.mrp}">Rs.1800</s>
@@ -243,28 +243,29 @@
                                 </span>
                             </p>
                         </a>
-                    </div>
-
-                    <div th:each="cartItem : ${cartItem}">
-                        <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
-                            method="post">
-                            <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                            <button type="submit" class="btn minus" name="action" value="minus">-</button>
-                            <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                id="quantity-display">
-                            <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                        <div th:each="cartItem : ${cartItem}">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display">
+                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                            </form>
+                        </div>
+    
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
                         </form>
                     </div>
 
-                    <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
-                        th:action="@{/cart/add}" method="post">
-                        <input type="hidden" name="productId" th:value="${product.pid}" />
-                        <input type="hidden" name="quantity" value="1" min="1" />
-                        <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                            style="background-color: #367D8A; color: #ffff; font-size: 16px;">
-                            <span>Add to Cart</span>
-                        </button>
-                    </form>
+                    
                 </div>
             </div>
             <script>

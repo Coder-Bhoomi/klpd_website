@@ -6,26 +6,26 @@
 </head>
 
 <body>
-    <main style="padding-bottom: 120px; padding-top: 30px;">
+    <main style="padding-bottom: 120px; padding-top: 40px;">
 
         <!-- Main content -->
         <div class="container">
-            <div class="row">
+            <div class="row w-100">
                 <!-- Image Section -->
-                <div class="col-md-6 d-flex flex-column align-items-center position-relative">
+                <div class="col-md-5 d-flex flex-column align-items-center position-relative">
                     <!-- Heart Icon -->
                     <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
                         <input type="hidden" name="productId" th:value="${product.pid}" />
                         <button
                             class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
-                            style="top: 12px; right: 115px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
-                                    th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
+                            style="top: 12px; right: 70px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
+                            th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
                         </button>
                     </form>
                     </i>
                     <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
-                        class="img-fluid mb-3" style="width: 70%; border-radius: 8px;">
-                    <div class="d-flex justify-content-center flex-row" style="width: 70%;">
+                        class="img-fluid mb-3" style="width: 85%; border-radius: 8px;">
+                    <div class="d-flex justify-content-center flex-row" style="width: 85%;">
                         <img th:each="image : ${product.images}" th:src="@{${image.imageUrl}}" alt="Thumbnail"
                             class="img-thumbnail m-1" style="width: 20%; cursor: pointer;" onclick="changeImage(this)">
                     </div>
@@ -36,15 +36,15 @@
                 <div th:if="${error != null}">
                     <p th:text="${error}"></p>
                 </div>
-                <div class="col-md-6 mt-4">
+                <div class="col-md-7 mt-4">
                     <div th:if="${product != null}">
-                        <h1 th:text="${product.prodName}">Artisan Tadka Pan</h1>
-                        <p class="price" style="font-size: 20px;">
-                            <s th:text="${product.mrp}">Rs.1800</s>
-                            <strong class="text-danger" th:text="${product.offerPrice}">Rs. 749</strong>
-                            <!--span class="text-success" id="discountPercentage">14% OFF</span-->
+                        <h1 class="fw-bold" th:text="${product.prodName}">Artisan Tadka Pan</h1>
+                        <p class="price fw-bold" style="font-size: 22px;">
+                            <s th:text="${product.mrp}">1800</s>
+                            <strong class="text-danger" th:text="${product.offerPrice}"><span class="text-danger">₹</span> 749</strong>
+                            <!-- <span class="text-success" id="discountPercentage">14% OFF</span> -->
                         </p>
-                        <p class="text mb-3" style="color: grey !important;">(inclusive of all taxes)</p>
+                        <p class="text mb-3 fw-bold" style="color: grey !important;">(inclusive of all taxes)</p>
 
                         <!-- Rating Section -->
                         <div class="rating d-flex align-items-center mb-3">
@@ -165,7 +165,7 @@
                             <button
                                 class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
                                 style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
-                                    th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(rp.pid)} ? 'color: red;' : ''">
+                                th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(rp.pid)} ? 'color: red;' : ''">
                             </button>
                         </form>
                         <a th:href="@{/product/{pid}(pid=${rp.pid})}" style="text-decoration: none; color: inherit;">
@@ -173,7 +173,7 @@
                                 <img th:src="@{${rp.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
                                     style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                             </div>
-                            <p class="text-center p-2" th:text="${rp.prodName}">Product Name</p>
+                            <p class="text-center text-truncate p-2 px-3" th:text="${rp.prodName}">Product Name</p>
                             <p class="text-center">
                                 <span th:if="${rp.offerPrice != null}">
                                     Price: <s th:text="${rp.mrp}">Rs.1800</s>
@@ -187,8 +187,7 @@
                     </div>
 
                     <div th:each="cartItem : ${cartItem}">
-                        <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}"
-                            method="post">
+                        <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}" method="post">
                             <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
                             <button type="submit" class="btn minus" name="action" value="minus">-</button>
                             <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
