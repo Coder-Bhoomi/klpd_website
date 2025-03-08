@@ -16,7 +16,6 @@ import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.User;
-import com.klpdapp.klpd.Services.ProductService;
 
 @Service
 public class CartService {
