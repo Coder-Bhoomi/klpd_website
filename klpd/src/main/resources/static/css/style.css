@@ -101,50 +101,6 @@ body {
     font-size: 20px;
 }
 
-/* Styling for the timer overlay background */
-.timer-overlay {
-    background: rgba(0, 0, 0, 0.5); 
-    padding: 15px 25px;
-    border-radius: 10px; 
-    display: inline-block;
-    margin: 20px 0; 
-}
-
-/* Styling for the timer to display in a single line */
-.timer {
-    display: flex;
-    justify-content: center; 
-    gap: 20px; 
-    font-size: 1.2rem; 
-    color: #ddd; 
-    font-weight: bold;
-}
-
-/* Styling for each timer segment */
-.timer div {
-    text-align: center;
-}
-
-/* Styling for numbers */
-.timer div span {
-    font-size: 2rem; 
-    color: white;
-    display: block;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-    .timer {
-        font-size: 1rem;
-        gap: 10px;
-    }
-
-    .timer div span {
-        font-size: 1.5rem;
-    }
-}
-
-
 .product-card {
     position: relative;
     border-radius: 10px;
@@ -156,6 +112,7 @@ body {
     width: 100%;
     border-radius: 10px;
 }
+
 .product-card .overlay {
     position: absolute;
     top: 0;
@@ -165,6 +122,29 @@ body {
     background-color: rgba(65, 63, 63, 0.5); 
     border-radius: 10px; 
     z-index: 1;
+}
+
+.product-card2 .best-seller {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #367D8A;
+    color: white;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 5px 0 5px 0;
+}
+
+.product-card2 .rating {
+    position: absolute;
+    bottom: 155px;
+    left: 15px;
+    background: #f2f2f2;
+    color: black;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 10px;
 }
 
 .overlay-text {
@@ -190,11 +170,12 @@ body {
 .product-card2 {
     position: relative;
     border-radius: 10px;
-    padding: 20px;
+    background-color: #1f1f1f;
+    padding: 10px;
     transition: transform 0.3s;
     display: flex;
     flex-direction: column;
-    height: 90%;
+    height: 100%;
 }
 
 .product-card2 img {
@@ -348,8 +329,54 @@ body {
     font-weight: bold;
 }*/
 
+.category-card {
+    position: relative;
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #1f1f1f;
+    padding-bottom: 15px;
+    padding: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.category-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.category-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 15px;
+}
+
+.arrow-btn {
+    position: absolute;
+    bottom: 45px;
+    right: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: #367D8A;
+    color: #1f1f1f;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: 0.3s ease-in-out;
+    border: 5px solid #1f1f1f;
+}
+
+.arrow-btn:hover {
+    background: #0a5b69;
+}
+
 .best-selling{
-    margin-top: 100px;
+    margin-top: 120px;
 }
 
 .safety{
@@ -479,4 +506,84 @@ footer .footer-copyright {
     width: 200px;
     height: auto;
     border-radius: 10px;
+}
+
+.filter {
+    background-color: #1f1f1f;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-left: 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filter-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.filter-section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+}
+
+.filter-section h6 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-section h6 i {
+    transition: transform 0.3s ease;
+}
+
+.filter-section h6.collapsed i {
+    transform: rotate(180deg); /* Rotate icon when collapsed */
+}
+
+.filter-section h6[aria-expanded="true"] i {
+    transform: rotate(180deg); /* Rotate icon when expanded */
+}
+
+.filter-section .form-check {
+    margin-bottom: 10px;
+}
+
+.filter-section .form-check-label {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.filter-section .form-check-input {
+    margin-right: 10px;
+}
+
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.product-grid .col-md-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.col-md-3 {
+    margin-right: 0px; /* Increased gap */
 }
