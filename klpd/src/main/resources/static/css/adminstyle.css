@@ -105,3 +105,18 @@ body, html {
 .modal-footer button:hover {
     background-color: #0056b3;
 }
+.bg-darkgray {
+    background-color:#1f1f1f;
+}
+.bg-grey {
+    background-color: #121212 !important; 
+    color: white !important; 
+    border: none !important; 
+    outline: none !important; 
+}
+
+.bg-grey:focus {
+    background-color: #121212 !important; 
+    box-shadow: none !important; 
+    border: none !important; 
+}

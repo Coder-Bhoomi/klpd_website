@@ -7,8 +7,8 @@ public class ProductDto {
     private int pid;
     private String companyPid;
     private String hapPid;
-    private String ctgId;
-    private String subcategoryId;
+    private String category;
+    private String subcategory;
     private String brand;
     private String prodName;
     private String description;
@@ -16,8 +16,16 @@ public class ProductDto {
     private LocalDate createdAt;
     private int stock;
     private Float mrp;
+    private int discount;
     private Float offerPrice;
     private String diameter;
+    private String dimension;
+    public String getDimension() {
+        return dimension;
+    }
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
     private String thickness;
     private String capacity;
     private String model;
@@ -52,17 +60,17 @@ public class ProductDto {
     public void setHapPid(String hapPid) {
         this.hapPid = hapPid;
     }
-    public String getCtgId() {
-        return ctgId;
+    public String getCategory() {
+        return category;
     }
-    public void setCtgId(String ctgId) {
-        this.ctgId = ctgId;
+    public void setCategory(String category) {
+        this.category = category;
     }
-    public String getSubcategoryId() {
-        return subcategoryId;
+    public String getSubcategory() {
+        return subcategory;
     }
-    public void setSubcategoryId(String subcategoryId) {
-        this.subcategoryId = subcategoryId;
+    public void setSubcategory(String subcategory) {
+        this.subcategory = subcategory;
     }
     public String getBrand() {
         return brand;
@@ -100,11 +108,17 @@ public class ProductDto {
     public void setStock(int stock) {
         this.stock = stock;
     }
-    public float getMrp() {
+    public Float getMrp() {
         return mrp;
     }
-    public void setMrp(float mrp) {
+    public void setMrp(Float mrp) {
         this.mrp = mrp;
+    }
+    public int getDiscount() {
+        return discount;
+    }
+    public void setDiscount(int discount) {
+        this.discount= discount;
     }
     public Float getOfferPrice() {
         return offerPrice;
@@ -195,9 +209,6 @@ public class ProductDto {
     }
     public void setRating(int rating) {
         this.rating = rating;
-    }
-    public void setMrp(Float mrp) {
-        this.mrp = mrp;
     }
     public boolean isInCart() {
         return isInCart;

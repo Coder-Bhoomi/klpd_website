@@ -1,5 +1,11 @@
 package com.klpdapp.klpd.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,8 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
@@ -20,8 +29,11 @@ import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
+import com.klpdapp.klpd.dto.ProductDto;
+import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
+import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.SubCategory;
@@ -55,6 +67,9 @@ public class AdminController {
 
 	@Autowired
 	OrderRepository orderRepo;
+
+	@Autowired
+	AdminRepo adRepo;
 
 	public OrderRepository getOrderRepo() {
     	return orderRepo;
@@ -114,14 +129,29 @@ public class AdminController {
 
 	@GetMapping({ "/product" })
 	public String ShowProduct(Model model) {
-		return "admin/product";
+		ProductDto pdto= new ProductDto();
+		model.addAttribute("productDto",pdto);
+		List<Category> categ = Catrepo.findAll();
+		model.addAttribute("category", categ);
+		List<SubCategory> sCateg = sCatRepo.findAll();
+		model.addAttribute("sub_category", sCateg);
+
+		return "admin/productdetail";
 	}
+	
 
 	@GetMapping({ "/productlist" })
 	public String ShowProductList(Model model) {
 		List<Product> p = prepo.findAll();
 		model.addAttribute("product", p);
 		return "admin/productlist";
+	}
+
+	@GetMapping("/productdetail/{pid}")
+	public String ShowProductDetail(Model model , @PathVariable Integer pid) {
+		Product prod = prepo.findById(pid).orElse(null);
+		model.addAttribute("product", prod);
+		return "admin/productdetail";
 	}
 
 	@GetMapping({ "/coupon" })
@@ -133,11 +163,9 @@ public class AdminController {
 
 	@GetMapping({ "/setting" })
 	public String ShowSetting(Model model) {
-
 		return "admin/setting";
 	}
 
-	// product entry
 	@PostMapping("/addCategory")
 	public String addCategory(@RequestParam("categoryName") String categoryName,
 			@RequestParam("categoryId") String categoryId) {
@@ -150,56 +178,102 @@ public class AdminController {
 
 	@PostMapping("/addSubCategory")
 	public String addSubCategory(@RequestParam("SubCategoryId") String SubCategoryId,
-			@RequestParam("scCategoryId") Category scCategoryId,
+			@RequestParam("CategoryId") String CategoryId,
 			@RequestParam("SubCategoryName") String SubCategoryName) {
 		SubCategory subCat = new SubCategory();
 		subCat.setSubcategoryId(SubCategoryId);
 		subCat.setSubcategoryName(SubCategoryName);
-		subCat.setCategory(scCategoryId);
+		Category cat= Catrepo.findById(CategoryId).orElse(null);
+		subCat.setCategory(cat);
 		sCatRepo.save(subCat);
 		return "redirect:/admin/product";
 	}
 
 	@PostMapping("/addNewProduct")
-	public String addNewProduct(@RequestParam("id") String id,
-			@RequestParam("hapId") String hapId,
-			@RequestParam("pcategoryId") Category pcategoryId,
-			@RequestParam("psubCategoryId") SubCategory psubCategoryId, @RequestParam("brand") String brand,
-			@RequestParam("productName") String productName, @RequestParam("createdAt") LocalDate createdAt,
-			@RequestParam("stock") int stock, @RequestParam("price") float price,
-			@RequestParam("percentage") int percentage,
-			@RequestParam("offeredPrice") float offeredPrice, @RequestParam("diameter") String diameter,
-			@RequestParam("thickness") String thickness, @RequestParam("capacity") String capacity,
-			@RequestParam("weight") String weight, @RequestParam("cartonDimension") String cartonDimension,
-			@RequestParam("guarantee") String guarantee, @RequestParam("warranty") String warranty,
-			@RequestParam("color") String color, @RequestParam("material") String material,
-			@RequestParam("finish") String finish, @RequestParam("dimension") String dimension, 
-			@RequestParam("description") String description) {
+	public String addNewProduct(@ModelAttribute ProductDto prodDto,@RequestParam("secondaryImageInput") List<MultipartFile> secondaryImgURL,
+			@RequestParam("PrimaryImage") MultipartFile primaryImgURL) throws IOException {
+		System.out.println("Secondary img length="+secondaryImgURL.size());
 		Product prod = new Product();
-		prod.setCompanyPid(id);
-		prod.setHapPid(hapId);
-		prod.setCategory(pcategoryId);
-		prod.setSubcategory(psubCategoryId);
-		prod.setBrand(brand);
-		prod.setProdName(productName);
-		prod.setCreatedAt(createdAt);
-		prod.setStock(stock);
-		prod.setMrp(price);
-		prod.setDimension(dimension);
-		prod.setPercentage(percentage);
-		prod.setOfferPrice(offeredPrice);
-		prod.setDiameter(diameter + "cm");
-		prod.setThickness(thickness + "mm");
-		prod.setCapacity(capacity + "litre");
-		prod.setWeight(weight + "kg");
-		prod.setCartonDimension(cartonDimension);
-		prod.setGuarantee(guarantee + "years");
-		prod.setWarranty(warranty + "years");
-		prod.setColor(color);
-		prod.setMaterial(material);
-		prod.setFinish(finish);
-		prod.setDescription(description);
+		prod.setCompanyPid(prodDto.getCompanyPid());
+		prod.setHapPid(prodDto.getHapPid());
+		Category cat = Catrepo.findById(prodDto.getCategory()).orElse(null);
+		prod.setCategory(cat);	
+		SubCategory subCat = sCatRepo.findById(prodDto.getSubcategory()).orElse(null);
+		prod.setSubcategory(subCat);
+		prod.setBrand(prodDto.getBrand());
+		prod.setProdName(prodDto.getProdName());
+		prod.setDescription(prodDto.getDescription());
+		prod.setCreatedAt(LocalDate.now());
+		prod.setStock(prodDto.getStock());
+		prod.setMrp(prodDto.getMrp());
+		prod.setOfferPrice(prodDto.getOfferPrice());
+		prod.setDiscount(prodDto.getDiscount());
+		prod.setDiameter(prodDto.getDiameter()+"cm");
+		prod.setThickness(prodDto.getThickness()+"mm");
+		prod.setCapacity(prodDto.getCapacity()+"litre");
+		prod.setWeight(prodDto.getWeight()+"kg");
+		prod.setCartonDimension(prodDto.getCartonDimension());
+		prod.setDimension(prodDto.getDimension());
+		prod.setGuarantee(prodDto.getGuarantee() + "years");
+		prod.setWarranty(prodDto.getWarranty() + "years");
+		prod.setColor(prodDto.getColor());
+		prod.setMaterial(prodDto.getMaterial());
+		prod.setFinish(prodDto.getFinish());
 		prepo.save(prod);
+		if(!primaryImgURL.isEmpty()) {
+			Images img=new Images();
+			img.setpid(prod);
+			MultipartFile file=primaryImgURL;
+			String uploadDir="public/ProductImages/";
+			String fileName=prod.getPid()+"_primaryImage_"+file.getOriginalFilename();
+			Path uploadPath=Paths.get(uploadDir);
+			if(!Files.exists(uploadPath)) {
+					try {
+						Files.createDirectories(uploadPath);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+			try(InputStream inputStream=file.getInputStream()){
+				Path filePath=uploadPath.resolve(fileName);
+				Files.copy(inputStream,filePath,StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+			img.setImageUrl(fileName);
+			img.setIsPrimary(true);
+			imgRepo.save(img);
+		}
+		if(secondaryImgURL!=null) {
+			for(MultipartFile file:secondaryImgURL) {
+				if(!file.isEmpty()) {
+					Images img=new Images();
+					img.setpid(prod);
+					String uploadDir="public/ProductImages/";
+					String fileName=prod.getPid()+"_secondaryImage_"+file.getOriginalFilename();
+					Path uploadPath=Paths.get(uploadDir);
+					if(!Files.exists(uploadPath)) {
+						try {
+							Files.createDirectories(uploadPath);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					try(InputStream inputStream=file.getInputStream()){
+						Path filePath=uploadPath.resolve(fileName);
+						Files.copy(inputStream,filePath,StandardCopyOption.REPLACE_EXISTING);
+					}catch(IOException e) {
+						throw new IOException("Could not save uploaded file: "+fileName);
+					}
+					img.setImageUrl(fileName);
+					img.setIsPrimary(false);
+					imgRepo.save(img);
+				}
+			}
+		}
 		return "redirect:/admin/product";
 	}
 
@@ -222,6 +296,26 @@ public class AdminController {
 	public String Logout(HttpSession session) {
 		session.invalidate();
 		return "redirect:/";
+	}
+
+	@PostMapping("/changepassword")
+	public String ChangePassword(HttpSession session, RedirectAttributes attrib, @RequestParam String oldpassword, @RequestParam String newpassword, @RequestParam String confirmpassword) {
+		if (session.getAttribute("admin") != null) {
+			Admin ad = adRepo.findByEmail((String)session.getAttribute("admin"));
+            if (!newpassword.equals(confirmpassword)) {
+               attrib.addFlashAttribute("message", "New password and confirmpassword are not same");
+               return "redirect:/admin/setting";
+            } else if (!oldpassword.equals(ad.getPassword())) {
+               attrib.addFlashAttribute("message", "Old password is not correct");
+               return "redirect:/admin/setting";
+            } else {
+               ad.setPassword(newpassword);
+               adRepo.save(ad);
+               return "redirect:/admin/setting";
+            }
+         } else {
+            return "redirect:/admin/setting";
+         }
 	}
 
 }

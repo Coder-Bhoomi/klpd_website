@@ -459,7 +459,7 @@ public class maincontroller {
         try {
             Admin adm = adRepo.findByEmail(adto.getEmail());
             if (adm.getPassword().equals(adto.getPassword())) {
-                session.setAttribute("userid", adm.getEmail());
+                session.setAttribute("admin", adm.getEmail());
                 return "redirect:/admin/dashboard";
             } else {
                 attrib.addFlashAttribute("msg", "Invalid User");

@@ -70,7 +70,7 @@ public class Product {
     @GenericField
     private Float mrp;
 
-    private int percentage;
+    private int discount;
 
     @Column(precision = 10)
     @GenericField

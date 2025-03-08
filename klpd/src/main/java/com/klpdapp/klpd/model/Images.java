@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 @Table ( name = "Images")
 public class Images {
     @Id
-    @Column(length = 15, nullable = false)
-    private String imgId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int imgId;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "pid")
@@ -20,11 +20,11 @@ public class Images {
     @Column
     private Boolean isPrimary = false;
 
-    public String getImgId() {
+    public int getImgId() {
         return imgId;
     }
 
-    public void setImgId(String imgId) {
+    public void setImgId(int imgId) {
         this.imgId = imgId;
     }
 

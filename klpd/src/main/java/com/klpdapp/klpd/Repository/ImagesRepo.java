@@ -8,7 +8,7 @@ import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Product;
 
 
-public interface ImagesRepo extends JpaRepository <Images, String> {
+public interface ImagesRepo extends JpaRepository <Images, Integer> {
 
     @Query("SELECT i FROM Images i WHERE i.pid = :Product AND i.isPrimary = true")
     Images findPrimaryImageByProduct(@Param("Product") Product Product);
