@@ -470,4 +470,10 @@ public class maincontroller {
             return "redirect:/";
         }
     }
+
+    @GetMapping("/wholesaler")
+    public String wholesalerLogin()
+    {
+        return "wholesaler";
+    }
 }

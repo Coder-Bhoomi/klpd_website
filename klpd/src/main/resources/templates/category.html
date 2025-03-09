@@ -4,258 +4,275 @@
 <head>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <style>
-        
-    </style>
 </head>
 
 <body>
     <main style="padding-bottom: 120px;">
-        <!-- Main Content -->
+        <!-- Main Content Placeholder -->
+
         <section class="best-selling container mt-1">
-            <h2 class="text-center mb-3 fw-bold my-3 mt-5"
+            <h2 class="text-center fw-bold my-3 mt-5"
                 th:text="${category != null ? category.categoryName : (query != null ? #strings.concat('Results for: ', query) : 'No results')}">
             </h2>
-            <hr>
-            <div class="row mb-5">
-                <!-- Left Filter Bar -->
-                <div class="col-md-3 p-4">
-                    <div class="filter">
-                        <div class="filter-title mb-4">Filters</div>
-                        <!-- Sort By -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#sortByCollapse" aria-expanded="false">
-                                Sort By <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="sortByCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="sortBy" id="sortByPriceLowToHigh">
-                                    <label class="form-check-label" for="sortByPriceLowToHigh">Price - Low to High</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="sortBy" id="sortByPriceHighToLow">
-                                    <label class="form-check-label" for="sortByPriceHighToLow">Price - High to Low</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="sortBy" id="sortByNewest">
-                                    <label class="form-check-label" for="sortByNewest">Newest First</label>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Brand -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#brandCollapse" aria-expanded="false">
-                                Brand <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="brandCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="brand" id="brand1">
-                                    <label class="form-check-label" for="brand1">Brand 1</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="brand" id="brand2">
-                                    <label class="form-check-label" for="brand2">Brand 2</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="brand" id="brand3">
-                                    <label class="form-check-label" for="brand3">Brand 3</label>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Filters and Sorting -->
+            <div class="d-flex mb-3 gap-3">
 
-                        <!-- Color -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#colorCollapse" aria-expanded="false">
-                                Color <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="colorCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="color" id="color1">
-                                    <label class="form-check-label" for="color1">Red</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="color" id="color2">
-                                    <label class="form-check-label" for="color2">Blue</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="color" id="color3">
-                                    <label class="form-check-label" for="color3">Green</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Guarantee -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#guaranteeCollapse" aria-expanded="false">
-                                Guarantee <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="guaranteeCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="guarantee" id="guarantee1">
-                                    <label class="form-check-label" for="guarantee1">1 Year</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="guarantee" id="guarantee2">
-                                    <label class="form-check-label" for="guarantee2">2 Years</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="guarantee" id="guarantee3">
-                                    <label class="form-check-label" for="guarantee3">3 Years</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Diameter -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#diameterCollapse" aria-expanded="false">
-                                Diameter <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="diameterCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="diameter" id="diameter1">
-                                    <label class="form-check-label" for="diameter1">10mm</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="diameter" id="diameter2">
-                                    <label class="form-check-label" for="diameter2">20mm</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="diameter" id="diameter3">
-                                    <label class="form-check-label" for="diameter3">30mm</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Thickness -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#thicknessCollapse" aria-expanded="false">
-                                Thickness <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="thicknessCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="thickness" id="thickness1">
-                                    <label class="form-check-label" for="thickness1">1mm</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="thickness" id="thickness2">
-                                    <label class="form-check-label" for="thickness2">2mm</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="thickness" id="thickness3">
-                                    <label class="form-check-label" for="thickness3">3mm</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Capacity -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#capacityCollapse" aria-expanded="false">
-                                Capacity <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="capacityCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="capacity" id="capacity1">
-                                    <label class="form-check-label" for="capacity1">1L</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="capacity" id="capacity2">
-                                    <label class="form-check-label" for="capacity2">2L</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="capacity" id="capacity3">
-                                    <label class="form-check-label" for="capacity3">3L</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Discount -->
-                        <div class="filter-section mb-4">
-                            <h6 data-bs-toggle="collapse" data-bs-target="#discountCollapse" aria-expanded="false">
-                                Discount <i class="fas fa-chevron-down"></i>
-                            </h6>
-                            <div id="discountCollapse" class="collapse">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="discount" id="discount1">
-                                    <label class="form-check-label" for="discount1">10% Off or more</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="discount" id="discount2">
-                                    <label class="form-check-label" for="discount2">20% Off or more</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="discount" id="discount3">
-                                    <label class="form-check-label" for="discount3">30% Off or more</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Clear Filter Button -->
+                <div class="d-flex align-items-center">
+                    <a class="btn p-2 text-secondary" th:href="@{/products(categoryId=${param.categoryId}, query=${param.query})}">Clear Filters</a>
+                    <div class="vr mx-3"></div>
                 </div>
 
-                <!-- Product Grid -->
-                <div class="col-md-9">
-                    <div class="row product-grid">
-                        <div class="col-md-4 mt-4" th:each="product : ${products}">
-                            <div class="product-card2 position-relative">
-                                <!-- Heart Icon -->
-                                <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
-                                    <input type="hidden" name="productId" th:value="${product.pid}" />
-                                    <button
-                                        class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
-                                        style="top: 15px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: white; color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
-                                        th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
-                                    </button>
-                                </form>
-                                <a th:href="@{/product/{pid}(pid=${product.pid})}" style="text-decoration: none; color: inherit;">
-                                    <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
-                                        <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
-                                    </div>
+                <!-- Sort By Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortByDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort by
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortByDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy='priceAsc', diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                Low to High Price
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy='priceDesc', diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                High to Low Price
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-                                    <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name</p>
-                                    <p class="text-center">
-                                        <span th:if="${product.offerPrice != null}">
-                                            Price: ₹<s th:text="${product.mrp}">Rs.1800</s>
-                                            ₹<span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
-                                        </span>
-                                        <span th:if="${product.offerPrice == null}">
-                                            Price: ₹<span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
-                                        </span>
-                                    </p>
-                                </a>
-                                <div th:each="cartItem : ${cartItem}">
-                                    <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}" method="post">
-                                        <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                        <button type="submit" class="btn minus" name="action" value="minus">-</button>
-                                        <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                            id="quantity-display">
-                                        <button type="submit" class="btn plus" name="action" value="plus">+</button>
-                                    </form>
-                                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Brand
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="colorDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=null, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Brand
+                            </a>
+                        </li>
+                        <li th:each="brand : ${brands}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${brand}"></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Color Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Color
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="colorDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=null, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Colors
+                            </a>
+                        </li>
+                        <li th:each="color : ${colors}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${color}"></a>
+                        </li>
+                    </ul>
+                </div>
 
-                                <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
-                                    th:action="@{/cart/add}" method="post">
-                                    <input type="hidden" name="productId" th:value="${product.pid}" />
-                                    <input type="hidden" name="quantity" value="1" min="1" />
-                                    <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
-                                        style="background-color: #367D8A; color: #ffff; font-size: 16px;">
-                                        <span>Add to Cart</span>
-                                    </button>
-                                </form>
+                <!-- Guarantee Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="guaranteeDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Guarantee
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="guaranteeDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=null, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Guarantees
+                            </a>
+                        </li>
+                        <li th:each="guarantee : ${guarantees}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${guarantee}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Diameter Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="diameterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Diameter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="diameterDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=null, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Diameters
+                            </a>
+                        </li>
+                        <li th:each="diameter : ${diameters}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${diameter}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Thickness Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="thicknessDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Thickness
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="thicknessDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=null, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Thickness
+                            </a>
+                        </li>
+                        <li th:each="thickness : ${thicknesses}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${thickness}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Capacity Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="capacityDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Capacity
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="capacityDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=null, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Capacities
+                            </a>
+                        </li>
+                        <li th:each="capacity : ${capacities}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${capacity}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Discount Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="discountDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Discount
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="discountDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=10, maxDiscount=20)}">
+                                10% to 20% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=20, maxDiscount=30)}">
+                                20% to 30% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=30, maxDiscount=40)}">
+                                30% to 40% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=40, maxDiscount=50)}">
+                                40% to 50% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=50, maxDiscount=100)}">
+                                50% and Above
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <hr>
+            <div class="row product-grid">
+                <div class="col-md-3 mt-4" th:each="product : ${products}">
+                    <div class="product-card2 position-relative">
+                        <!-- Heart Icon -->
+                        <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <button
+                                class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                                style="top: 15px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: white; color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
+                                th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
+                            </button>
+                        </form>
+                        <a th:href="@{/product/{pid}(pid=${product.pid})}" style="text-decoration: none; color: inherit;">
+                            <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
+                                <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
                             </div>
+
+                            <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name</p>
+                            <p class="text-center">
+                                <span th:if="${product.offerPrice != null}">
+                                    Price: ₹<s th:text="${product.mrp}">Rs.1800</s>
+                                    ₹<span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                                </span>
+                                <span th:if="${product.offerPrice == null}">
+                                    Price: ₹<span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                                </span>
+                            </p>
+                        </a>
+                        <div th:each="cartItem : ${cartItem}">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}" method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display">
+                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                            </form>
                         </div>
+
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
-                    // Heart icon toggle
                     document.querySelectorAll('.heart-icon').forEach(icon => {
                         icon.addEventListener('click', function () {
                             this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
                         });
                     });
                 });
+
             </script>
         </section>
     </main>

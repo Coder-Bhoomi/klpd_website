@@ -80,5 +80,7 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
     List<Product> findTop4BySubcategorySubcategoryIdAndPidNot(String subcategoryId, int pid);
 
     List<Product> findTop4ByOrderBySalesDesc();
+
+    List<Product> findTop4ByOrderByStockAsc();
     
 }

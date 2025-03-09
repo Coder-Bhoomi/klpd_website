@@ -21,6 +21,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h5>Coupon List</h5>
+                        <button type="button" class="my-3 rounded-pill btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#addNewCoupon">
+                                    Add New Coupon
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="table-container">
@@ -58,7 +62,68 @@
                 </div>
             </div>
         </div>
-        
+        <div class="modal fade" id="addNewCoupon" tabindex="-1" aria-labelledby="CouponLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form action="/admin/addcoupon" method="post">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="CouponLabel">Add Coupon</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                    <div class="col-6">
+                                        <label for="couponCode" class="form-label">Coupon Code</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="couponCode"
+                                            name="couponCode" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="couponName" class="form-label">Coupon Name</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="couponName"
+                                            name="couponName" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="validityDate" class="form-label">Validity Date</label>
+                                        <input type="date" class="form-control bg-dark text-light" id="validityDate"
+                                            name="validityDate" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="discountRate" class="form-label">Discount Rate</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="discountRate"
+                                            name="discountRate" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="uptoAmount" class="form-label">Upto Amount</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="uptoAmount"
+                                            name="uptoAmount" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="minQuantity" class="form-label">Minimum Quantity</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="minQuantity"
+                                            name="minQuantity" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="minCartValue" class="form-label">Min Cart Value</label>
+                                        <input type="text" class="form-control bg-dark text-light" id="minCartValue"
+                                            name="minCartValue" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="productImage" class="form-label">Description</label>
+                                        <textarea class="form-control bg-dark text-light" id="couponDescription"
+                                            name="couponDescription" required></textarea>
+                                    </div>
+                                    
+                                </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+                </div>
+            </div>
 
     </div>
 </div>

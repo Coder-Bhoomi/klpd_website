@@ -20,66 +20,32 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5>Orders List</h5>
+                            <h5>Top Sold Products</h5>
                         </div>
                         <div class="card-body">
                             <div class="table-container">
                                 <table class="table table-bordered table-dark">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Order ID</th>
-                                            <th scope="col">Customer Name</th>
-                                            <th scope="col">Product</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Total Price</th>
-                                            <th scope="col">Order Date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Action</th>
+                                            <th scope="col">Product ID</th>
+                                            <th scope="col">Hap ID</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">Brand</th>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Total Sale</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>ORD12345</td>
-                                            <td>John Doe</td>
-                                            <td>Pressure Cooker</td>
-                                            <td>1</td>
-                                            <td>₹1500</td>
-                                            <td>2024-11-10</td>
-                                            <td><span class="order-status pending">Pending</span></td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm">View</button>
-                                                <button class="btn btn-success btn-sm">Mark as Shipped</button>
-                                                <button class="btn btn-danger btn-sm">Cancel</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>ORD12346</td>
-                                            <td>Jane Smith</td>
-                                            <td>Fry Pan</td>
-                                            <td>2</td>
-                                            <td>₹2400</td>
-                                            <td>2024-11-12</td>
-                                            <td><span class="order-status shipped">Shipped</span></td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm">View</button>
-                                                <button class="btn btn-success btn-sm">Mark as Shipped</button>
-                                                <button class="btn btn-danger btn-sm">Cancel</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>ORD12347</td>
-                                            <td>David Miller</td>
-                                            <td>Stewpot</td>
-                                            <td>1</td>
-                                            <td>₹1800</td>
-                                            <td>2024-11-14</td>
-                                            <td><span class="order-status cancelled">Cancelled</span></td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm">View</button>
-                                                <button class="btn btn-success btn-sm">Mark as Shipped</button>
-                                                <button class="btn btn-danger btn-sm">Cancel</button>
-                                            </td>
-                                        </tr>
+                                        <tr th:each="product : ${topsales}">
+                                            <td th:text="${product.pid}"></td>
+                                            <td th:text="${product.hapPid}"></td>
+                                            <td th:text="${product.prodName}"></td>
+                                            <td th:text="${product.brand}"></td>
+                                            <td th:text="${product.category.categoryName}"></td>
+                                            <td th:text="${product.mrp}"></td>
+                                            <td th:text="${product.sales}"></td>
+                                        </tr>  
                                     </tbody>
                                 </table>
                             </div>
@@ -94,43 +60,34 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Product List</h5>
+                        <h5>Product with Less Stock</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-container">
                             <table class="table table-bordered table-dark">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Product ID</th>
-                                        <th scope="col">Product Name</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Pressure Cooker</td>
-                                        <td>Cookware</td>
-                                        <td>₹1500</td>
-                                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Fry Pan</td>
-                                        <td>Cookware</td>
-                                        <td>₹1200</td>
-                                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>Stewpot</td>
-                                        <td>Cookware</td>
-                                        <td>₹1800</td>
-                                        <td><button class="btn btn-warning btn-sm">Edit</button></td>
-                                    </tr>
-                                </tbody>
+                                        <tr>
+                                            <th scope="col">Product ID</th>
+                                            <th scope="col">Hap ID</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">Brand</th>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="product : ${lessStock}">
+                                            <td th:text="${product.pid}"></td>
+                                            <td th:text="${product.hapPid}"></td>
+                                            <td th:text="${product.prodName}"></td>
+                                            <td th:text="${product.brand}"></td>
+                                            <td th:text="${product.category.categoryName}"></td>
+                                            <td th:text="${product.mrp}"></td>
+                                            <td th:text="${product.stock}"></td>
+                                        </tr>  
+                                    </tbody>
                             </table>
                         </div>
                     </div>

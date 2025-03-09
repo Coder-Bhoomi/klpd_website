@@ -17,7 +17,7 @@
 
         <!-- Content -->
         <div class="container">
-            <form class="form-group" method="post" th:object="${productDto}" action="/admin/addNewProduct"
+            <form class="form-group" method="post" th:object="${product}" action="/admin/updateProduct"
                 enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-6 mb-2">
@@ -25,7 +25,8 @@
                     </div>
                     <div class="col-6 mb-2">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button class="btn rounded-pill btn-primary" type="submit">Save</button>
+                            <button type="button" class="btn btn-primary" id="editButton">Edit</button>
+                            <button class="btn rounded-pill btn-primary" id="saveButton" type="submit" disabled>Save</button>
                             <button class="btn rounded-pill btn-secondary me-4" type="reset">Cancel</button>
                         </div>
                     </div>
@@ -36,27 +37,27 @@
                             </h3>
                             <div class="col-12 mb-4">
                                 <label for="productname" class="form-label">Product Name</label>
-                                <input type="text" class="form-control bg-grey rounded p-2 text-white" id="productname"
+                                <input disabled type="text" class="form-control bg-grey rounded p-2 text-white" id="productname"
                                     name="productname" th:field="*{prodName}" required>
                             </div>
                             <div class="col-12 mb-4">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control bg-grey rounded p-2 text-white" name="description"
+                                <textarea disabled class="form-control bg-grey rounded p-2 text-white" name="description"
                                     id="description" rows="3" th:field="*{description}" required></textarea>
                             </div>
                             <div class="col-4 mb-4">
                                 <label for="brand" class="form-label">Brand</label>
-                                <input type="text" class="form-control bg-grey rounded p-2 text-white" id="brand"
+                                <input disabled type="text" class="form-control bg-grey rounded p-2 text-white" id="brand"
                                     name="brand" th:field="*{brand}" required>
                             </div>
                             <div class="col-4 mb-4">
                                 <label for="hapId" class="form-label">HAP Id</label>
-                                <input type="text" class="form-control bg-grey rounded p-2 text-light" id="hapId"
+                                <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="hapId"
                                     name="hapId" th:field="*{hapPid}" required>
                             </div>
                             <div class="col-4 mb-4">
                                 <label for="companyId" class="form-label">Company Product ID</label>
-                                <input type="text" class="form-control bg-grey rounded p-2 text-light" id="companyId"
+                                <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="companyId"
                                     name="companyId" th:field="*{companyPid}" required>
                             </div>
                         </div>
@@ -68,7 +69,7 @@
                                 <div class="col-6 my-2">
                                     <label for="price" class="form-label">Price</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control bg-grey rounded p-2 text-light"
+                                        <input disabled type="text" class="form-control bg-grey rounded p-2 text-light"
                                             id="price" name="price" th:field="*{mrp}" value="0.00" required>
                                         <span class="input-group-text bg-grey text-light">Rs.</span>
                                     </div>
@@ -76,14 +77,14 @@
                                 <div class="col-6 my-2">
                                     <label for="discount" class="form-label">Discount</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control bg-grey p-2 text-light" id="discount"
+                                        <input disabled type="text" class="form-control bg-grey p-2 text-light" id="discount"
                                             name="discount" th:field="*{discount}" required>
                                         <span class="input-group-text bg-grey text-light">%</span>
                                     </div>
                                 </div>
                                 <div class="col-6 my-2">
                                     <label for="stock" class="form-label">Stock</label>
-                                    <input type="text" class="form-control bg-grey rounded p-2 text-light" id="stock"
+                                    <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="stock"
                                         name="stock" th:field="*{stock}" required>
                                 </div>
                             </div>
@@ -95,14 +96,14 @@
                             <div class="col-4 my-2">
                                 <label for="dimension" class="form-label">Dimension</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control bg-grey text-light" id="dimension"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="dimension"
                                         name="dimension" th:field="*{dimension}" required>
                                 </div>
                             </div>
                             <div class="col-4 my-2">
                                 <label for="diameter" class="form-label">Diameter</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="diameter"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="diameter"
                                         name="diameter" th:field="*{diameter}" required>
                                     <span class="input-group-text bg-grey text-light">cm</span>
                                 </div>
@@ -110,7 +111,7 @@
                             <div class="col-4 my-2">
                                 <label for="thickness" class="form-label">Thickness</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="thickness"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="thickness"
                                         name="thickness" th:field="*{thickness}" required>
                                     <span class="input-group-text bg-grey text-light">mm</span>
                                 </div>
@@ -118,7 +119,7 @@
                             <div class="col-4 my-2">
                                 <label for="capacity" class="form-label">Capacity</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="capacity"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="capacity"
                                         name="capacity" th:field="*{capacity}" required>
                                     <span class="input-group-text bg-grey text-light">lit</span>
                                 </div>
@@ -126,7 +127,7 @@
                             <div class="col-4 my-2">
                                 <label for="weight" class="form-label">Weight</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="weight"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="weight"
                                         name="weight" th:field="*{weight}" required>
                                     <span class="input-group-text bg-grey text-light">kg</span>
                                 </div>
@@ -134,14 +135,14 @@
                             <div class="col-4 my-2">
                                 <label for="cdimension" class="form-label">Carton dimension</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control bg-grey text-light" id="cdimension"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="cdimension"
                                         name="cdimension" th:field="*{cartonDimension}" required>
                                 </div>
                             </div>
                             <div class="col-4 my-2">
                                 <label for="guarantee" class="form-label">Guarantee</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="guarantee"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="guarantee"
                                         name="guarantee" th:field="*{guarantee}" required>
                                     <span class="input-group-text bg-grey text-light">Years</span>
                                 </div>
@@ -149,24 +150,24 @@
                             <div class="col-4 my-2">
                                 <label for="warranty" class="form-label">Warranty</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="warranty"
+                                    <input disabled type="text" class="form-control bg-grey text-light" id="warranty"
                                         name="warranty" th:field="*{warranty}" required>
                                     <span class="input-group-text bg-grey text-light">Years</span>
                                 </div>
                             </div>
                             <div class="col-4 my-2">
                                 <label for="color" class="form-label">Color</label>
-                                <input type="text" class="form-control bg-grey text-light" id="color" name="color"
+                                <input disabled type="text" class="form-control bg-grey text-light" id="color" name="color"
                                     th:field="*{color}" required>
                             </div>
                             <div class="col-4 my-2">
                                 <label for="material" class="form-label">Material</label>
-                                <input type="text" class="form-control bg-grey text-light" id="material" name="material"
+                                <input disabled type="text" class="form-control bg-grey text-light" id="material" name="material"
                                     th:field="*{material}" required>
                             </div>
                             <div class="col-4 my-2">
                                 <label for="finish" class="form-label">Finish</label>
-                                <input type="text" class="form-control bg-grey text-light" id="finish" name="finish"
+                                <input disabled type="text" class="form-control bg-grey text-light" id="finish" name="finish"
                                     th:field="*{finish}" required>
                             </div>
                         </div>
@@ -177,24 +178,9 @@
                                 Upload Image
                             </h3>
                             <div class="rounded bg-grey p-3">
-                                <!-- Primary Image Upload -->
-                                <div id="primaryImageWrapper">
-                                    <label id="primaryUploadLabel"
-                                        class="w-100 d-inline-flex flex-column align-items-center justify-content-center p-4 bg-secondary text-light rounded cursor-pointer">
-                                        <i class="fas fa-cloud-upload-alt fa-3x mx-auto"></i>
-                                        <span class="mt-2 fs-5">Drop or upload the primary file</span>
-                                        <input class="d-none" type="file" name="PrimaryImage" id="primaryImageInput"
-                                            onchange="previewPrimaryImage(event)" />
-                                    </label>
-
-                                    <!-- Display Primary Image with Replace Button -->
-                                    <div class="position-relative text-center mt-2" style="display: none;"
-                                        id="primaryImageContainer">
-                                        <img id="primaryImagePreview" class="border rounded w-100" height="200" />
-                                        <button id="replaceButton"
-                                            class="btn btn-dark position-absolute top-50 start-50 translate-middle"
-                                            style="display: none;" onclick="replacePrimaryImage()">Replace</button>
-                                    </div>
+                                <div class="position-relative text-center mt-2" s>
+                                        <img id="primaryImagePreview" th:src="@{${product.images[0].imageUrl}}" class="border img-fluid mb-3 rounded w-100" height="200" />
+                                        
                                 </div>
                                 <!-- Secondary Images Section -->
                                 <label for="secondaryImagesWrapper" class="text-bold mt-1">Upload more
@@ -202,16 +188,10 @@
                                 <div class="d-inline-flex align-items-center gap-2 mt-2 flex-wrap"
                                     id="secondaryImagesWrapper">
                                     <!-- Container for secondary images -->
-                                    <div id="secondaryImagesContainer" class="d-inline-flex flex-wrap gap-2"></div>
-
-                                    <!-- Add Secondary Image Upload Button -->
-                                    <label
-                                        class="d-inline-flex flex-column align-items-center justify-content-center border rounded py-3 bg-secondary text-light cursor-pointer"
-                                        style="min-width: 70px; height: 70px;">
-                                        <i class="fas fa-cloud-upload-alt fa-2x"></i>
-                                        <input class="d-none" type="file" id="secondaryImageInput" name="secondaryImageInput" multiple
-                                            onchange="previewSecondaryImages(event)" />
-                                    </label>
+                                    <div id="secondaryImagesContainer" class="d-inline-flex flex-wrap gap-2">
+                                        <img th:each="image : ${product.images}" th:src="@{${image.imageUrl}}" alt="Thumbnail"
+                                            class="img-thumbnail m-1 border rounded" width="70px" height="70px" >
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -256,10 +236,10 @@
                     </div>
                     <div class="modal-body">
                         <label for="categoryId" class="form-label">Category Id</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryId"
+                        <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryId"
                             name="categoryId" required>
                         <label for="categoryname" class="form-label">Category Name</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryname"
+                        <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryname"
                             name="categoryname" required>
                     </div>
                     <div class="modal-footer">
@@ -284,10 +264,10 @@
                                 th:text="${category.categoryName  }">Select Category</option>
                         </select>
                         <label for="subcategoryId" class="form-label">Sub Category Id</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="subcategoryId"
+                        <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="subcategoryId"
                             name="subcategoryId" required>
                         <label for="subcategoryname" class="form-label">Sub Category Name</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="subcategoryname"
+                        <input disabled type="text" class="form-control bg-grey rounded p-2 text-light" id="subcategoryname"
                             name="subcategoryname" required>
                     </div>
                     <div class="modal-footer">
@@ -297,73 +277,16 @@
                 </div>
             </div>
         </div>
+        
         <script>
-
-            function previewPrimaryImage(event) {
-                const file = event.target.files[0];
-                if (!file) return; // No file selected
-
-                console.log("Image selected, hiding upload option..."); // Debugging step
-
-                const reader = new FileReader();
-                reader.onload = function () {
-                    document.getElementById("primaryImagePreview").src = reader.result;
-                    document.getElementById("primaryUploadLabel").style.setProperty("display", "none", "important");
-                    document.getElementById("primaryImageContainer").style.display = "block"; // Show image
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function replacePrimaryImage() {
-                document.getElementById("primaryUploadLabel").style.display = "flex";
-                document.getElementById("primaryImageContainer").style.display = "none";
-                document.getElementById("primaryImageInput").value = ""; // Clear input value
-            }
-
-            // Show "Replace" button on hover
-            document.getElementById("primaryImageContainer").addEventListener("mouseenter", function () {
-                document.getElementById("replaceButton").style.display = "block";
+            document.getElementById("editButton").addEventListener("click", function() {
+                let inputs = document.querySelectorAll("input, textarea");
+                inputs.forEach(input => input.removeAttribute("disabled"));
+                document.getElementById("saveButton").removeAttribute("disabled");
+                document.getElementById("editButton").addAttribute("disabled");
             });
-
-            document.getElementById("primaryImageContainer").addEventListener("mouseleave", function () {
-                document.getElementById("replaceButton").style.display = "none";
-            });
-
-            function previewSecondaryImages(event) {
-                const files = event.target.files;
-                const container = document.getElementById("secondaryImagesContainer");
-
-                Array.from(files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        // Create Wrapper
-                        let imgWrapper = document.createElement("div");
-                        imgWrapper.classList.add("position-relative");
-
-                        // Create Image
-                        let img = document.createElement("img");
-                        img.src = reader.result;
-                        img.classList.add("border", "rounded");
-                        img.width = 70;
-                        img.height = 70;
-
-                        // Create Remove Button
-                        let removeBtn = document.createElement("button");
-                        removeBtn.innerHTML = "❌";
-                        removeBtn.classList.add("btn", "position-absolute", "top-0", "end-0", "p-1", "rounded-circle");
-                        removeBtn.style.transform = "translate(50%, -50%)"; // Position button at top-right corner
-                        removeBtn.onclick = function () {
-                            container.removeChild(imgWrapper);
-                        };
-
-                        imgWrapper.appendChild(img);
-                        imgWrapper.appendChild(removeBtn);
-                        container.appendChild(imgWrapper);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
         </script>
+        
     </main>
 
 </body>

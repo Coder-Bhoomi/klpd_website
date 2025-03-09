@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login", "/submit", "/register", "/products", "/", "/search",
                                 "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
-                                "/admin", "/admin/**","/product/{pid}","error")
+                                "/admin", "/admin/**","/product/{pid}","error","/wholesaler")
                         .permitAll()
                         .requestMatchers("/profile").authenticated() // Ensure this is allowed
                         .anyRequest().authenticated())

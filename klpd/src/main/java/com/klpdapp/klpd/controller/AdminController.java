@@ -71,16 +71,12 @@ public class AdminController {
 	@Autowired
 	AdminRepo adRepo;
 
-	public OrderRepository getOrderRepo() {
-    	return orderRepo;
-    }
-
-    public void setOrderRepo(OrderRepository orderRepo) {
-        this.orderRepo = orderRepo;
-    }
-
-@GetMapping({ "/dashboard" })
+	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model) {
+		List<Product> topsales =prepo.findTop4ByOrderBySalesDesc();
+		model.addAttribute("topsales", topsales);
+		List<Product> lessStock = prepo.findTop4ByOrderByStockAsc();
+		model.addAttribute("lessStock", lessStock);
 		return "admin/dashboard";
 	}
 
@@ -104,12 +100,6 @@ public class AdminController {
 		return "redirect:/admin/category";
 	}
 
-	@GetMapping({ "/product-image" })
-	public String ShowProdImage(Model model) {
-
-		return "admin/product_image";
-	}
-
 	@GetMapping({ "/sub-category" })
 	public String ShowSubCategory(Model model) {
 		List<SubCategory> sCateg = sCatRepo.findAll();
@@ -129,16 +119,15 @@ public class AdminController {
 
 	@GetMapping({ "/product" })
 	public String ShowProduct(Model model) {
-		ProductDto pdto= new ProductDto();
-		model.addAttribute("productDto",pdto);
+		ProductDto pdto = new ProductDto();
+		model.addAttribute("productDto", pdto);
 		List<Category> categ = Catrepo.findAll();
 		model.addAttribute("category", categ);
 		List<SubCategory> sCateg = sCatRepo.findAll();
 		model.addAttribute("sub_category", sCateg);
 
-		return "admin/productdetail";
+		return "admin/product";
 	}
-	
 
 	@GetMapping({ "/productlist" })
 	public String ShowProductList(Model model) {
@@ -148,10 +137,20 @@ public class AdminController {
 	}
 
 	@GetMapping("/productdetail/{pid}")
-	public String ShowProductDetail(Model model , @PathVariable Integer pid) {
+	public String ShowProductDetail(Model model, @PathVariable Integer pid) {
 		Product prod = prepo.findById(pid).orElse(null);
 		model.addAttribute("product", prod);
+		List<Category> categ = Catrepo.findAll();
+		model.addAttribute("category", categ);
+		List<SubCategory> sCateg = sCatRepo.findAll();
+		model.addAttribute("sub_category", sCateg);
 		return "admin/productdetail";
+	}
+
+	@PostMapping("/updateProduct")
+	public String updateProduct(@ModelAttribute Product product) {
+		prepo.save(product); // Save updated product details
+		return "redirect:/productdetail/" + product.getPid();
 	}
 
 	@GetMapping({ "/coupon" })
@@ -183,21 +182,22 @@ public class AdminController {
 		SubCategory subCat = new SubCategory();
 		subCat.setSubcategoryId(SubCategoryId);
 		subCat.setSubcategoryName(SubCategoryName);
-		Category cat= Catrepo.findById(CategoryId).orElse(null);
+		Category cat = Catrepo.findById(CategoryId).orElse(null);
 		subCat.setCategory(cat);
 		sCatRepo.save(subCat);
 		return "redirect:/admin/product";
 	}
 
 	@PostMapping("/addNewProduct")
-	public String addNewProduct(@ModelAttribute ProductDto prodDto,@RequestParam("secondaryImageInput") List<MultipartFile> secondaryImgURL,
+	public String addNewProduct(@ModelAttribute ProductDto prodDto,
+			@RequestParam("secondaryImageInput") List<MultipartFile> secondaryImgURL,
 			@RequestParam("PrimaryImage") MultipartFile primaryImgURL) throws IOException {
-		System.out.println("Secondary img length="+secondaryImgURL.size());
+		System.out.println("Secondary img length=" + secondaryImgURL.size());
 		Product prod = new Product();
 		prod.setCompanyPid(prodDto.getCompanyPid());
 		prod.setHapPid(prodDto.getHapPid());
 		Category cat = Catrepo.findById(prodDto.getCategory()).orElse(null);
-		prod.setCategory(cat);	
+		prod.setCategory(cat);
 		SubCategory subCat = sCatRepo.findById(prodDto.getSubcategory()).orElse(null);
 		prod.setSubcategory(subCat);
 		prod.setBrand(prodDto.getBrand());
@@ -208,10 +208,10 @@ public class AdminController {
 		prod.setMrp(prodDto.getMrp());
 		prod.setOfferPrice(prodDto.getOfferPrice());
 		prod.setDiscount(prodDto.getDiscount());
-		prod.setDiameter(prodDto.getDiameter()+"cm");
-		prod.setThickness(prodDto.getThickness()+"mm");
-		prod.setCapacity(prodDto.getCapacity()+"litre");
-		prod.setWeight(prodDto.getWeight()+"kg");
+		prod.setDiameter(prodDto.getDiameter() + "cm");
+		prod.setThickness(prodDto.getThickness() + "mm");
+		prod.setCapacity(prodDto.getCapacity() + "litre");
+		prod.setWeight(prodDto.getWeight() + "kg");
 		prod.setCartonDimension(prodDto.getCartonDimension());
 		prod.setDimension(prodDto.getDimension());
 		prod.setGuarantee(prodDto.getGuarantee() + "years");
@@ -220,41 +220,41 @@ public class AdminController {
 		prod.setMaterial(prodDto.getMaterial());
 		prod.setFinish(prodDto.getFinish());
 		prepo.save(prod);
-		if(!primaryImgURL.isEmpty()) {
-			Images img=new Images();
+		if (!primaryImgURL.isEmpty()) {
+			Images img = new Images();
 			img.setpid(prod);
-			MultipartFile file=primaryImgURL;
-			String uploadDir="public/ProductImages/";
-			String fileName=prod.getPid()+"_primaryImage_"+file.getOriginalFilename();
-			Path uploadPath=Paths.get(uploadDir);
-			if(!Files.exists(uploadPath)) {
-					try {
-						Files.createDirectories(uploadPath);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+			MultipartFile file = primaryImgURL;
+			String uploadDir = "public/ProductImages/";
+			String fileName = prod.getPid() + "_primaryImage_" + file.getOriginalFilename();
+			Path uploadPath = Paths.get(uploadDir);
+			if (!Files.exists(uploadPath)) {
+				try {
+					Files.createDirectories(uploadPath);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			try(InputStream inputStream=file.getInputStream()){
-				Path filePath=uploadPath.resolve(fileName);
-				Files.copy(inputStream,filePath,StandardCopyOption.REPLACE_EXISTING);
+			try (InputStream inputStream = file.getInputStream()) {
+				Path filePath = uploadPath.resolve(fileName);
+				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			img.setImageUrl(fileName);
 			img.setIsPrimary(true);
 			imgRepo.save(img);
 		}
-		if(secondaryImgURL!=null) {
-			for(MultipartFile file:secondaryImgURL) {
-				if(!file.isEmpty()) {
-					Images img=new Images();
+		if (secondaryImgURL != null) {
+			for (MultipartFile file : secondaryImgURL) {
+				if (!file.isEmpty()) {
+					Images img = new Images();
 					img.setpid(prod);
-					String uploadDir="public/ProductImages/";
-					String fileName=prod.getPid()+"_secondaryImage_"+file.getOriginalFilename();
-					Path uploadPath=Paths.get(uploadDir);
-					if(!Files.exists(uploadPath)) {
+					String uploadDir = "public/ProductImages/";
+					String fileName = prod.getPid() + "_secondaryImage_" + file.getOriginalFilename();
+					Path uploadPath = Paths.get(uploadDir);
+					if (!Files.exists(uploadPath)) {
 						try {
 							Files.createDirectories(uploadPath);
 						} catch (IOException e) {
@@ -262,11 +262,11 @@ public class AdminController {
 							e.printStackTrace();
 						}
 					}
-					try(InputStream inputStream=file.getInputStream()){
-						Path filePath=uploadPath.resolve(fileName);
-						Files.copy(inputStream,filePath,StandardCopyOption.REPLACE_EXISTING);
-					}catch(IOException e) {
-						throw new IOException("Could not save uploaded file: "+fileName);
+					try (InputStream inputStream = file.getInputStream()) {
+						Path filePath = uploadPath.resolve(fileName);
+						Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+					} catch (IOException e) {
+						throw new IOException("Could not save uploaded file: " + fileName);
 					}
 					img.setImageUrl(fileName);
 					img.setIsPrimary(false);
@@ -280,16 +280,20 @@ public class AdminController {
 	@PostMapping("/addCoupon")
 	public String addCoupon(@RequestParam String couponCode,
 			@RequestParam String couponName, @RequestParam LocalDate validityDate,
-			@RequestParam int discountRate, @RequestParam int uptoAmount, @RequestParam String couponDescription) {
+			@RequestParam int discountRate, @RequestParam int uptoAmount, @RequestParam String couponDescription,
+			@RequestParam int minCartValue, @RequestParam int minQuantity) {
 		Coupon coupon = new Coupon();
 		coupon.setCouponCode(couponCode);
 		coupon.setCouponName(couponName);
-		coupon.setIssueDate(validityDate);
+		coupon.setExpireDate(validityDate);
 		coupon.setDiscountRate(discountRate);
 		coupon.setUptoAmount(uptoAmount);
+		coupon.setMinCartValue(minCartValue);
+		coupon.setMinQuantity(minQuantity);
+		coupon.setIssueDate(LocalDate.now());
 		coupon.setDescription(couponDescription);
 		cRepo.save(coupon);
-		return "redirect:/admin/product";
+		return "redirect:/admin/coupon";
 	}
 
 	@PostMapping({ "/logout" })
@@ -299,23 +303,24 @@ public class AdminController {
 	}
 
 	@PostMapping("/changepassword")
-	public String ChangePassword(HttpSession session, RedirectAttributes attrib, @RequestParam String oldpassword, @RequestParam String newpassword, @RequestParam String confirmpassword) {
+	public String ChangePassword(HttpSession session, RedirectAttributes attrib, @RequestParam String oldpassword,
+			@RequestParam String newpassword, @RequestParam String confirmpassword) {
 		if (session.getAttribute("admin") != null) {
-			Admin ad = adRepo.findByEmail((String)session.getAttribute("admin"));
-            if (!newpassword.equals(confirmpassword)) {
-               attrib.addFlashAttribute("message", "New password and confirmpassword are not same");
-               return "redirect:/admin/setting";
-            } else if (!oldpassword.equals(ad.getPassword())) {
-               attrib.addFlashAttribute("message", "Old password is not correct");
-               return "redirect:/admin/setting";
-            } else {
-               ad.setPassword(newpassword);
-               adRepo.save(ad);
-               return "redirect:/admin/setting";
-            }
-         } else {
-            return "redirect:/admin/setting";
-         }
+			Admin ad = adRepo.findByEmail((String) session.getAttribute("admin"));
+			if (!newpassword.equals(confirmpassword)) {
+				attrib.addFlashAttribute("message", "New password and confirmpassword are not same");
+				return "redirect:/admin/setting";
+			} else if (!oldpassword.equals(ad.getPassword())) {
+				attrib.addFlashAttribute("message", "Old password is not correct");
+				return "redirect:/admin/setting";
+			} else {
+				ad.setPassword(newpassword);
+				adRepo.save(ad);
+				return "redirect:/admin/setting";
+			}
+		} else {
+			return "redirect:/admin/setting";
+		}
 	}
 
 }
