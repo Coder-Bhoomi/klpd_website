@@ -79,7 +79,7 @@
                             <img src="images/cookware.jfif" alt="Plush">
                             <div class="category-title text-white">Cookware</div>
                             <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal2">&rarr;</a>
+                                data-bs-target="#categoryModal1">&rarr;</a>
                         </div>
                     </div>
 
@@ -154,17 +154,19 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-dark">
                     <div class="modal-header">
-                        <h5 class="modal-title text-white" id="categoryModal1Label">Modern Style</h5>
+                        <h5 class="modal-title text-white" id="categoryModal1Label">Cookware</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row" >
                             <div class="col-md-6 col-lg-4 my-4"  th:each="category : ${categories}"> 
                                 <div class="category-card">
-                                    <img src="images/utensils.jpg" alt="Modern">
+                                    <img th:src="@{'/CategoryImages/'+${category.categoryImage}}" style="height:200px">
                                     <a class="text-white category-title" th:href="@{/category/{id}(id=${category.categoryId})}"
-                                    th:text="${category.categoryName}"></a>                                </div>
+                                    th:text="${category.categoryName}" style="text-decoration: none;"></a>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

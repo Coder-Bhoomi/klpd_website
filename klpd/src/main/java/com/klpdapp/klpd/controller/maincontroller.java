@@ -25,6 +25,7 @@ import com.klpdapp.klpd.Repository.AddressRepo;
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
+import com.klpdapp.klpd.Repository.AttrRepo;
 import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
@@ -37,6 +38,7 @@ import com.klpdapp.klpd.dto.AdminDto;
 import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
+import com.klpdapp.klpd.model.Attribute;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
@@ -98,7 +100,10 @@ public class maincontroller {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    private static void addFilter(Model model) {
+    @Autowired
+    AttrRepo attrRepo;
+
+    private void addFilter(Model model) {
         Set<String> colors = new HashSet<>();
         Set<String> diameters = new HashSet<>();
         Set<String> thicknesses = new HashSet<>();
@@ -107,23 +112,26 @@ public class maincontroller {
         Set<String> brand = new HashSet<>();
 
         for (Product product : Products) {
-            if (product.getColor() != null) {
-                colors.add(product.getColor().replace("-", ""));
-            }
-            if (product.getDiameter() != null) {
-                diameters.add(product.getDiameter().replace("-", "")); 
-            }
-            if (product.getThickness() != null) {
-                thicknesses.add(product.getThickness().replace("-", "")); // Remove hyphen 
-            }
-            if (product.getCapacity() != null) {
-                capacities.add(product.getCapacity().replace("-", ""));
-            }
-            if (product.getGuarantee() != null) {
-                guarantees.add(product.getGuarantee().replace("-", ""));
+            List<Attribute> cookware = attrRepo.findByProduct(product);
+            for (Attribute attribute : cookware) {
+                if (attribute.getAttributeName().equalsIgnoreCase("color")) {
+                    colors.add(attribute.getAttributeValue());
+                }
+                if (attribute.getAttributeName().equalsIgnoreCase("diameter")) {
+                    diameters.add(attribute.getAttributeValue());
+                }
+                if (attribute.getAttributeName().equalsIgnoreCase("thickness")) {
+                    thicknesses.add(attribute.getAttributeValue());
+                }
+                if (attribute.getAttributeName().equalsIgnoreCase("capacity")) {
+                    capacities.add(attribute.getAttributeValue());
+                }
+                if (attribute.getAttributeName().equalsIgnoreCase("guarantee")) {
+                    guarantees.add(attribute.getAttributeValue());
+                }
             }
             if (product.getBrand() != null) {
-                brand.add(product.getBrand().replace("-", "")); 
+                brand.add(product.getBrand());
             }
         }
 
@@ -176,13 +184,13 @@ public class maincontroller {
             User user = uRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartRepository.findByUser(user);
             for (Cart item : cartItems) {
-                cartProductIds.add(item.getProduct().getPid()); 
-            }        
+                cartProductIds.add(item.getProduct().getPid());
+            }
             model.addAttribute("cartItem", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
             for (Wishlist item : wishlistItems) {
-                wishlistProductIds.add(item.getProduct().getPid()); 
-            }        
+                wishlistProductIds.add(item.getProduct().getPid());
+            }
         }
         model.addAttribute("cartProductIds", cartProductIds);
         model.addAttribute("wishlistProductIds", wishlistProductIds);
@@ -206,12 +214,12 @@ public class maincontroller {
                                 .should(f.match()
                                         .fields("prodName")
                                         .matching(query)
-                                        .boost(10.0f)) 
+                                        .boost(10.0f))
                                 .should(f.match()
                                         .fields("prodName", "brand")
                                         .matching(query)
                                         .fuzzy()
-                                        .boost(5.0f)) 
+                                        .boost(5.0f))
                                 .should(f.match()
                                         .fields("brand", "description")
                                         .matching(query)
@@ -223,7 +231,7 @@ public class maincontroller {
                         )
                         .fetchAllHits()
                         .stream()
-                        .distinct() 
+                        .distinct()
                         .collect(Collectors.toList());
                 model.addAttribute("products", Products);
                 addFilter(model);
@@ -244,9 +252,10 @@ public class maincontroller {
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
             Set<Integer> wishlistProductIds = new HashSet<>();
             for (Wishlist item : wishlistItems) {
-                wishlistProductIds.add(item.getProduct().getPid()); 
-            }        
-            model.addAttribute("wishlistProductIds", wishlistProductIds);        }
+                wishlistProductIds.add(item.getProduct().getPid());
+            }
+            model.addAttribute("wishlistProductIds", wishlistProductIds);
+        }
         return "category";
     }
 
@@ -276,9 +285,12 @@ public class maincontroller {
         if (color != null && !color.isEmpty()) {
             List<Product> filteredByColor = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getColor() != null
-                        && Product.getColor().equalsIgnoreCase(color)) {
-                    filteredByColor.add(Product);
+                List<Attribute> cookware = attrRepo.findByProduct(Product);
+                for (Attribute attribute : cookware) {
+                    if (attribute.getAttributeName().equalsIgnoreCase("color")
+                            && attribute.getAttributeValue().equalsIgnoreCase(color)) {
+                        filteredByColor.add(Product);
+                    }
                 }
             }
             Products = filteredByColor;
@@ -299,9 +311,12 @@ public class maincontroller {
         if (diameter != null && !diameter.isEmpty()) {
             List<Product> diameterFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getDiameter() != null
-                        && Product.getDiameter().equalsIgnoreCase(diameter)) {
-                    diameterFiltered.add(Product);
+                List<Attribute> cookware = attrRepo.findByProduct(Product);
+                for (Attribute attribute : cookware) {
+                    if (attribute.getAttributeName().equalsIgnoreCase("diameter")
+                            && attribute.getAttributeValue().equalsIgnoreCase(diameter)) {
+                        diameterFiltered.add(Product);
+                    }
                 }
             }
             Products = diameterFiltered;
@@ -311,9 +326,12 @@ public class maincontroller {
         if (thickness != null && !thickness.isEmpty()) {
             List<Product> thicknessFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getThickness() != null
-                        && Product.getThickness().equalsIgnoreCase(thickness)) {
-                    thicknessFiltered.add(Product);
+                List<Attribute> cookware = attrRepo.findByProduct(Product);
+                for (Attribute attribute : cookware) {
+                    if (attribute.getAttributeName().equalsIgnoreCase("thickness")
+                            && attribute.getAttributeValue().equalsIgnoreCase(thickness)) {
+                        thicknessFiltered.add(Product);
+                    }
                 }
             }
             Products = thicknessFiltered;
@@ -323,9 +341,12 @@ public class maincontroller {
         if (capacity != null && !capacity.isEmpty()) {
             List<Product> capacityFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getCapacity() != null
-                        && Product.getCapacity().equalsIgnoreCase(capacity)) {
-                    capacityFiltered.add(Product);
+                List<Attribute> cookware = attrRepo.findByProduct(Product);
+                for (Attribute attribute : cookware) {
+                    if (attribute.getAttributeName().equalsIgnoreCase("capacity")
+                            && attribute.getAttributeValue().equalsIgnoreCase(capacity)) {
+                        capacityFiltered.add(Product);
+                    }
                 }
             }
             Products = capacityFiltered;
@@ -335,9 +356,12 @@ public class maincontroller {
         if (guarantee != null && !guarantee.isEmpty()) {
             List<Product> guaranteeFiltered = new ArrayList<>();
             for (Product Product : Products) {
-                if (Product.getGuarantee() != null
-                        && Product.getGuarantee().equalsIgnoreCase(guarantee)) {
-                    guaranteeFiltered.add(Product);
+                List<Attribute> cookware = attrRepo.findByProduct(Product);
+                for (Attribute attribute : cookware) {
+                    if (attribute.getAttributeName().equalsIgnoreCase("guarantee")
+                            && attribute.getAttributeValue().equalsIgnoreCase(guarantee)) {
+                        guaranteeFiltered.add(Product);
+                    }
                 }
             }
             Products = guaranteeFiltered;
@@ -362,7 +386,7 @@ public class maincontroller {
             model.addAttribute("category", category);
             model.addAttribute("query", query);
 
-        } 
+        }
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
             User user = uRepo.findById(userId).orElse(null);
@@ -371,9 +395,10 @@ public class maincontroller {
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
             Set<Integer> wishlistProductIds = new HashSet<>();
             for (Wishlist item : wishlistItems) {
-                wishlistProductIds.add(item.getProduct().getPid()); 
-            }        
-            model.addAttribute("wishlistProductIds", wishlistProductIds);        }
+                wishlistProductIds.add(item.getProduct().getPid());
+            }
+            model.addAttribute("wishlistProductIds", wishlistProductIds);
+        }
         Products = p;
         addFilter(model);
         CategoryService.addCategoriesToModel(model);
@@ -398,9 +423,10 @@ public class maincontroller {
                 List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
                 Set<Integer> wishlistProductIds = new HashSet<>();
                 for (Wishlist item : wishlistItems) {
-                    wishlistProductIds.add(item.getProduct().getPid()); 
-                }        
-                model.addAttribute("wishlistProductIds", wishlistProductIds);            }
+                    wishlistProductIds.add(item.getProduct().getPid());
+                }
+                model.addAttribute("wishlistProductIds", wishlistProductIds);
+            }
         }
         return "category";
     }
@@ -445,7 +471,6 @@ public class maincontroller {
         return "redirect:/login";
     }
 
-    
     @GetMapping({ "/admin" })
     public String ShowAdmLogin(Model model) {
         AdminDto addto = new AdminDto();
@@ -472,8 +497,7 @@ public class maincontroller {
     }
 
     @GetMapping("/wholesaler")
-    public String wholesalerLogin()
-    {
+    public String wholesalerLogin() {
         return "wholesaler";
     }
 }

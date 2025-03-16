@@ -113,41 +113,9 @@
             <h4 class="fw-bold mt-5">More Information</h4>
             <table class="table table-bordered info-table mt-4">
                 <tbody>
-                    <tr th:if="${product.brand != null}">
-                        <th>Brand</th>
-                        <td th:text="${product.brand}"></td>
-                    </tr>
-                    <tr th:if="${product.capacity != null}">
-                        <th>Capacity</th>
-                        <td th:text="${product.capacity}"></td>
-                    </tr>
-                    <tr th:if="${product.finish != null}">
-                        <th>Type</th>
-                        <td th:text="${product.finish}"></td>
-                    </tr>
-                    <tr th:if="${product.cartonDimension != null}">
-                        <th>Carton-dimension</th>
-                        <td th:text="${product.cartonDimension}"></td>
-                    </tr>
-                    <tr th:if="${product.color != null}">
-                        <th>Color</th>
-                        <td th:text="${product.color}"></td>
-                    </tr>
-                    <tr th:if="${product.diameter != null}">
-                        <th>Diameter</th>
-                        <td th:text="${product.diameter}"></td>
-                    </tr>
-                    <tr th:if="${product.guarantee != null}">
-                        <th>Guarantee</th>
-                        <td th:text="${product.guarantee}"></td>
-                    </tr>
-                    <tr th:if="${product.thickness != null}">
-                        <th>Thickness</th>
-                        <td th:text="${product.thickness}"></td>
-                    </tr>
-                    <tr th:if="${product.weight != null}">
-                        <th>Weight</th>
-                        <td th:text="${product.weight}"></td>
+                    <tr th:each = "attribute : ${product.attributes}">
+                        <th th:text="${attribute.attributeName} ">Brand</th>
+                        <td th:text="${attribute.attributeValue}"></td>
                     </tr>
                 </tbody>
             </table>

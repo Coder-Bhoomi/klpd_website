@@ -139,6 +139,10 @@ public class Product {
     @OneToMany(mappedBy = "pid", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @IndexedEmbedded 
     private List<Images> images;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded
+    private List<Attribute> attributes;
     // Getters and Setters
 
 }

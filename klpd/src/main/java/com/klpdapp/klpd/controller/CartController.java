@@ -58,7 +58,18 @@ public class CartController {
             float discount = 0.0f;
             float tax = subtotal * 0.02f;
             float total = subtotal + tax - discount;
-
+            Coupon appliedCoupon = (Coupon) session.getAttribute("coupon");
+        Float appliedDiscount = (Float) session.getAttribute("discount");
+        Float appliedTax = (Float) session.getAttribute("tax");
+        Float appliedTotal = (Float) session.getAttribute("total");
+        Float appliedsubtotal = (Float) session.getAttribute("subtotal");
+        if (appliedDiscount != null) {
+            discount = appliedDiscount;
+            tax = appliedTax;
+            total = appliedTotal;
+            subtotal = appliedsubtotal;
+            model.addAttribute("coupon", appliedCoupon);
+        }
             model.addAttribute("cart", cartItems);
             model.addAttribute("subtotal", subtotal);
             model.addAttribute("discount", discount);
@@ -88,18 +99,18 @@ public class CartController {
                 discount = discountbypercentage;
             }
             System.out.println("Discount"+discount);
-            float tax = subtotal * 0.10f;
+            float tax = subtotal * 0.02f;
             float total = subtotal + tax - discount;
-            model.addAttribute("cart", cartItems);
-            model.addAttribute("subtotal", subtotal);
-            model.addAttribute("discount", discount);
-            model.addAttribute("tax", tax);
-            model.addAttribute("total", total);
-            model.addAttribute("coupon", coupon);
+            session.setAttribute("cart", cartItems);
+            session.setAttribute("subtotal", subtotal);
+            session.setAttribute("discount", discount);
+            session.setAttribute("tax", tax);
+            session.setAttribute("total", total);
+            session.setAttribute("coupon", coupon);
         } else {
             model.addAttribute("message", "Coupon not applicable.");
         }
-        return "cart";
+        return "redirect:/cart";
     }
 
     @PostMapping("/update")

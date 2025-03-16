@@ -11,6 +11,13 @@ public class Category {
     private String categoryId;
     @Column ( length = 60 , nullable = false)
     private String categoryName;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "segmentId", nullable = false)
+    private Segment segment;
+
+    @Column ( length = 60 , nullable = false)
+    private String categoryImage;
     public String getCategoryId() {
         return categoryId;
     }
@@ -22,5 +29,19 @@ public class Category {
     }
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public Segment getSegment() {
+        return segment;
+    }
+    public void setSegment(Segment segment) {
+        this.segment = segment;
+    }
+
+    public String getCategoryImage() {
+        return categoryImage;
+    }
+    public void setCategoryImage(String categoryImage) {
+        this.categoryImage = categoryImage;
     }
 }
