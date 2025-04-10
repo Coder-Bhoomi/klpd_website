@@ -43,7 +43,7 @@
                                         <td th:text="${product.brand}"></td>
                                         <td th:text="${product.offerPrice}"></td>
                                         <td>
-                                            <a th:href="@{/admin/productdetail/{pid}(pid=${product.pid})}" class="btn btn-primary btn-sm">View
+                                            <a th:href="@{/admin/{pid}(pid=${product.pid})}" class="btn btn-primary btn-sm">View
                                                 Details</a>
                                             <button class="btn btn-warning btn-sm edit-btn">Edit</button>
                                             <button class="btn btn-primary btn-sm save-btn d-none">Save</button>

@@ -34,11 +34,6 @@ public class Product {
     private String hapPid;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ctg_id", nullable = false)
-    @IndexedEmbedded
-    private Category category;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subcategory_id", nullable = false)
     @IndexedEmbedded
     private SubCategory subcategory;
@@ -70,77 +65,21 @@ public class Product {
     @GenericField
     private Float mrp;
 
-    private int discount;
+    private Float discount;
 
     @Column(precision = 10)
     @GenericField
     private Float offerPrice;
 
-    @Column(length = 15)
-    @FullTextField
-    private String diameter;
-
-    @Column(length = 50)
-    @FullTextField
-    private String dimension;
-
-    @Column(length = 15)
-    @FullTextField
-    private String thickness;
-
-    @Column(length = 15)
-    @FullTextField
-    private String capacity;
-
-    @Column(length = 50)
-    @FullTextField
-    private String model;
-
-    @Column(length = 15)
-    @FullTextField
-    private String length;
-
-    @Column(length = 15)
-    @FullTextField
-    private String height;
-
-    @Column(length = 50)
-    @FullTextField
-    private String cartonDimension;
-
-    @Column(length = 15)
-    @FullTextField
-    private String weight;
-
-    @Column(length = 10)
-    @FullTextField
-    private String guarantee;
-
-    @Column(length = 10)
-    @FullTextField
-    private String warranty;
-
-    @Column(length = 20)
-    @FullTextField
-    private String color;
-
-    @Column(length = 200)
-    @FullTextField
-    private String material;
-
-    @Column(length = 250)
-    @FullTextField
-    private String finish;
-
     private int rating;
 
     private int sales;
 
-    @OneToMany(mappedBy = "pid", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pid", cascade = CascadeType.ALL)
     @IndexedEmbedded 
     private List<Images> images;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @IndexedEmbedded
     private List<Attribute> attributes;
     // Getters and Setters

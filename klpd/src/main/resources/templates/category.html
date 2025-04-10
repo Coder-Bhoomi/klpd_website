@@ -242,13 +242,14 @@
                                 </span>
                             </p>
                         </a>
-                        <div th:each="cartItem : ${cartItem}">
-                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}" method="post">
+                        <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
                                 <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
                                 <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                    id="quantity-display">
-                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                                    id="quantity-display" class="rounded">
+                                <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
                             </form>
                         </div>
 

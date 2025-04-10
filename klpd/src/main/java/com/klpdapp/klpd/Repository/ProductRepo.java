@@ -11,11 +11,6 @@ import com.klpdapp.klpd.model.Product;
 
 public interface ProductRepo extends JpaRepository<Product, Integer> {
 
-    List<Product> findByCategory_CategoryId(String categoryId);
-
-    List<Product> findByCategory_CategoryIdOrderByMrpAsc(String categoryId);
-
-    List<Product> findByCategory_CategoryIdOrderByMrpDesc(String categoryId);
 
     List<Product> findTop4ByOrderByCreatedAtDesc();
 
@@ -88,5 +83,7 @@ List<Product> findInductionProductsBySizeAndSubcategory(
     List<Product> findTop4ByOrderBySalesDesc();
 
     List<Product> findTop4ByOrderByStockAsc();
+
+    List<Product> findBySubcategory_Category_CategoryId(String categoryId);
 
 }

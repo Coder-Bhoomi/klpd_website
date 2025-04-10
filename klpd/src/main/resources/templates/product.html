@@ -79,17 +79,16 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons d-flex gap-3 mt-4">
-                        <div th:each="cartItem : ${cartItem}">
+                        <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
                             <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
                                 method="post">
                                 <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
                                 <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                    id="quantity-display">
-                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                                    id="quantity-display" class="rounded">
+                                <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
                             </form>
                         </div>
-
                         <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
                             th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
@@ -154,16 +153,16 @@
                             </p>
                         </a>
 
-                        <div th:each="cartItem : ${cartItem}">
-                            <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}" method="post">
+                        <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
+                            <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}"
+                                method="post">
                                 <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
                                 <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                    id="quantity-display">
-                                <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                                    id="quantity-display" class="rounded">
+                                <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
                             </form>
                         </div>
-
                         <form th:if="${cartProductIds == null or not cartProductIds.contains(rp.pid)}"
                             th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${rp.pid}" />
@@ -176,7 +175,7 @@
                     </div>
                 </div>
             </div>
-            <a th:href="@{/category/{id}(id=${product.category.categoryId})}">
+            <a th:href="@{/category/{id}(id=${product.subcategory.category.categoryId})}">
                 <button type="button" class="btn button d-block mx-auto p-2 mt-5 rounded-pill"
                     style="background-color: #367D8A; color: #fff; font-size: 14px;">
                     <span>View All</span>

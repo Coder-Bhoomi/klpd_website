@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.klpdapp.klpd.Repository.AddressRepo;
 import com.klpdapp.klpd.Repository.AdminRepo;
@@ -31,6 +32,7 @@ import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.PincodeRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
+import com.klpdapp.klpd.Repository.SegmentRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.Services.CategoryService;
@@ -42,6 +44,7 @@ import com.klpdapp.klpd.model.Attribute;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.model.Segment;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
 
@@ -102,6 +105,9 @@ public class maincontroller {
 
     @Autowired
     AttrRepo attrRepo;
+
+    @Autowired
+    SegmentRepo segmentRepo;
 
     private void addFilter(Model model) {
         Set<String> colors = new HashSet<>();
@@ -194,6 +200,8 @@ public class maincontroller {
         }
         model.addAttribute("cartProductIds", cartProductIds);
         model.addAttribute("wishlistProductIds", wishlistProductIds);
+        List<Segment> segments = segmentRepo.findAll();
+        model.addAttribute("segments", segments);
         return "index";
     }
 
@@ -259,6 +267,7 @@ public class maincontroller {
         return "category";
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/products")
     public String listProducts(@RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String query,
@@ -382,7 +391,7 @@ public class maincontroller {
         model.addAttribute("minDiscount", minDiscount);
         model.addAttribute("maxDiscount", maxDiscount);
         if (Products != null && !Products.isEmpty()) {
-            Category category = Products.get(0).getCategory();
+            Category category = Products.get(0).getSubcategory().getCategory();
             model.addAttribute("category", category);
             model.addAttribute("query", query);
 
@@ -409,7 +418,7 @@ public class maincontroller {
     @GetMapping("/category/{categoryId}")
     public String showCategory(@PathVariable String categoryId, Model model, HttpSession session) {
         if (categoryId != null && !categoryId.isEmpty()) {
-            Products = pRepo.findByCategory_CategoryId(categoryId);
+            Products = pRepo.findBySubcategory_Category_CategoryId(categoryId);
             Category category = ctgRepo.findById(categoryId).orElse(null);
             model.addAttribute("category", category);
             model.addAttribute("products", Products);

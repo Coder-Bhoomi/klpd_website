@@ -113,7 +113,7 @@ public class ProductController {
             model.addAttribute("sizes", sizes);
 
             model.addAttribute("relatedProducts", relatedProducts);
-            model.addAttribute("categoryId", prod.getCategory().getCategoryId());
+            model.addAttribute("categoryId", prod.getSubcategory().getCategory().getCategoryId());
         }
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {

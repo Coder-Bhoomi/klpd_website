@@ -39,9 +39,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login", "/submit", "/register", "/products", "/", "/search",
                                 "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
-                                "/admin", "/admin/**","/product/{pid}","error","/wholesaler")
+                                "/admin", "/admin/**","/product/{pid}","error","/wholesaler","/CategoryImages/**","/SegmentImages/**",
+                                "/ProductImages/**")
                         .permitAll()
-                        .requestMatchers("/profile").authenticated() // Ensure this is allowed
+                        .requestMatchers("/profile").authenticated() // only authenticated users can access profile
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

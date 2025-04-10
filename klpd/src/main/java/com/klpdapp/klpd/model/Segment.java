@@ -1,5 +1,7 @@
 package com.klpdapp.klpd.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +11,10 @@ import lombok.Setter;
 @Entity
 @Table (name ="Segment")
 public class Segment {
+    
     @Id
-    @Column ( length = 15 , nullable = false)
-    private String segmentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int segmentId;
 
     @Column ( length = 60 , nullable = false)
     private String segmentName;
@@ -19,5 +22,7 @@ public class Segment {
     @Column ( length = 60 , nullable = false)
     private String segmentImage;
 
+    @OneToMany(mappedBy = "segment", cascade = CascadeType.ALL)
+    private List<Category> category;
     // Getters and Setters
    }

@@ -92,83 +92,35 @@
                             <h3 class="text-lg font-bold mb-2">
                                 Product Details
                             </h3>
-                            <div class="col-4 my-2">
-                                <label for="dimension" class="form-label">Dimension</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control bg-grey text-light" id="dimension"
-                                        name="dimension" th:field="*{dimension}" required>
+                            <div id="attributesContainer">
+                                <!-- Existing attributes -->
+                                <div class="attribute-row mb-2">
+                                    <select class="form-select bg-grey text-light col-sm-5" name="attributes[0].attributeName">
+                                        <option value="">Select Attribute</option>
+                                        <option th:each="attr : ${attributes}" th:value="${attr}" th:text="${attr}">
+                                        </option>
+                                        <option value="new">Add New Attribute</option>
+                                    </select>
+                                    <input type="text" class="form-control bg-grey text-light col-sm-5"
+                                        name="attributes[0].attributeValue" placeholder="Attribute Value">
+                                </div>
+
+                            </div>
+                            <button type="button" class="btn btn-primary mt-2" onclick="addAttributeField()">Add
+                                Attribute</button>
+                            <div id="attributeTemplate" style="display: none;">
+                                <div class="attribute-row mb-2">
+                                    <select class="form-select bg-grey text-light col-sm-5">
+                                        <option value="">Select Attribute</option>
+                                        <option th:each="attr : ${attributes}" th:value="${attr}" th:text="${attr}">
+                                        </option>
+                                        <option value="new">Add New Attribute</option>
+                                    </select>
+                                    <input type="text" class="form-control bg-grey text-light col-sm-5"
+                                        placeholder="Attribute Value">
                                 </div>
                             </div>
-                            <div class="col-4 my-2">
-                                <label for="diameter" class="form-label">Diameter</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="diameter"
-                                        name="diameter" th:field="*{diameter}" required>
-                                    <span class="input-group-text bg-grey text-light">cm</span>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="thickness" class="form-label">Thickness</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="thickness"
-                                        name="thickness" th:field="*{thickness}" required>
-                                    <span class="input-group-text bg-grey text-light">mm</span>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="capacity" class="form-label">Capacity</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="capacity"
-                                        name="capacity" th:field="*{capacity}" required>
-                                    <span class="input-group-text bg-grey text-light">lit</span>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="weight" class="form-label">Weight</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="weight"
-                                        name="weight" th:field="*{weight}" required>
-                                    <span class="input-group-text bg-grey text-light">kg</span>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="cdimension" class="form-label">Carton dimension</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control bg-grey text-light" id="cdimension"
-                                        name="cdimension" th:field="*{cartonDimension}" required>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="guarantee" class="form-label">Guarantee</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="guarantee"
-                                        name="guarantee" th:field="*{guarantee}" required>
-                                    <span class="input-group-text bg-grey text-light">Years</span>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="warranty" class="form-label">Warranty</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control bg-grey text-light" id="warranty"
-                                        name="warranty" th:field="*{warranty}" required>
-                                    <span class="input-group-text bg-grey text-light">Years</span>
-                                </div>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="color" class="form-label">Color</label>
-                                <input type="text" class="form-control bg-grey text-light" id="color" name="color"
-                                    th:field="*{color}" required>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="material" class="form-label">Material</label>
-                                <input type="text" class="form-control bg-grey text-light" id="material" name="material"
-                                    th:field="*{material}" required>
-                            </div>
-                            <div class="col-4 my-2">
-                                <label for="finish" class="form-label">Finish</label>
-                                <input type="text" class="form-control bg-grey text-light" id="finish" name="finish"
-                                    th:field="*{finish}" required>
-                            </div>
+
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -209,7 +161,8 @@
                                         class="d-inline-flex flex-column align-items-center justify-content-center border rounded py-3 bg-secondary text-light cursor-pointer"
                                         style="min-width: 70px; height: 70px;">
                                         <i class="fas fa-cloud-upload-alt fa-2x"></i>
-                                        <input class="d-none" type="file" id="secondaryImageInput" name="secondaryImageInput" multiple
+                                        <input class="d-none" type="file" id="secondaryImageInput"
+                                            name="secondaryImageInput" multiple
                                             onchange="previewSecondaryImages(event)" />
                                     </label>
                                 </div>
@@ -217,24 +170,12 @@
                         </div>
                         <div class="row mx-3 mb-4 align-item-start rounded bg-darkgray p-3">
                             <div class="col-12">
-                                <h4><label for="category" class="form-label">Category</label></h4>
-                                <select class="form-select bg-grey text-light" id="category" name="category" required>
-                                    <option th:each="category : ${category}" th:value="${category.categoryId}"
-                                        th:text="${category.categoryName}" th:field="*{category}">Select Category</option>
-                                </select>
-                                <button type="button" class="my-3 rounded-pill btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#addcategoryModal">
-                                    Add New Category
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row mx-3 mb-4 align-item-start rounded bg-darkgray p-3">
-                            <div class="col-12">
                                 <h4><label for="subcategory" class="form-label">SubCategory</label></h4>
                                 <select class="form-select bg-grey text-light" id="subcategory" name="subcategory"
                                     required>
-                                    <option th:each="subcategory : ${sub_category}" th:value="${subcategory.subcategoryId}"
-                                        th:text="${subcategory.subcategoryName}" th:field="*{subcategory}">Select Sub Category
+                                    <option th:each="subcategory : ${sub_category}"
+                                        th:value="${subcategory.subcategoryId}" th:text="${subcategory.subcategoryName}"
+                                        th:field="*{subcategory}">Select Sub Category
                                     </option>
                                 </select>
                                 <button type="button" class="my-3 rounded-pill btn btn-primary" data-bs-toggle="modal"
@@ -246,30 +187,6 @@
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="modal fade" id="addcategoryModal" tabindex="-1" aria-labelledby="CategoryLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form th:action="@{/admin/addCategory}" method="post"></form>
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="CategoryLabel">Add Category</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="categoryId" class="form-label">Category Id</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryId"
-                            name="categoryId" required>
-                        <label for="categoryname" class="form-label">Category Name</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryname"
-                            name="categoryname" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-                </div>
-            </div>
         </div>
         <div class="modal fade" id="addsubcategoryModal" tabindex="-1" aria-labelledby="subcategoryLabel"
             aria-hidden="true">
@@ -297,17 +214,55 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
-                </form>
+                    </form>
                 </div>
             </div>
         </div>
         <script>
+            let attributeIndex = 1;
+
+            function addAttributeField() {
+                const container = document.getElementById("attributesContainer");
+                const template = document.getElementById("attributeTemplate").querySelector(".attribute-row");
+
+                // Clone the template row
+                const newRow = template.cloneNode(true);
+
+                // Update name attributes for dynamic indexing
+                const selectElement = newRow.querySelector("select");
+                selectElement.name = `attributes[${attributeIndex}].attributeName`;
+
+                const inputElement = newRow.querySelector("input");
+                inputElement.name = `attributes[${attributeIndex}].attributeValue`;
+
+                // Append to container
+                container.appendChild(newRow);
+
+                // Increment index for next field
+                attributeIndex++;
+            }
+
+            // Handle "Add New Attribute" option
+            document.addEventListener("change", function (event) {
+                if (event.target && event.target.name && event.target.name.includes("attrName") && event.target.value === "new") {
+                    const newAttributeName = prompt("Enter new attribute name:");
+                    if (newAttributeName) {
+                        // Add the new attribute to the dropdown
+                        const select = event.target;
+                        const newOption = document.createElement("option");
+                        newOption.value = newAttributeName;
+                        newOption.text = newAttributeName;
+                        select.add(newOption);
+                        select.value = newAttributeName;
+                    } else {
+                        event.target.value = "";
+                    }
+                }
+            });
 
             function previewPrimaryImage(event) {
                 const file = event.target.files[0];
                 if (!file) return; // No file selected
-
-                console.log("Image selected, hiding upload option..."); // Debugging step
 
                 const reader = new FileReader();
                 reader.onload = function () {
@@ -369,7 +324,6 @@
             }
         </script>
     </main>
-
 </body>
 
 </html>

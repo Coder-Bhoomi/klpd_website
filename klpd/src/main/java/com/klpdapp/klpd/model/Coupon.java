@@ -16,7 +16,6 @@ import lombok.Setter;
 public class Coupon {
 	
 	@Id
-	@Column(length = 15, nullable = false)
 	private int couponId;
 	
 	@Column(length = 20, nullable = false)

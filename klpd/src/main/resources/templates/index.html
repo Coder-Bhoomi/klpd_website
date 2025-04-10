@@ -64,82 +64,13 @@
             <div class="container">
                 <h2 class="text-center mb-4 fw-bold text-white">Shop By Categories</h2>
                 <div class="row g-4">
-                    <div class="col-md-3">
+                    <div class="col-md-3" th:each="segment : ${segments}">
                         <div class="category-card">
-                            <img src="images/utensils.jpg" alt="Modern">
-                            <div class="category-title text-white">Utensils</div>
+                            <img th:src="@{'/SegmentImages/'+${segment.segmentImage}}" th:alt="${segment.segmentName}"
+                                class="img-fluid">
+                            <div class="category-title text-white" th:text="${segment.segmentName}">Utensils</div>
                             <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal1">&rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 2 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/cookware.jfif" alt="Plush">
-                            <div class="category-title text-white">Cookware</div>
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal1">&rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 3 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/glassware.webp" alt="Indian">
-                            <div class="category-title text-white">Glassware</div>
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal3">&rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 4 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/bottles.webp" alt="Indian">
-                            <div class="category-title text-white">Bottles</div>
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal4">&rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 5 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/bednbath.jpg" alt="Modern">
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal5">&rarr;</a>
-                            <div class="category-title text-white">Bed and Bath</div>
-                        </div>
-                    </div>
-
-                    <!-- Category 6 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/cushion.webp" alt="Plush">
-                            <div class="category-title text-white">Cushion and Pillow</div>
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal6">&rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 7 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/innerwear.webp" alt="Indian">
-                            <div class="category-title text-white">InnerWears</div>
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal7">&rarr;</a>
-                        </div>
-                    </div>
-
-                    <!-- Category 8 -->
-                    <div class="col-md-3">
-                        <div class="category-card">
-                            <img src="images/infants.jpg" alt="Indian">
-                            <div class="category-title text-white">Infants</div>
-                            <a href="#" class="arrow-btn" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal8">&rarr;</a>
+                                th:data-bs-target="'#SegmentModal' + ${segment.segmentId}">&rarr;</a>
                         </div>
                     </div>
                 </div>
@@ -147,19 +78,20 @@
         </section>
 
         <!-- Category Modals -->
-
-        <!-- 1 hi modal add kiya hai baaki 7 modal backend se add honge? -->
-        <div class="modal fade" id="categoryModal1" tabindex="-1" aria-labelledby="categoryModal1Label"
+        <div class="modal fade" th:each="segment : ${segments}" th:id="'SegmentModal' + ${segment.segmentId}" 
+         tabindex="-1"  th:aria-labelledby="'categoryModalLabel' + ${segment.segmentId}"
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-dark">
                     <div class="modal-header">
-                        <h5 class="modal-title text-white" id="categoryModal1Label">Cookware</h5>
+                        <h5 class="modal-title text-white" 
+                        th:id="'categoryModalLabel' + ${segment.segmentId}"
+                        th:text="${segment.segmentName}"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row" >
-                            <div class="col-md-6 col-lg-4 my-4"  th:each="category : ${categories}"> 
+                            <div class="col-md-6 col-lg-4 my-4" th:each="category : ${segment.category}">
                                 <div class="category-card">
                                     <img th:src="@{'/CategoryImages/'+${category.categoryImage}}" style="height:200px">
                                     <a class="text-white category-title" th:href="@{/category/{id}(id=${category.categoryId})}"
@@ -213,14 +145,14 @@
                                         Price: Rs.<span class="text-danger" th:text="${product.mrp}">1800</span>
                                     </span>
                                 </p>
-                                <div th:each="cartItem : ${cartItem}">
+                                <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
                                     <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
                                         method="post">
                                         <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                        <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                        <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
                                         <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                            id="quantity-display">
-                                        <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                                            id="quantity-display" class="rounded">
+                                        <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
                                     </form>
                                 </div>
         
@@ -312,14 +244,14 @@
                                         Price: Rs.<span class="text-danger" th:text="${product.mrp}">1800</span>
                                     </span>
                                 </p>
-                                <div th:each="cartItem : ${cartItem}">
+                                <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
                                     <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
                                         method="post">
                                         <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                        <button type="submit" class="btn minus" name="action" value="minus">-</button>
+                                        <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
                                         <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
-                                            id="quantity-display">
-                                        <button type="submit" class="btn plus" name="action" value="plus">+</button>
+                                            id="quantity-display" class="rounded">
+                                        <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
                                     </form>
                                 </div>
         

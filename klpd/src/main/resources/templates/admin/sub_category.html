@@ -21,7 +21,11 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Sub Category List</h5>
+                        <h5 class="d-inline">Sub Category List</h5>
+                        <button type="button" class="my-3 rounded-pill btn btn-primary mx-5" data-bs-toggle="modal"
+                                    data-bs-target="#addsubcategoryModal">
+                                    Add New Sub Category
+                                </button>
                     </div>
                     <div class="card-body">
                         <div class="table-container">
@@ -29,7 +33,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">SubCategory ID</th>
-                                        <th scope="col">Category ID</th>
+                                        <th scope="col">Category</th>
                                         <th scope="col">SubCategory Name</th>
                                         <th scope="col">Action</th>
                                     </tr>
@@ -42,11 +46,12 @@
                                             <td th:text="${sub.subcategoryId}"></td>
                                             <td>
                                                 <!-- Editable Category ID -->
-                                                <span class="category-id" th:text="${sub.category.categoryId}"></span>
-                                                <input type="text" class="form-control d-none" name="categoryId"
-                                                    th:value="${sub.category.categoryId}" />
+                                                <span class="category-id" th:text="${sub.category.categoryName}"></span>
+                                                <Select class="form-control d-none" name="categoryName">
+                                                    <option th:each="cat : ${category}" th:value="${cat.categoryId}"
+                                                        th:text="${cat.categoryName}" th:selected="${cat.categoryId == sub.category.categoryId}"></option>
+                                                </Select>
                                             </td>
-                                            <input type="hidden" name="category" th:value="${sub.category}" />
                                             <td>
                                                 <!-- Editable SubCategory Name -->
                                                 <span class="subcategory-name" th:text="${sub.subcategoryName}"></span>
@@ -67,7 +72,36 @@
                 </div>
             </div>
         </div>
-
+        <div class="modal fade" id="addsubcategoryModal" tabindex="-1" aria-labelledby="subcategoryLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="/admin/addSubCategory" method="post"></form>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="subcategoryLabel">Add Sub Category</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="categoryname" class="form-label">Select Category Name</label>
+                    <select class="form-select bg-grey text-light" id="category" name="category" required>
+                        <option th:each="category : ${category}" th:value="${category.categoryId}"
+                            th:text="${category.categoryName  }">Select Category</option>
+                    </select>
+                    <label for="subcategoryId" class="form-label">Sub Category Id</label>
+                    <input type="text" class="form-control bg-grey rounded p-2 text-light" id="subcategoryId"
+                        name="subcategoryId" required>
+                    <label for="subcategoryname" class="form-label">Sub Category Name</label>
+                    <input type="text" class="form-control bg-grey rounded p-2 text-light" id="subcategoryname"
+                        name="subcategoryname" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
         <script>
             document.querySelectorAll('.edit-btn').forEach((editBtn) => {
                 editBtn.addEventListener('click', (event) => {
@@ -78,7 +112,7 @@
                     row.querySelector('input[name="subcategoryName"]').classList.remove('d-none');
 
                     row.querySelector('.category-id').classList.add('d-none');
-                    row.querySelector('input[name="categoryId"]').classList.remove('d-none');
+                    row.querySelector('select[name="categoryName"]').classList.remove('d-none');
 
 
                     editBtn.classList.add('d-none');

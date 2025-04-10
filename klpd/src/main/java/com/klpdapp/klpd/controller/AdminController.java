@@ -7,7 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,14 +32,19 @@ import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SubCategoryRepo;
+import com.klpdapp.klpd.Repository.SegmentRepo;
+import com.klpdapp.klpd.Repository.AttrRepo;
+import com.klpdapp.klpd.dto.AttributeDto;
 import com.klpdapp.klpd.dto.ProductDto;
 import com.klpdapp.klpd.model.Admin;
+import com.klpdapp.klpd.model.Attribute;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.SubCategory;
+import com.klpdapp.klpd.model.Segment;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -71,9 +79,15 @@ public class AdminController {
 	@Autowired
 	AdminRepo adRepo;
 
+	@Autowired
+	SegmentRepo segmentRepo;
+
+	@Autowired
+	AttrRepo attRepo;
+
 	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model) {
-		List<Product> topsales =prepo.findTop4ByOrderBySalesDesc();
+		List<Product> topsales = prepo.findTop4ByOrderBySalesDesc();
 		model.addAttribute("topsales", topsales);
 		List<Product> lessStock = prepo.findTop4ByOrderByStockAsc();
 		model.addAttribute("lessStock", lessStock);
@@ -91,19 +105,189 @@ public class AdminController {
 	public String ShowCategories(Model model) {
 		List<Category> categ = Catrepo.findAll();
 		model.addAttribute("category", categ);
+		List<Segment> seg = segmentRepo.findAll();
+		model.addAttribute("segments", seg);
 		return "admin/category";
 	}
 
-	@PostMapping("/category/update")
-	public String updateCategory(@ModelAttribute Category category) {
+	@PostMapping("/addCategory")
+	public String addCategory(@RequestParam("categoryName") String categoryName,
+			@RequestParam("categoryId") String categoryId, @RequestParam("segmentName") int SegmentID,
+			@RequestParam("categoryimage") MultipartFile CategoryImage) {
+		Category category = new Category();
+		category.setCategoryId(categoryId);
+		category.setCategoryName(categoryName);
+		category.setSegment(segmentRepo.findById(SegmentID).orElse(null));
+		MultipartFile file = CategoryImage;
+		String uploadDir = "public/CategoryImages/";
+		String originalFileName = file.getOriginalFilename();
+		String fileExtension = "";
+		if (originalFileName != null && originalFileName.contains(".")) {
+			fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+		}
+		String fileName = categoryName + fileExtension;
+		Path uploadPath = Paths.get(uploadDir);
+		if (!Files.exists(uploadPath)) {
+			try {
+				Files.createDirectories(uploadPath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try (InputStream inputStream = file.getInputStream()) {
+			Path filePath = uploadPath.resolve(fileName);
+			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		category.setCategoryImage(fileName);
 		Catrepo.save(category);
 		return "redirect:/admin/category";
+	}
+
+	@PostMapping("/category/update")
+	public String updateCategory(@RequestParam("categoryId") String categoryId,
+			@RequestParam("categoryName") String categoryName,
+			@RequestParam("segmentName") int SegmentID,
+			@RequestParam(value = "newCategoryImage", required = false) MultipartFile newCategoryImage) {
+		Category category = Catrepo.findById(categoryId).orElse(null);
+		if (category == null) {
+			return "redirect:/admin/category"; // Handle case where category doesn't exist
+		}
+		category.setCategoryName(categoryName);
+		category.setSegment(segmentRepo.findById(SegmentID).orElse(null));
+		System.out.println(categoryName);
+		if (newCategoryImage != null && !newCategoryImage.isEmpty()) {
+			String uploadDir = "public/CategoryImages/";
+			String originalFileName = newCategoryImage.getOriginalFilename();
+			String fileExtension = "";
+
+			if (originalFileName != null && originalFileName.contains(".")) {
+				fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+			}
+
+			String fileName = categoryName + fileExtension; // Naming file after category name
+			Path uploadPath = Paths.get(uploadDir);
+
+			if (!Files.exists(uploadPath)) {
+				try {
+					Files.createDirectories(uploadPath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			try (InputStream inputStream = newCategoryImage.getInputStream()) {
+				Path filePath = uploadPath.resolve(fileName);
+				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println(fileName);
+			category.setCategoryImage(fileName); // Update image in the database
+		}
+		Catrepo.save(category);
+		return "redirect:/admin/category";
+	}
+
+	@GetMapping({ "/segment" })
+	public String ShowSegments(Model model) {
+		List<Segment> seg = segmentRepo.findAll();
+		model.addAttribute("segment", seg);
+		return "admin/Segment";
+	}
+
+	@PostMapping("/segment/update")
+	public String updateSegment(@RequestParam("segmentId") int segmentId,
+			@RequestParam("segmentName") String segmentName,
+			@RequestParam(value = "newSegmentImage", required = false) MultipartFile newSegmentImage) {
+
+		// Fetch the segment from the database
+		Segment segment = segmentRepo.findById(segmentId).orElse(null);
+		if (segment == null) {
+			return "redirect:/admin/segment"; // Handle case where segment doesn't exist
+		}
+
+		// Update segment name
+		segment.setSegmentName(segmentName);
+		System.out.println(segmentName);
+		// If a new image is uploaded, update the image
+		if (newSegmentImage != null && !newSegmentImage.isEmpty()) {
+			String uploadDir = "public/SegmentImages/";
+			String originalFileName = newSegmentImage.getOriginalFilename();
+			String fileExtension = "";
+
+			if (originalFileName != null && originalFileName.contains(".")) {
+				fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+			}
+
+			String fileName = segmentName + fileExtension; // Naming file after segment name
+			Path uploadPath = Paths.get(uploadDir);
+
+			if (!Files.exists(uploadPath)) {
+				try {
+					Files.createDirectories(uploadPath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			try (InputStream inputStream = newSegmentImage.getInputStream()) {
+				Path filePath = uploadPath.resolve(fileName);
+				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println(fileName);
+			segment.setSegmentImage(fileName); // Update image in the database
+		}
+
+		segmentRepo.save(segment);
+		return "redirect:/admin/segment";
+	}
+
+	@PostMapping("/addsegment")
+	public String addSegment(@RequestParam("segmentName") String SegmentName,
+			@RequestParam("segmentImage") MultipartFile segmentImage) {
+		Segment seg = new Segment();
+		seg.setSegmentName(SegmentName);
+		MultipartFile file = segmentImage;
+		String uploadDir = "public/SegmentImages/";
+		String originalFileName = file.getOriginalFilename();
+		String fileExtension = "";
+		if (originalFileName != null && originalFileName.contains(".")) {
+			fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+		}
+		String fileName = SegmentName + fileExtension;
+		Path uploadPath = Paths.get(uploadDir);
+		if (!Files.exists(uploadPath)) {
+			try {
+				Files.createDirectories(uploadPath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try (InputStream inputStream = file.getInputStream()) {
+			Path filePath = uploadPath.resolve(fileName);
+			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		seg.setSegmentImage(fileName);
+		segmentRepo.save(seg);
+		return "redirect:/admin/segment";
 	}
 
 	@GetMapping({ "/sub-category" })
 	public String ShowSubCategory(Model model) {
 		List<SubCategory> sCateg = sCatRepo.findAll();
 		model.addAttribute("sub_category", sCateg);
+		List<Category> categ = Catrepo.findAll();
+		model.addAttribute("category", categ);
 		return "admin/sub_category";
 	}
 
@@ -125,7 +309,8 @@ public class AdminController {
 		model.addAttribute("category", categ);
 		List<SubCategory> sCateg = sCatRepo.findAll();
 		model.addAttribute("sub_category", sCateg);
-
+		List<String> attr = attRepo.findDistinctAttributeName();
+		model.addAttribute("attributes", attr);
 		return "admin/product";
 	}
 
@@ -136,21 +321,192 @@ public class AdminController {
 		return "admin/productlist";
 	}
 
-	@GetMapping("/productdetail/{pid}")
+	@GetMapping("/{pid}")
 	public String ShowProductDetail(Model model, @PathVariable Integer pid) {
 		Product prod = prepo.findById(pid).orElse(null);
 		model.addAttribute("product", prod);
-		List<Category> categ = Catrepo.findAll();
-		model.addAttribute("category", categ);
 		List<SubCategory> sCateg = sCatRepo.findAll();
 		model.addAttribute("sub_category", sCateg);
+		List<Attribute> attr = attRepo.findByProduct(prod);
+		model.addAttribute("attributes", attr);
+		List<String> attribute = attRepo.findDistinctAttributeName();
+		model.addAttribute("attribute", attribute);
 		return "admin/productdetail";
 	}
 
 	@PostMapping("/updateProduct")
-	public String updateProduct(@ModelAttribute Product product) {
-		prepo.save(product); // Save updated product details
-		return "redirect:/productdetail/" + product.getPid();
+	public String updateProduct(@ModelAttribute Product product,
+			@RequestParam(value = "primaryImage", required = false) MultipartFile primaryImage,
+			@RequestParam(value = "secondaryImages", required = false) MultipartFile[] secondaryImages,
+			@RequestParam(value = "removedImages", required = false) List<Integer> removedImages,
+			RedirectAttributes redirectAttributes) {
+		// Fetch the existing product from the database
+		Product existingProduct = prepo.findById(product.getPid()).orElse(null);
+		handleImageUploads(product, primaryImage, secondaryImages, removedImages);
+
+		if (existingProduct != null) {
+			// Update only necessary fields
+			existingProduct.setProdName(product.getProdName());
+			existingProduct.setDescription(product.getDescription());
+			existingProduct.setBrand(product.getBrand());
+			existingProduct.setHapPid(product.getHapPid());
+			existingProduct.setCompanyPid(product.getCompanyPid());
+			existingProduct.setMrp(product.getMrp());
+			existingProduct.setDiscount(product.getDiscount());
+			existingProduct.setStock(product.getStock());
+			existingProduct.setSubcategory(product.getSubcategory());
+
+			updateProductImages(existingProduct, product.getImages());
+
+			// Update attributes
+			updateProductAttributes(existingProduct, product.getAttributes());
+
+			// Handle attributes
+			existingProduct.getAttributes().clear(); // Remove old attributes
+			for (Attribute attribute : product.getAttributes()) {
+				attribute.setProduct(existingProduct); // Link to existing product
+				existingProduct.getAttributes().add(attribute);
+			}
+
+			// Save the updated product
+			prepo.save(existingProduct);
+		}
+
+		return "redirect:/admin/productdetail/" + product.getPid();
+	}
+
+	private void handleImageUploads(Product product, MultipartFile primaryImage,
+			MultipartFile[] secondaryImages, List<Integer> removedImages) {
+		List<Images> images = new ArrayList<>();
+
+		// Handle primary image
+		if (primaryImage != null && !primaryImage.isEmpty()) {
+			String primaryImageUrl = product.getPid() + "_primaryImage_" + primaryImage.getOriginalFilename();
+			String uploadDir = "public/ProductImages/";
+			Path uploadPath = Paths.get(uploadDir);
+			if (!Files.exists(uploadPath)) {
+				try {
+					Files.createDirectories(uploadPath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			Images primaryImg = new Images();
+			primaryImg.setImageUrl(primaryImageUrl);
+			primaryImg.setIsPrimary(true);
+			images.add(primaryImg);
+		} else if (product.getImages() != null) {
+			// Keep existing primary image if not changed
+			product.getImages().stream()
+					.filter(Images::getIsPrimary)
+					.findFirst()
+					.ifPresent(images::add);
+		}
+
+		// Handle secondary images
+		if (secondaryImages != null) {
+			for (MultipartFile file : secondaryImages) {
+				if (!file.isEmpty()) {
+					String imageUrl = product.getPid() + "_secondaryImage_" + file.getOriginalFilename();
+					String uploadDir = "public/ProductImages/";
+					Path uploadPath = Paths.get(uploadDir);
+					if (!Files.exists(uploadPath)) {
+						try {
+							Files.createDirectories(uploadPath);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					Images img = new Images();
+					img.setImageUrl(imageUrl);
+					img.setIsPrimary(false);
+					images.add(img);
+				}
+			}
+		}
+
+		// Add existing secondary images that weren't removed
+		if (product.getImages() != null) {
+			product.getImages().stream()
+					.filter(img -> !img.getIsPrimary())
+					.filter(img -> removedImages == null ||
+							!removedImages.contains(img.getImgId()))
+					.forEach(images::add);
+		}
+
+		product.setImages(images);
+	}
+	private void updateProductImages(Product product, List<Images> updatedImages) {
+        if (updatedImages == null || updatedImages.isEmpty()) {
+            return;
+        }
+        
+        // Set product reference for all images
+        updatedImages.forEach(img -> img.setpid(product));
+        
+        // Save all images (new ones will be inserted, existing ones updated)
+        imgRepo.saveAll(updatedImages);
+        
+        // Delete images that are no longer referenced
+        List<Integer> currentImageIds = updatedImages.stream()
+                .map(Images::getImgId)
+                .filter(id -> id != 0)
+                .collect(Collectors.toList());
+        
+        if (!currentImageIds.isEmpty()) {
+            //imgRepo.deleteByPidAndImgIdNotIn(product, currentImageIds);
+        } else {
+            imgRepo.deleteByPid(product);
+        }
+    }
+
+	private void updateProductAttributes(Product product, List<Attribute> updatedAttributes) {
+		if (updatedAttributes == null) {
+			return;
+		}
+
+		// Remove empty attributes
+		updatedAttributes
+				.removeIf(attr -> (attr.getAttributeName() == null || attr.getAttributeName().trim().isEmpty()) &&
+						(attr.getAttributeValue() == null || attr.getAttributeValue().trim().isEmpty()));
+
+		// Fetch existing attributes from the database
+		List<Attribute> existingAttributes = attRepo.findByProduct(product);
+
+		Map<Integer, Attribute> existingAttributeMap = existingAttributes.stream()
+				.collect(Collectors.toMap(Attribute::getAttribute_id, attr -> attr));
+
+		// Process the updated attributes
+		for (Attribute attr : updatedAttributes) {
+			attr.setProduct(product);
+
+			if (attr.getAttribute_id() == 0) {
+				// New attribute, save it
+				attRepo.save(attr);
+			} else {
+				// Check if it exists in the database
+				Attribute existingAttr = existingAttributeMap.get(attr.getAttribute_id());
+				if (existingAttr != null) {
+					// Update existing attribute
+					existingAttr.setAttributeName(attr.getAttributeName());
+					existingAttr.setAttributeValue(attr.getAttributeValue());
+					attRepo.save(existingAttr); // Save the updated attribute
+				}
+			}
+		}
+
+		// Collect IDs of updated attributes
+		List<Integer> updatedAttributeIds = updatedAttributes.stream()
+				.map(Attribute::getAttribute_id)
+				.filter(id -> id != 0)
+				.collect(Collectors.toList());
+
+		// Remove attributes that are not in the updated list
+		if (!updatedAttributeIds.isEmpty()) {
+			attRepo.deleteByProductAndAttributeIdNotIn(product, updatedAttributeIds);
+		} else {
+			attRepo.deleteByProduct(product);
+		}
 	}
 
 	@GetMapping({ "/coupon" })
@@ -163,16 +519,6 @@ public class AdminController {
 	@GetMapping({ "/setting" })
 	public String ShowSetting(Model model) {
 		return "admin/setting";
-	}
-
-	@PostMapping("/addCategory")
-	public String addCategory(@RequestParam("categoryName") String categoryName,
-			@RequestParam("categoryId") String categoryId) {
-		Category category = new Category();
-		category.setCategoryId(categoryId);
-		category.setCategoryName(categoryName);
-		Catrepo.save(category);
-		return "redirect:/admin/product";
 	}
 
 	@PostMapping("/addSubCategory")
@@ -196,8 +542,6 @@ public class AdminController {
 		Product prod = new Product();
 		prod.setCompanyPid(prodDto.getCompanyPid());
 		prod.setHapPid(prodDto.getHapPid());
-		Category cat = Catrepo.findById(prodDto.getCategory()).orElse(null);
-		prod.setCategory(cat);
 		SubCategory subCat = sCatRepo.findById(prodDto.getSubcategory()).orElse(null);
 		prod.setSubcategory(subCat);
 		prod.setBrand(prodDto.getBrand());
@@ -206,20 +550,19 @@ public class AdminController {
 		prod.setCreatedAt(LocalDate.now());
 		prod.setStock(prodDto.getStock());
 		prod.setMrp(prodDto.getMrp());
-		prod.setOfferPrice(prodDto.getOfferPrice());
 		prod.setDiscount(prodDto.getDiscount());
-		prod.setDiameter(prodDto.getDiameter() + "cm");
-		prod.setThickness(prodDto.getThickness() + "mm");
-		prod.setCapacity(prodDto.getCapacity() + "litre");
-		prod.setWeight(prodDto.getWeight() + "kg");
-		prod.setCartonDimension(prodDto.getCartonDimension());
-		prod.setDimension(prodDto.getDimension());
-		prod.setGuarantee(prodDto.getGuarantee() + "years");
-		prod.setWarranty(prodDto.getWarranty() + "years");
-		prod.setColor(prodDto.getColor());
-		prod.setMaterial(prodDto.getMaterial());
-		prod.setFinish(prodDto.getFinish());
+		prod.setOfferPrice(prodDto.getMrp() - (prodDto.getMrp() * prodDto.getDiscount() / 100));
+		prod.setSales(0);
 		prepo.save(prod);
+		for (AttributeDto attributeDto : prodDto.getAttributes()) {
+			Attribute attribute = new Attribute();
+			attribute.setProduct(prod);
+			attribute.setAttributeName(attributeDto.getAttributeName());
+			System.out.println("Name:" + attributeDto.getAttributeName() + "Value:" + attributeDto.getAttributeValue());
+			attribute.setAttributeValue(attributeDto.getAttributeValue());
+			attRepo.save(attribute);
+		}
+
 		if (!primaryImgURL.isEmpty()) {
 			Images img = new Images();
 			img.setpid(prod);
@@ -242,7 +585,7 @@ public class AdminController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			img.setImageUrl(fileName);
+			img.setImageUrl("/ProductImages/" + fileName);
 			img.setIsPrimary(true);
 			imgRepo.save(img);
 		}
@@ -268,7 +611,7 @@ public class AdminController {
 					} catch (IOException e) {
 						throw new IOException("Could not save uploaded file: " + fileName);
 					}
-					img.setImageUrl(fileName);
+					img.setImageUrl("/ProductImages/" + fileName);
 					img.setIsPrimary(false);
 					imgRepo.save(img);
 				}
