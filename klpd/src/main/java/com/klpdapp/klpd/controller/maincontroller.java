@@ -215,6 +215,7 @@ public class maincontroller {
         return "index";
     }
 
+    @Transactional(readOnly = true)
     @GetMapping("/search")
     public String search(@RequestParam(required = false) String query, Model model, HttpSession usersession) {
         if (query != null && !query.isEmpty()) {

@@ -33,7 +33,7 @@ public class Product {
     @FullTextField
     private String hapPid;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "subcategory_id", nullable = false)
     @IndexedEmbedded
     private SubCategory subcategory;

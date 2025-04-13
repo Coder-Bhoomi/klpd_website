@@ -11,7 +11,6 @@ import com.klpdapp.klpd.model.Product;
 
 public interface ProductRepo extends JpaRepository<Product, Integer> {
 
-
     List<Product> findTop4ByOrderByCreatedAtDesc();
 
     List<Product> findTop4ByOrderByHitsDesc();
@@ -23,6 +22,7 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
     @Modifying
     @Query("Update Product p Set p.sales=p.sales + 1 where p.pid = :pid")
     void incrementSales(int pid);
+
     @Query("SELECT p FROM Product p WHERE " +
     "EXISTS (SELECT 1 FROM Attribute a WHERE a.product = p " +
     "AND a.attributeName IN ('capacity', 'diameter') " +
@@ -34,17 +34,17 @@ List<Product> findInductionProductsBySizeAndSubcategory(
     @Param("subcategoryId") String subcategoryId);
 
 
-    @Query("SELECT p FROM Product p WHERE (" +
+        @Query("SELECT p FROM Product p WHERE (" +
             "EXISTS (SELECT 1 FROM  Attribute a WHERE a.product = p " +
             "AND a.attributeName IN ('capacity', 'diameter') " +
             "AND  (:size LIKE CONCAT('%', a.attributeValue, '%'))) " +
             ") " +
             "AND p.subcategory.subcategoryId = :subcategoryId " +
             "AND LOWER(p.prodName) NOT LIKE '%induction%'")
-    List<Product> findNonInductionProductsBySizeAndSubcategory(@Param("size") String size,
+        List<Product> findNonInductionProductsBySizeAndSubcategory(@Param("size") String size,
             @Param("subcategoryId") String subcategoryId);
 
-    @Query(value = "SELECT DISTINCT " +
+        @Query(value = "SELECT DISTINCT " +
             "CASE " +
             "WHEN ca1.attribute_value IS NOT NULL AND ca2.attribute_value IS NOT NULL " +
             "THEN CONCAT(ca1.attribute_value, ' | ', ca2.attribute_value) " +
@@ -58,9 +58,9 @@ List<Product> findInductionProductsBySizeAndSubcategory(
             "AND p.subcategory_id = :subcategoryId " +
             "AND (ca1.attribute_value IS NOT NULL OR ca2.attribute_value IS NOT NULL) " +
             "ORDER BY size", nativeQuery = true)
-    List<String> findInductionSizesbySubcategory(@Param("subcategoryId") String subcategoryId);
+        List<String> findInductionSizesbySubcategory(@Param("subcategoryId") String subcategoryId);
 
-    @Query(value = "SELECT DISTINCT " +
+         @Query(value = "SELECT DISTINCT " +
             "CASE " +
             "WHEN ca1.attribute_value IS NOT NULL AND ca2.attribute_value IS NOT NULL " +
             "THEN CONCAT(ca1.attribute_value, ' | ', ca2.attribute_value) " +
@@ -74,16 +74,20 @@ List<Product> findInductionProductsBySizeAndSubcategory(
             "AND p.subcategory_id = :subcategoryId " +
             "AND (ca1.attribute_value IS NOT NULL OR ca2.attribute_value IS NOT NULL) " +
             "ORDER BY size", nativeQuery = true)
-    List<String> findNonInductionSizesbySubcategory(@Param("subcategoryId") String subcategoryId);
+        List<String> findNonInductionSizesbySubcategory(@Param("subcategoryId") String subcategoryId);
 
-    Product findBySubcategory_SubcategoryId(String subcategoryId);
+        Product findBySubcategory_SubcategoryId(String subcategoryId);
 
-    List<Product> findTop4BySubcategorySubcategoryIdAndPidNot(String subcategoryId, int pid);
+        List<Product> findTop4BySubcategorySubcategoryIdAndPidNot(String subcategoryId, int pid);
 
-    List<Product> findTop4ByOrderBySalesDesc();
+        List<Product> findTop4ByOrderBySalesDesc();
 
-    List<Product> findTop4ByOrderByStockAsc();
+        List<Product> findTop4ByOrderByStockAsc();
 
-    List<Product> findBySubcategory_Category_CategoryId(String categoryId);
+        List<Product> findBySubcategory_Category_CategoryId(String categoryId);
+
+        // In your ProductRepository
+        @Query("SELECT p FROM Product p JOIN FETCH p.subcategory sc JOIN FETCH sc.category WHERE p.id IN :productIds")
+        List<Product> findProductsWithSubcategoryAndCategory(@Param("productIds") List<Integer> pids);
 
 }
