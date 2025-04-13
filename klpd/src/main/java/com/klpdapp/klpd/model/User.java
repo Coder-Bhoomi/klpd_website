@@ -24,16 +24,11 @@ public class User {
 
     private LocalDate anniversary;
 
-    
-
     @Column(length = 20)
     private String gender;
 
     @Column(nullable = false, unique = true, length = 60)
     private String email;
-
-    @Column(nullable = false, length = 500)
-    private String password;
 
     private long mobile;
 

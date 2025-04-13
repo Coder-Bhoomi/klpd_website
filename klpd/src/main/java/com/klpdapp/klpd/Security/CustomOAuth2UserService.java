@@ -43,7 +43,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user.setName(name);
             user.setEmail(email);
             user.setGoogleId(googleId);
-            user.setPassword("N/A"); // No need for a password for OAuth users
             
             userRepository.save(user); // Save the user to the database
         } else {

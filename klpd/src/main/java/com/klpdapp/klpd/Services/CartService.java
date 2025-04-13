@@ -13,9 +13,9 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Cart;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
-import com.klpdapp.klpd.model.User;
 
 @Service
 public class CartService {
@@ -38,7 +38,7 @@ public class CartService {
     @Autowired
     ProductService productService;
 
-    public List<Cart> getCartItems(User user) {
+    public List<Cart> getCartItems(Login user) {
         return cartRepository.findByUser(user);
     }
 
@@ -59,7 +59,7 @@ public class CartService {
         cartRepository.deleteById(cartId);
     }
 
-    public void checkout(User user) {
+    public void checkout(Login user) {
         List<Cart> carts = cartRepository.findByUser(user);
         float subtotal = calculateSubtotal(carts);
         float discount = 0.0f;

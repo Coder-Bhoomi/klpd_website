@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.Repository.wholesalerRepo;
 import com.klpdapp.klpd.Services.CategoryService;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wholeseller;
 import com.klpdapp.klpd.model.Wishlist;
 
 import jakarta.servlet.http.HttpSession;
@@ -37,14 +41,34 @@ public class WishlistController {
     @Autowired
     WishlistRepo wishlistRepo;
 
+    @Autowired
+    LoginRepo loginRepo;
+
+    @Autowired
+    wholesalerRepo wRepo;
+
     @GetMapping //("/wishlist")
     public String showwishlist(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
+            Login loginuser = loginRepo.findById(userId).orElse(null);
+            System.out.println("userId: " + userId);
+            System.out.println("loginuser: " + loginuser.getEmail());
+            System.out.println("loginuser: " + loginuser.getUserType());
+            if(loginuser.getUserType().equals("Wholesaler")) {
+                Wholeseller wholesaler = wRepo.findById(loginuser.getUserId()).orElse(null);
+                System.out.println("wholesaler: " + wholesaler.getName());
+                model.addAttribute("user", wholesaler);
+            } else if(loginuser.getUserType().equals("Customer")) {
+                User user = uRepo.findById(loginuser.getUserId()).orElse(null);
+                model.addAttribute("user", user);
+            }
+            else {
+                User user = uRepo.findById(userId).orElse(null);
+                model.addAttribute("user", user);
+            }
+            List<Wishlist> wishlistItems = wishlistRepo.findByUser(loginuser);
             model.addAttribute("wishlist", wishlistItems);
-            model.addAttribute("user", user);
             CategoryService.addCategoriesToModel(model);
             return "wishlist";
         } else {
@@ -63,7 +87,7 @@ public class WishlistController {
             Model model) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             Product product = pRepo.findById(productId).orElse(null);
 
             if (product != null) {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.klpdapp.klpd.Repository.CartRepo;
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Services.CartService;
@@ -19,8 +20,8 @@ import com.klpdapp.klpd.Services.CouponService;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Coupon;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,11 +49,14 @@ public class CartController {
     @Autowired
     CouponService couponService;
 
+    @Autowired
+    LoginRepo loginRepo;
+
     @GetMapping
     public String showCart(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartService.getCartItems(user);
             float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
             float discount = 0.0f;
@@ -86,7 +90,7 @@ public class CartController {
     public String applyCoupon(@RequestParam String couponCode, Model model, HttpSession session) {
         Coupon coupon = couponService.getCouponByCode(couponCode).orElse(null);
         Integer userId = (Integer) session.getAttribute("userid");
-        User user = uRepo.findById(userId).orElse(null);
+        Login user = loginRepo.findById(userId).orElse(null);
         List<Cart> cartItems = cartService.getCartItems(user);
         float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
         int items = cartItems.size();
@@ -147,8 +151,7 @@ public class CartController {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             if (session.getAttribute("userid") != null) {
                 Integer userId = (Integer) session.getAttribute("userid");
-                User user = uRepo.findById(userId).orElse(null);
-                
+                Login user = loginRepo.findById(userId).orElse(null);                
                 cartService.checkout(user);
                 return "redirect:/";
             }
@@ -163,7 +166,7 @@ public class CartController {
             Model model) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             Product product = pRepo.findById(productId).orElse(null);
 
             if (product != null) {
@@ -180,7 +183,11 @@ public class CartController {
                     Cart cart = new Cart();
                     cart.setUser(user);
                     cart.setProduct(product);
-                    cart.setQuantity(quantity);
+                    if( user.getUserType().equals("Wholesaler")) {
+                        cart.setQuantity(10);
+                    } else {
+                        cart.setQuantity(quantity);
+                    }
                     float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
                     cart.setProductTotal(price * quantity);
                     cartRepository.save(cart);

@@ -13,14 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.klpdapp.klpd.Repository.CartRepo;
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.Services.ProductService;
 import com.klpdapp.klpd.model.Cart;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wishlist;
 
 import jakarta.servlet.http.HttpSession;
@@ -46,6 +47,9 @@ public class ProductController {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    LoginRepo loginRepo;
     
     @GetMapping("/{pid}")
     public String showProductDetails(@PathVariable Integer pid, @RequestParam(required = false) String selectedSize,
@@ -117,7 +121,7 @@ public class ProductController {
         }
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);

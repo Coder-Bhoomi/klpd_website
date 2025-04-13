@@ -1,6 +1,6 @@
 package com.klpdapp.klpd.Security;
 
-import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Login;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
  
@@ -9,10 +9,10 @@ import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final Login user;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
+    public CustomUserDetails(Login user2) {
+        this.user = user2;
     }
     public int getUserId() {
         return user.getUserId();

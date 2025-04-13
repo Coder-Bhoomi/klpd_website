@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="userdashboard::layout(~{::main})">
+
+<head>
+
+</head>
+
+<body class="text-light" style="background-color: #121212;">
+
+    <!-- Main Content -->
+    <main>
+
+        <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
+            <!-- Form with th:action for submitting to the update profile endpoint -->
+            <form id="personalInfoForm" th:action="@{/profile/updatewholesaler}" th:object="${wdto}" method="post">
+                <div class="d-flex justify-content-between">
+                    <h4>Personal Information</h4>
+                    <button type="submit" class="btn btn-primary" id="editButton">Edit</button>
+                </div>
+                <div class="mt-4 mb-5">
+                    <div class="row">
+                        <label for="firstName" class="form-label">Wholesaler Name</label>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control bg-dark text-light" th:field="*{name}"
+                                id="WholesalerName" name="firstName" placeholder="WholesalerName name" aria-label="First name"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="companyName" class="form-label">Company Name</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{companyName}" id="companyName"
+                            name="companyName" placeholder="Company Name" readonly>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="gSTIN" class="form-label">GSTIN</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{gSTIN}" id="gSTIN"
+                            name="gSTIN" placeholder="GSTIN" readonly>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="officeAddress" class="form-label">Official Address</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{officeAddress}" id="officeAddress"
+                            name="officeAddress" placeholder="Official Address" readonly>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="shippingAddress" class="form-label">Shipping Address</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{shippingAddress}" id="shippingAddress"
+                            name="shippingAddress" placeholder="Shipping Address" readonly>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div>
+                        <input type="email" class="form-control bg-dark text-light" th:field="*{email}" id="email"
+                            name="email" placeholder="E-mail Address" readonly>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="contactNumber" class="form-label">Contact Number</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{contactNumber}"
+                            id="contactNumber" name="contactNumber" placeholder="Contact number" readonly>
+                    </div>
+                </div>
+                <div class = "mb-5">
+                    <label for="OrganizationNumber" class="form-label">Organization Number</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{organisationNumber}"
+                            id="OrganizationNumber" name="OrganizationNumber" placeholder="Organization number" readonly>
+                </div>
+            </form>
+        </div>
+        <script>
+            const editButton = document.getElementById("editButton");
+            const formFields = document.querySelectorAll("#personalInfoForm input");
+
+            editButton.addEventListener("click", (event) => {
+                event.preventDefault(); // Prevent form submission on Edit button click
+                const isEditing = editButton.textContent === "Edit";
+
+                // Toggle button text
+                editButton.textContent = isEditing ? "Save" : "Edit";
+
+                // Toggle read-only state for input fields and disable radio buttons when not editing
+                formFields.forEach((field) => {
+                        field.readOnly = !isEditing; // Enable/Disable other fields
+                });
+
+                // If in Save mode, submit the form programmatically
+                if (!isEditing) {
+
+                    document.getElementById("personalInfoForm").submit();
+                }
+            });
+
+
+        </script>
+    </main>
+
+</body>
+
+</html>

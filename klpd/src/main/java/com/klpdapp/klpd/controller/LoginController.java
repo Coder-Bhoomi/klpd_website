@@ -1,5 +1,7 @@
 package com.klpdapp.klpd.controller;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,10 +16,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.Repository.wholesalerRepo;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.dto.UserDto;
+import com.klpdapp.klpd.dto.WholesellerDto;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wholeseller;
 import com.klpdapp.klpd.Security.CustomUserDetailsService;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +37,12 @@ public class LoginController {
 
     @Autowired
     UserRepo uRepo;
+
+    @Autowired
+    LoginRepo Loginrepo;
+
+    @Autowired
+    wholesalerRepo wRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -62,11 +75,19 @@ public class LoginController {
             User user = new User();
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
-            user.setPassword(encodedPassword);
             user.setStatus("Active");
 
             // Save the user in the database
             uRepo.save(user);
+
+            Login login = new Login();
+            login.setEmail(userDto.getEmail());
+            login.setPassword(encodedPassword);
+            login.setUserId(user.getUserId());
+            login.setCreatedAt(LocalDateTime.now());
+            login.setUserType("Customer");
+
+            Loginrepo.save(login);
 
             //Authentication manually
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
@@ -86,6 +107,56 @@ public class LoginController {
             redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/wholesaler")
+    public String wholesalerLogin(Model model, HttpSession session) {
+        WholesellerDto udto = new WholesellerDto();
+        model.addAttribute("dto", udto);
+        String errorMessage = (String) session.getAttribute("errorMessage");
+        if (errorMessage != null) {
+            model.addAttribute("errorMessage", errorMessage);
+        }
+        return "wholesaler";
+    }
+
+    @PostMapping("/registerwholesale") 
+    public String wholesaleRegister(@ModelAttribute WholesellerDto wholesellerDto, RedirectAttributes redirectAttributes) {
+        // Handle wholesale registration logic here
+        System.out.println("wholesaler");
+        try {
+            // Encode the password
+            System.out.println("inside try block");
+            String encodedPassword = passwordEncoder.encode(wholesellerDto.getPassword());
+
+            // Create a new wholesaler object
+            Wholeseller wholesaler = new Wholeseller();
+            wholesaler.setName(wholesellerDto.getName());
+            wholesaler.setCompanyName(wholesellerDto.getCompanyName());
+            wholesaler.setGSTIN(wholesellerDto.getGSTIN());
+            wholesaler.setOfficeAddress(wholesellerDto.getOfficeAddress());
+            wholesaler.setShippingAddress(wholesellerDto.getShippingAddress());
+            wholesaler.setContactNumber(wholesellerDto.getContactNumber());
+            wholesaler.setEmail(wholesellerDto.getEmail());
+            wholesaler.setOrganisationNumber(wholesellerDto.getOrganisationNumber());
+
+            // Save the wholesaler in the database
+            wRepo.save(wholesaler);
+
+            Login login = new Login();
+            login.setEmail(wholesellerDto.getEmail());
+            login.setPassword(encodedPassword);
+            login.setUserId(wholesaler.getWholesellerId());
+            login.setCreatedAt(LocalDateTime.now());
+            login.setUserType("Wholesaler");
+
+            Loginrepo.save(login);
+
+            redirectAttributes.addFlashAttribute("message", "Registered Successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Something Went Wrong!");
+        }
+        return "redirect:/"; // Redirect 
     }
 
     @PostMapping("/logout")

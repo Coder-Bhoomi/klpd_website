@@ -12,7 +12,7 @@ public class Wishlist {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Login user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "pid", nullable = false)
@@ -27,11 +27,11 @@ public class Wishlist {
         this.wishlistId = wishlistId;
     }
 
-    public User getUser() {
+    public Login getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Login user) {
         this.user = user;
     }
 

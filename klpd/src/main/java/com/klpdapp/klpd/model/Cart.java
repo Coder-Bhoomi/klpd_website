@@ -12,7 +12,7 @@ public class Cart {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Login user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "pid", nullable = false)
@@ -32,12 +32,12 @@ public class Cart {
         this.cartId = cartId;
     }
 
-    public User getUser() {
+    public Login getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Login user2) {
+        this.user = user2;
     }
 
     public Product getProduct() {

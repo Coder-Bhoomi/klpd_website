@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 "/login", "/submit", "/register", "/products", "/", "/search",
                                 "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
                                 "/admin", "/admin/**","/product/{pid}","error","/wholesaler","/CategoryImages/**","/SegmentImages/**",
-                                "/ProductImages/**")
+                                "/ProductImages/**","/registerwholesale")
                         .permitAll()
                         .requestMatchers("/profile").authenticated() // only authenticated users can access profile
                         .anyRequest().authenticated())

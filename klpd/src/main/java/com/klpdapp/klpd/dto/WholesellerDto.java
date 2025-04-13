@@ -7,15 +7,15 @@ import lombok.Setter;
 @Setter
 public class WholesellerDto {
 
-    private int WholesellerId;
-    private String WholesellerName;
-    private String CompanyName;
-    private String GSTIN;
-    private String OfficeAddress;
-    private String ShippingAddress;
-    private String ContactNumber;
-    private String Email;
-    private String OrganisationNumber;
+    private int wholesellerId;
+    private String name;
+    private String companyName;
+    private String gSTIN;
+    private String officeAddress;
+    private String shippingAddress;
+    private String contactNumber;
+    private String email;
+    private String organisationNumber;
     private String password;
 
 }

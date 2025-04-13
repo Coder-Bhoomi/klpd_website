@@ -1,11 +1,11 @@
 package com.klpdapp.klpd.Security;
 
-import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Login;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
-import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.Repository.LoginRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,19 +17,19 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
  
     @Autowired
-    private UserRepo userRepository;
+    private LoginRepo LoginRepository;
 
      @Autowired
     private HttpServletRequest request;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
+        Login user = LoginRepository.findByEmail(email)
         .orElseThrow(() -> {
             return new UsernameNotFoundException("User not found");
         });
         HttpSession session = request.getSession();
-        session.setAttribute("userid", user.getUserId());
+        session.setAttribute("userid", user.getId());
         return new CustomUserDetails(user); 
     }
     

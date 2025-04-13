@@ -95,77 +95,69 @@
 <body>
   <div class="container">
     <!-- Registration Form -->
-    <form id="registrationForm" class="form">
+    <form id="registrationForm" class="form" th:action="@{/registerwholesale}" th:object="${dto}" method="post">
       <h2>Register</h2>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" th:field="${dto.name}" id="name" name="name" required>
             <div class="error" id="nameError"></div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="orgName">Organization Name</label>
-            <input type="text" id="orgName" name="orgName" required>
+            <input type="text" th:field="${dto.companyName}" id="orgName" name="orgName" required>
             <div class="error" id="orgNameError"></div>
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-6">
           <div class="form-group">
             <label for="gstin">GSTIN Number</label>
-            <input type="text" id="gstin" name="gstin" required>
+            <input type="text" th:field="${dto.gSTIN}" id="gstin" name="gstin" required>
             <div class="error" id="gstinError"></div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="contactNumber">Contact Number</label>
-            <input type="text" id="contactNumber" name="contactNumber" required>
+            <input type="text" th:field="${dto.contactNumber}" id="contactNumber" name="contactNumber" required>
             <div class="error" id="contactNumberError"></div>
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-6">
           <div class="form-group">
             <label for="officialAddress">Official Address</label>
-            <input type="text" id="officialAddress" name="officialAddress" required>
+            <input type="text" th:field="${dto.officeAddress}" id="officialAddress" name="officialAddress" required>
             <div class="error" id="officialAddressError"></div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="shippingAddress">Shipping Address</label>
-            <input type="text" id="shippingAddress" name="shippingAddress" required>
+            <input type="text" th:field="${dto.shippingAddress}" id="shippingAddress" name="shippingAddress" required>
             <div class="error" id="shippingAddressError"></div>
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-6">
           <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" th:field="${dto.email}" id="email" name="email" required>
             <div class="error" id="emailError"></div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="orgNumber">Organization Number</label>
-            <input type="text" id="orgNumber" name="orgNumber" required>
+            <input type="text" th:field="${dto.organisationNumber}" id="orgNumber" name="orgNumber" required>
             <div class="error" id="orgNumberError"></div>
           </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-12">
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" th:field="${dto.password}" id="password" name="password" required>
             <div class="error" id="passwordError"></div>
           </div>
         </div>
@@ -177,13 +169,13 @@
     </form>
 
     <!-- Login Form -->
-    <form id="loginForm" class="form" style="display: none;">
+    <form id="loginForm" class="form" style="display: none;" th:action="@{/submit}" method="post">
       <h2>Login</h2>
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
             <label for="loginEmail">Email</label>
-            <input type="email" id="loginEmail" name="loginEmail" required>
+            <input type="email" id="loginEmail" name="email" required>
             <div class="error" id="loginEmailError"></div>
           </div>
         </div>
@@ -192,7 +184,7 @@
         <div class="col-md-12">
           <div class="form-group">
             <label for="loginPassword">Password</label>
-            <input type="password" id="loginPassword" name="loginPassword" required>
+            <input type="password" id="loginPassword" name="password" required>
             <div class="error" id="loginPasswordError"></div>
           </div>
         </div>
@@ -227,7 +219,6 @@
 
     // Validation for Registration Form
     registrationForm.addEventListener('submit', (e) => {
-      e.preventDefault();
       let isValid = true;
 
       // Name validation
@@ -283,10 +274,12 @@
       } else {
         document.getElementById('passwordError').textContent = '';
       }
-
-      if (isValid) {
+      if(!isValid) {
+        e.preventDefault();
+      }
+      else {
         alert('Registration Successful!');
-        registrationForm.reset();
+        registrationForm.submit();
       }
     });
 
@@ -315,7 +308,7 @@
 
       if (isValid) {
         alert('Login Successful!');
-        loginForm.reset();
+        loginForm.submit();
       }
     });
   </script>

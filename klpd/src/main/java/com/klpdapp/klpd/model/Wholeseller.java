@@ -13,32 +13,30 @@ public class Wholeseller {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int WholesellerId;
+    private int wholesellerId;
 
     @Column(length = 100)
-    private String WholesellerName;
+    private String name;
 
     @Column(length = 100)
-    private String CompanyName;
+    private String companyName;
 
     @Column(length = 20)
-    private String GSTIN;
+    private String gSTIN;
 
     @Column(length = 250)
-    private String OfficeAddress;
+    private String officeAddress;
 
     @Column(length = 250)
-    private String ShippingAddress;
+    private String shippingAddress;
 
     @Column(length = 20)
-    private String ContactNumber;
+    private String contactNumber;
 
     @Column(length = 100)
-    private String Email;
+    private String email;
 
     @Column(length = 20)
-    private String OrganisationNumber;
+    private String organisationNumber;
 
-    @Column(length = 20)
-    private String password;
 }

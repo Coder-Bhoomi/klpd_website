@@ -35,6 +35,8 @@ import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.SegmentRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.Repository.wholesalerRepo;
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.dto.AdminDto;
 import com.klpdapp.klpd.model.Admin;
@@ -46,7 +48,9 @@ import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.Segment;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wholeseller;
 import com.klpdapp.klpd.model.Wishlist;
+import com.klpdapp.klpd.model.Login;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -108,6 +112,12 @@ public class maincontroller {
 
     @Autowired
     SegmentRepo segmentRepo;
+
+    @Autowired
+    LoginRepo loginRepo;
+
+    @Autowired
+    wholesalerRepo wRepo;
 
     private void addFilter(Model model) {
         Set<String> colors = new HashSet<>();
@@ -187,7 +197,7 @@ public class maincontroller {
         Set<Integer> wishlistProductIds = new HashSet<>();
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartRepository.findByUser(user);
             for (Cart item : cartItems) {
                 cartProductIds.add(item.getProduct().getPid());
@@ -254,7 +264,7 @@ public class maincontroller {
         CategoryService.addCategoriesToModel(model);
         Integer userId = (Integer) usersession.getAttribute("userid");
         if (userId != null) {
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
@@ -398,7 +408,7 @@ public class maincontroller {
         }
         Integer userId = (Integer) session.getAttribute("userid");
         if (userId != null) {
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartRepository.findByUser(user);
             model.addAttribute("cart", cartItems);
             List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
@@ -426,7 +436,7 @@ public class maincontroller {
             addFilter(model);
             Integer userId = (Integer) session.getAttribute("userid");
             if (userId != null) {
-                User user = uRepo.findById(userId).orElse(null);
+                Login user = loginRepo.findById(userId).orElse(null);
                 List<Cart> cartItems = cartRepository.findByUser(user);
                 model.addAttribute("cart", cartItems);
                 List<Wishlist> wishlistItems = wishlistRepo.findAllByUser(user);
@@ -444,10 +454,16 @@ public class maincontroller {
     public String ShowCoupon(Model model, HttpSession session) {
         CategoryService.addCategoriesToModel(model);
         Integer userId = (Integer) session.getAttribute("userid");
-        User user = uRepo.findById(userId).orElse(null);
+        Login loginuser = loginRepo.findById(userId).orElse(null);
+        if (loginuser.getUserType().equals("Wholesaler")) {
+            Wholeseller user = wRepo.findById(loginuser.getUserId()).orElse(null);
+            model.addAttribute("user", user);
+        } else if (loginuser.getUserType().equals("Customer")) {
+            User user = uRepo.findById(loginuser.getUserId()).orElse(null);
+            model.addAttribute("user", user);
+        }
         List<Coupon> coupon = couponrepo.findAll();
         model.addAttribute("coupon", coupon);
-        model.addAttribute("user", user);
         return "coupon";
     }
 
@@ -455,18 +471,32 @@ public class maincontroller {
     public String ShowOrder(Model model, HttpSession session) {
         CategoryService.addCategoriesToModel(model);
         Integer userId = (Integer) session.getAttribute("userid");
-        User user = uRepo.findById(userId).orElse(null);
-        List<OrderItem> orderItems = orderitemrepo.findByOrder_User(user);
-        model.addAttribute("orderitems", orderItems);
-        model.addAttribute("user", user);
-        return "order";
+        Login loginuser = loginRepo.findById(userId).orElse(null);
+        if (loginuser.getUserType().equals("Wholesaler")) {
+            Wholeseller user = wRepo.findById(loginuser.getUserId()).orElse(null);
+            model.addAttribute("user", user);
+        } else if (loginuser.getUserType().equals("Customer")) {
+            User user = uRepo.findById(loginuser.getUserId()).orElse(null);
+            model.addAttribute("user", user);
+        }
+        List<OrderItem> orderitem = orderitemrepo.findAllByOrder_User(loginuser);
+        model.addAttribute("orderitem", orderitem);
+         return "order";
     }
 
     @GetMapping("/notification")
     public String ShowNotification(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userid");
-        User user = uRepo.findById(userId).orElse(null);
-        model.addAttribute("user", user);
+        Login loginuser = loginRepo.findById(userId).orElse(null);
+        System.out.println(loginuser.getEmail());
+        if (loginuser.getUserType().equals("Wholesaler")) {
+            Wholeseller user = wRepo.findById(loginuser.getUserId()).orElse(null);
+            System.out.println(user.getName());
+            model.addAttribute("user", user);
+        } else if (loginuser.getUserType().equals("Customer")) {
+            User user = uRepo.findById(loginuser.getUserId()).orElse(null);
+            model.addAttribute("user", user);
+        }
         CategoryService.addCategoriesToModel(model);
         return "notification";
     }
@@ -505,8 +535,5 @@ public class maincontroller {
         }
     }
 
-    @GetMapping("/wholesaler")
-    public String wholesalerLogin() {
-        return "wholesaler";
-    }
+   
 }

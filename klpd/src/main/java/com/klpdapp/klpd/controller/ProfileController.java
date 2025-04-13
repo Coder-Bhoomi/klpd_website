@@ -10,11 +10,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.WishlistRepo;
+import com.klpdapp.klpd.Repository.wholesalerRepo;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.dto.UserDto;
+import com.klpdapp.klpd.dto.WholesellerDto;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wholeseller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -31,35 +36,66 @@ public class ProfileController {
 
     @Autowired
     WishlistRepo wishlistRepo;
+
+    @Autowired
+    LoginRepo Loginrepo;
+
+    @Autowired
+    wholesalerRepo wRepo;
     
     @GetMapping
     public String ShowProfile(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-            model.addAttribute("user", user);
+            Login loginuser = Loginrepo.findById(userId).orElse(null);
             CategoryService.addCategoriesToModel(model);
-            if (user != null) {
-                // Parse the name into firstName, middleName, and lastName
-                String[] nameParts = splitName(user.getName());
-                UserDto userDto = new UserDto();
-                userDto.setUserId(user.getUserId());
-                userDto.setDob(user.getDob());
-                userDto.setGender(user.getGender());
-                userDto.setEmail(user.getEmail());
-                userDto.setMobile(user.getMobile());
-                userDto.setStatus(user.getStatus());
-                userDto.setPassword(user.getPassword());
-                // Set parsed name fields
-                userDto.setFirstName(nameParts[0]);
-                userDto.setMiddleName(nameParts[1]);
-                userDto.setLastName(nameParts[2]);
+            if(loginuser.getUserType().equals("Wholesaler")) {
+                Wholeseller wholesaler = wRepo.findById(loginuser.getUserId()).orElse(null);
+                model.addAttribute("user", wholesaler);
+                WholesellerDto wholesalerDto = new WholesellerDto();
+                wholesalerDto.setWholesellerId(wholesaler.getWholesellerId());
+                wholesalerDto.setName(wholesaler.getName());
+                wholesalerDto.setCompanyName(wholesaler.getCompanyName());
+                wholesalerDto.setGSTIN(wholesaler.getGSTIN());
+                wholesalerDto.setOfficeAddress(wholesaler.getOfficeAddress());
+                wholesalerDto.setShippingAddress(wholesaler.getShippingAddress());
+                wholesalerDto.setContactNumber(wholesaler.getContactNumber());
+                wholesalerDto.setEmail(wholesaler.getEmail());
+                wholesalerDto.setOrganisationNumber(wholesaler.getOrganisationNumber());
 
-                // Add UserDto to the model
-                model.addAttribute("userdto", userDto);
+                model.addAttribute("wdto", wholesalerDto);
+                return "wholesalerprofile";
+
+            } else if(loginuser.getUserType().equals("Customer")) {
+                User user = uRepo.findById(loginuser.getUserId()).orElse(null);
+                model.addAttribute("user", user);
+                if (user != null) {
+                    // Parse the name into firstName, middleName, and lastName
+                    String[] nameParts = splitName(user.getName());
+                    UserDto userDto = new UserDto();
+                    userDto.setUserId(user.getUserId());
+                    userDto.setDob(user.getDob());
+                    userDto.setGender(user.getGender());
+                    userDto.setEmail(user.getEmail());
+                    userDto.setMobile(user.getMobile());
+                    userDto.setStatus(user.getStatus());
+                    userDto.setPassword(loginuser.getPassword());
+                    
+                    // Set parsed name fields
+                    userDto.setFirstName(nameParts[0]);
+                    userDto.setMiddleName(nameParts[1]);
+                    userDto.setLastName(nameParts[2]);
+    
+                    // Add UserDto to the model
+                    model.addAttribute("userdto", userDto);
+                }
+                return "profile";
             }
-            return "profile";
-        } else {
+            else {
+                return "redirect:/login";
+            }
+            
+            } else {
             return "redirect:/login";
         }
     }
@@ -90,7 +126,8 @@ public class ProfileController {
 
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User existingUser = uRepo.findById(userId).orElse(null);
+            Login loginuser = Loginrepo.findByUserId(userId).orElse(null);
+            User existingUser = uRepo.findById(loginuser.getUserId()).orElse(null);
             System.out.println("Existing user before update: " + existingUser);
             System.out.println("Gender: " + udto.getGender());
             System.out.println("Dob: " + udto.getDob());
@@ -122,6 +159,38 @@ public class ProfileController {
                 return "redirect:/profile";
             } else {
                 // If the user does not exist, redirect to login
+                return "redirect:/login";
+            }
+        } else {
+            // If no session is active, redirect to login
+            return "redirect:/login";
+        }
+    }
+
+    @PostMapping("/updatewholesaler")
+    public String updateWholesalerProfile(@ModelAttribute WholesellerDto wdto, HttpSession session) {
+        System.out.println("Received WholesellerDto: " + wdto);
+
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            Login loginuser = Loginrepo.findById(userId).orElse(null);
+            Wholeseller existingWholesaler = wRepo.findById(loginuser.getUserId()).orElse(null);
+            System.out.println("Existing wholesaler before update: " + existingWholesaler);
+            if (existingWholesaler != null) {
+                existingWholesaler.setName(wdto.getName());
+                existingWholesaler.setCompanyName(wdto.getCompanyName());
+                existingWholesaler.setGSTIN(wdto.getGSTIN());
+                existingWholesaler.setOfficeAddress(wdto.getOfficeAddress());
+                existingWholesaler.setShippingAddress(wdto.getShippingAddress());
+                existingWholesaler.setContactNumber(wdto.getContactNumber());
+                existingWholesaler.setEmail(wdto.getEmail());
+                existingWholesaler.setOrganisationNumber(wdto.getOrganisationNumber());
+
+                wRepo.save(existingWholesaler);
+
+                return "redirect:/profile";
+            } else {
+                // If the wholesaler does not exist, redirect to login
                 return "redirect:/login";
             }
         } else {
