@@ -25,7 +25,10 @@ public class Login {
     @Column(nullable = false, unique = true, length = 60)
     private String email;
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, length = 30)
+    private String name;
+
+    @Column(length = 500)
     private String password;
 
     @Column(nullable = false)
@@ -39,5 +42,9 @@ public class Login {
     private LocalDateTime lastLoginAt = LocalDateTime.now();
 
     private boolean isEnabled = true;
+
+    @Column(unique = true, length = 50)
+    private String googleId;
+
 
 }

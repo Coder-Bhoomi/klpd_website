@@ -28,6 +28,7 @@ import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ImagesRepo;
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
@@ -41,6 +42,7 @@ import com.klpdapp.klpd.model.Attribute;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Images;
+import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.SubCategory;
@@ -85,6 +87,9 @@ public class AdminController {
 	@Autowired
 	AttrRepo attRepo;
 
+	@Autowired
+	LoginRepo loginRepo;
+
 	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model) {
 		List<Product> topsales = prepo.findTop4ByOrderBySalesDesc();
@@ -92,6 +97,14 @@ public class AdminController {
 		List<Product> lessStock = prepo.findTop4ByOrderByStockAsc();
 		model.addAttribute("lessStock", lessStock);
 		return "admin/dashboard";
+	}
+
+	@GetMapping("/user")
+	public String ShowUsers(Model model) {
+		List<Login> users = loginRepo.findAll();
+		model.addAttribute("user", users);
+		
+		return "admin/user";
 	}
 
 	@GetMapping("/order")
