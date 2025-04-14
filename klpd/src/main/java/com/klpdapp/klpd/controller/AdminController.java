@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ import com.klpdapp.klpd.model.Segment;
 
 import jakarta.servlet.http.HttpSession;
 
+@PreAuthorize("hasRole('ADMIN')")
 @Controller
 @RequestMapping({ "/admin" })
 public class AdminController {
@@ -91,12 +93,18 @@ public class AdminController {
 	LoginRepo loginRepo;
 
 	@GetMapping({ "/dashboard" })
-	public String showIndex(Model model) {
-		List<Product> topsales = prepo.findTop4ByOrderBySalesDesc();
-		model.addAttribute("topsales", topsales);
-		List<Product> lessStock = prepo.findTop4ByOrderByStockAsc();
-		model.addAttribute("lessStock", lessStock);
-		return "admin/dashboard";
+	public String showIndex(Model model, HttpSession session) {
+		Login user = loginRepo.findById((Integer) session.getAttribute("userid")).orElse(null);
+		if (!user.getUserType().equals("Admin")) {
+			return "redirect:/login";
+		}
+		else {
+			List<Product> topsales = prepo.findTop4ByOrderBySalesDesc();
+			model.addAttribute("topsales", topsales);
+			List<Product> lessStock = prepo.findTop4ByOrderByStockAsc();
+			model.addAttribute("lessStock", lessStock);
+			return "admin/dashboard";
+		}
 	}
 
 	@GetMapping("/user")
@@ -678,5 +686,6 @@ public class AdminController {
 			return "redirect:/admin/setting";
 		}
 	}
-
 }
+
+

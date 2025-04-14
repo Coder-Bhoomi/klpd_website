@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.klpdapp.klpd.Repository.AddressRepo;
+import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.PincodeRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Services.CategoryService;
@@ -21,6 +22,7 @@ import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Login;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -40,11 +42,14 @@ public class AddressController {
     @Autowired
     PincodeRepo pincodeRepo;
     
+    @Autowired
+    LoginRepo loginRepo;
+
     @GetMapping
     public String ShowAddress(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
+            Login user = loginRepo.findById(userId).orElse(null);
             if (user != null) {
                 AddressDto aDto = new AddressDto();
                 aDto.setUserId(user.getUserId());
@@ -65,8 +70,7 @@ public class AddressController {
             RedirectAttributes redirectAttributes) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
-            User user = uRepo.findById(userId).orElse(null);
-
+            Login user = loginRepo.findById(userId).orElse(null);
             if (user != null) {
 
                 Optional<Pincode> pincode = pincodeRepo.findByPincode((Integer) aDto.getPincode());

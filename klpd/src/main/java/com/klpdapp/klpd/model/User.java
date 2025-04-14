@@ -38,9 +38,6 @@ public class User {
     @Column(length = 50)
     private String status;
 
-    @Column(unique = true, length = 50)
-    private String googleId;
-
     @Column(nullable = false)
     private boolean enabled = true;
 }

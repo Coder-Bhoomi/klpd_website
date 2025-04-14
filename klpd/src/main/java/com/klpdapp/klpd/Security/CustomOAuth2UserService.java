@@ -49,8 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             User user2 = new User();
             user2.setName(name);
             user2.setEmail(email);
-            user2.setGoogleId(googleId);
-            
+            user2.setEnabled(true); // Set user as enabled            
             userRepository.save(user2); // Save the user to the database
 
             // Create a new Login entry for the user

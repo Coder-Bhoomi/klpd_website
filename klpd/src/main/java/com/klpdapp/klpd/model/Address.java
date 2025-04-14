@@ -12,7 +12,8 @@ public class Address {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Login user;
+
     @Column(nullable = false,length = 250)
     private String name;
 
@@ -47,11 +48,11 @@ public class Address {
         this.addressId = addressId;
     }
 
-    public User getUser() {
+    public Login getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Login user) {
         this.user = user;
     }
 
