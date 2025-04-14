@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .checkout-container {
+      margin-top: 2rem;
+    }
+
+    .card-dark {
+      background-color: #1f1f1f;
+      border: none;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .product-img {
+      width: 120px;
+      border-radius: 10px;
+    }
+
+    .price-original {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .discount {
+      color: #4caf50;
+    }
+
+    .offer-box {
+      background-color: #2a2a2a;
+      border-left: 4px solid #367D8A;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    .price-summary li {
+      background: transparent;
+      border: none;
+      padding: 0.4rem 0;
+    }
+
+    .total-amount {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .btn-pay {
+      background-color: #367D8A;
+      color: white;
+      border-radius: 30px;
+      padding: 0.8rem;
+      width: 100%;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .btn-pay:hover {
+      background-color: #1f5b65;
+    }
+
+    .quantity-box {
+      background-color: #2a2a2a;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      gap: 0.6rem;
+    }
+
+    .quantity-box i {
+      cursor: pointer;
+      color: #ffffff;
+    }
+
+    .delivery-text {
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+
+    .text-accent {
+      color: #367D8A;
+    }
+
+    select.form-select {
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 0.6rem;
+      font-size: 1rem;
+      box-shadow: none;
+    }
+
+    select.form-select:focus {
+      border-color: #367D8A;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(221, 114, 16, 0.25);
+    }
+
+    .modal-content {
+      background-color: #1f1f1f;
+      color: #fff;
+      border-radius: 12px;
+    }
+
+    .modal-header,
+    .modal-footer {
+      border-color: #333;
+    }
+
+    .btn-close {
+      filter: invert(1);
+    }
+
+    .form-control {
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+    }
+
+    .form-control:focus {
+      border-color: #DD7210;
+      box-shadow: none;
+    }
+
+    .form-label {
+      color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container checkout-container">
+    <h3 class="text-center mb-5 fw-bold">Checkout</h3>
+
+
+    <!-- Address Section -->
+    <div class="card-dark mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <div>Delivering to: <span class="fw-bold text-accent">LUCKNOW - 226020</span></div>
+          <div style="font-size: 0.9rem;">614/P-62, Madhuban Vihar Colony, Lucknow</div>
+        </div>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
+          class="text-decoration-none text-accent fw-bold">CHANGE</a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Left: Product Details -->
+      <div class="col-md-8">
+        <div class="card-dark d-flex gap-3 align-items-start">
+          <img src="images/10.jpg" class="product-img" alt="Product">
+          <div>
+            <h5>Zim Baby Bedding Set ( Green )</h5>
+            <div class="mb-1">
+              <span class="fw-bold">₹499.00</span>
+              <span class="price-original">₹792.00</span>
+            </div>
+            <div class="discount mb-1">37% OFF - ₹293.00 Saved</div>
+            <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
+            <div class="d-flex gap-3 align-items-center">
+              <div class="quantity-box">
+                <i class="fas fa-trash-alt"></i>
+                <span>1</span>
+                <i class="fas fa-plus"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Summary -->
+      <div class="col-md-4">
+        <div class="offer-box mb-3">
+          <span class="fw-bold text-success">UPGRADE - OFFER APPLIED</span><br>
+          Offer valid till 15th April 2025
+        </div>
+        <div class="card-dark">
+          <div class="section-title">Price Summary (1 Item)</div>
+          <ul class="list-group price-summary">
+            <li class="d-flex justify-content-between">
+              <span>Cart Total</span>
+              <span>₹792.00</span>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span>Coupon Discount</span>
+              <span class="text-success">- ₹293.00</span>
+            </li>
+            <li class="d-flex justify-content-between">
+              <span>Shipping & Handling</span>
+              <span class="text-success">FREE</span>
+            </li>
+            <li class="d-flex justify-content-between total-amount mt-3">
+              <span>Total Amount</span>
+              <span>₹499.00</span>
+            </li>
+          </ul>
+          <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
+
+          <!-- Payment Dropdown -->
+          <div class="mt-4">
+            <label for="payment-method" class="form-label text-accent">Choose Payment Method</label>
+            <select id="payment-method" class="form-select">
+              <option selected value="upi">UPI / Google Pay / PhonePe</option>
+              <option value="card">Credit / Debit Card</option>
+              <option value="cod">Cash on Delivery</option>
+            </select>
+          </div>
+
+          <button class="btn btn-pay mt-4">Proceed to Pay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address Modal -->
+  <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form>
+          <div class="modal-header">
+            <h5 class="modal-title" id="addressModalLabel">Update Delivery Address</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" placeholder="Your Name">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Mobile Number</label>
+              <input type="text" class="form-control" placeholder="10-digit number">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Pincode</label>
+              <input type="text" class="form-control" placeholder="e.g. 226020">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Full Address</label>
+              <textarea class="form-control" rows="2" placeholder="House No., Street, Area"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" placeholder="City">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">State</label>
+              <input type="text" class="form-control" placeholder="State">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-pay">Save Address</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
