@@ -23,7 +23,7 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top px-4" style="background-color: #1f1f1f;">
-        <div class="container-fluid">
+        <!-- <div class="container-fluid border">
             <a class="navbar-brand" href="#">
                 <img src="/images/logo2.jpg" alt="Logo" class="logo" style="border-radius: 10px;">
             </a>
@@ -75,6 +75,104 @@
                     <i class="fa-solid fa-user" style="color: #ffff;"></i>
                 </a>
             </div>
+        </div> -->
+
+        <div class="navbar-logo-container d-flex justify-content-center align-items-center ">
+            <a class="navbar-brand" href="#">
+                <img src="/images/logo2.jpg" alt="Logo" class="logo" style="border-radius: 10px;">
+            </a>
+        </div>
+    
+        <div class="navbar-content-container px-4">
+            <!-- Upper Section -->
+            <div class="upper mt-2 d-flex justify-content-start align-items-center">
+                <form class="d-flex" style="margin-left: 35px;" action="#" th:action="@{/search}" method="get">
+                    <input class="form-control search me-2" type="text" name="query" placeholder="Search for products" />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+    
+                <div class="d-flex align-items-center ms-2">
+                    <ul class="navbar-nav d-flex flex-row align-items-center me-3 custom-navbar-style">
+                        <li class="nav-item me-3 no-list-style">
+                            <a class="nav-link" href="/#aboutus" style="font-size: 18px; white-space: nowrap;">About Us</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link" href="/#location" style="font-size: 18px; white-space: nowrap;">Visit Us</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link" href="/wholesaler" style="font-size: 18px;">Wholesale</a>
+                        </li>
+                    </ul>
+    
+                    <a class="navbar-brand me-4" href="/cart">
+                        <i class="fa-solid fa-cart-shopping" style="color: #fff;"></i>
+                    </a>
+                    <a class="navbar-brand me-4" href="/wishlist">
+                        <i class="fa-solid fa-heart" style="color: #fff;"></i>
+                    </a>
+                    <a class="navbar-brand" href="/profile">
+                        <i class="fa-solid fa-user" style="color: #fff;"></i>
+                    </a>
+                </div>
+            </div>
+    
+            <!-- Lower Section -->
+            <div class="lower mt-2">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+    
+                <div class="collapse navbar-collapse left-item" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Cookware</a>
+                        </li>
+    
+                        <!-- <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Categories
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                                <li th:each="category : ${categories}">
+                                    <a class="dropdown-item"
+                                       th:href="@{/category/{id}(id=${category.categoryId})}"
+                                       th:text="${category.categoryName}"></a>
+                                </li>
+                            </ul>
+                        </li> -->
+    
+                        <li class="nav-item">
+                            <a class="nav-link" href="/#aboutus">Utensils</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/#location">Glassware</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/wholesaler">Bottels</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/#aboutus">Bed & Bath</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/#location">Cushion & Pillows</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/wholesaler">Inner Wears</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/#aboutus">Infants</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/#aboutus">Visit Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </nav>
     <!-- Main Content Placeholder -->
@@ -82,7 +180,7 @@
         <div class="row" th:replace="${content}" style="background-color: #ffffff; color: black;"></div>
     </main>
     <!-- Footer -->
-    <footer>
+    <footer class="mt-5">
         <div class="container text-center">
             <div class="row">
                 <!-- Image Section -->
@@ -96,11 +194,10 @@
                     <h5 class="fw-bold">Product Series</h5>
                     <ul class="list-unstyled">
                         <li th:each="category, iterStat : ${categories}" th:if="${iterStat.index < 5}">
-                            <a class="dropdown-item text-white" 
-                               th:href="@{/category/{id}(id=${category.categoryId})}"
-                               th:text="${category.categoryName}"></a>
+                            <a class="dropdown-item text-white" th:href="@{/category/{id}(id=${category.categoryId})}"
+                                th:text="${category.categoryName}"></a>
                         </li>
-                    </ul>                                        
+                    </ul>
                 </div>
 
                 <!-- Quick Links -->
