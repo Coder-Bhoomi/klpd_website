@@ -63,23 +63,27 @@ public class CartController {
             float tax = subtotal * 0.02f;
             float total = subtotal + tax - discount;
             Coupon appliedCoupon = (Coupon) session.getAttribute("coupon");
-        Float appliedDiscount = (Float) session.getAttribute("discount");
-        Float appliedTax = (Float) session.getAttribute("tax");
-        Float appliedTotal = (Float) session.getAttribute("total");
-        Float appliedsubtotal = (Float) session.getAttribute("subtotal");
-        if (appliedDiscount != null) {
-            discount = appliedDiscount;
-            tax = appliedTax;
-            total = appliedTotal;
-            subtotal = appliedsubtotal;
-            model.addAttribute("coupon", appliedCoupon);
-        }
+            Float appliedDiscount = (Float) session.getAttribute("discount");
+            Float appliedTax = (Float) session.getAttribute("tax");
+            Float appliedTotal = (Float) session.getAttribute("total");
+            Float appliedsubtotal = (Float) session.getAttribute("subtotal");
+            if (appliedDiscount != null) {
+                discount = appliedDiscount;
+                tax = appliedTax;
+                total = appliedTotal;
+                subtotal = appliedsubtotal;
+                model.addAttribute("coupon", appliedCoupon);
+                if (appliedCoupon != null) {
+                    System.out.println("Coupon applied:,/,/,/, " + appliedCoupon.getCouponName());
+                }
+            }
             model.addAttribute("cart", cartItems);
             model.addAttribute("subtotal", subtotal);
             model.addAttribute("discount", discount);
             model.addAttribute("tax", tax);
             model.addAttribute("total", total);
             CategoryService.addCategoriesToModel(model);
+
             return "cart";
         } else {
             return "redirect:/login";
@@ -102,7 +106,6 @@ public class CartController {
             } else {
                 discount = discountbypercentage;
             }
-            System.out.println("Discount"+discount);
             float tax = subtotal * 0.02f;
             float total = subtotal + tax - discount;
             session.setAttribute("cart", cartItems);
@@ -119,7 +122,7 @@ public class CartController {
 
     @PostMapping("/update")
     public String updateCart(HttpServletRequest request, @RequestParam Integer cartId,
-            @RequestParam(required = false) String action, @RequestParam Integer quantity, Model model) {
+            @RequestParam(required = false) String action, @RequestParam Integer quantity, Model model, HttpSession session) {
         Cart cartItem = cartRepository.findById(cartId).orElse(null);
         if (cartItem != null) {
             if ("minus".equals(action) && cartItem.getQuantity() > 1) {
@@ -131,10 +134,24 @@ public class CartController {
             }
             Product Product = cartItem.getProduct();
             cartItem.setProductTotal(
-                    quantity * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
+                    cartItem.getQuantity() * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
             cartRepository.save(cartItem);
             model.addAttribute("message", "Cart updated successfully.");
         }
+        Integer userId = (Integer) session.getAttribute("userid");
+        Login user = loginRepo.findById(userId).orElse(null);
+        List<Cart> cartItems = cartService.getCartItems(user);
+        // Calculate subtotal, discount, tax, and total
+        float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
+        System.out.println(subtotal);
+            float discount = 0.0f;
+            float tax = subtotal * 0.02f;
+            float total = subtotal + tax - discount;
+            model.addAttribute("cart", cartItems);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("discount", discount);
+            model.addAttribute("tax", tax);
+            model.addAttribute("total", total);
         String referer = request.getHeader("Referer");
         return "redirect:" + referer;
     }
@@ -143,22 +160,6 @@ public class CartController {
     public String DeleteCartItem(@RequestParam int id, RedirectAttributes attrib) {
         cartService.deleteCartItem(id);
         return "redirect:/cart";
-    }
-
-    @PostMapping("/checkout")
-    public String Checkout(HttpSession session, HttpServletResponse response) {
-        try {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-            if (session.getAttribute("userid") != null) {
-                Integer userId = (Integer) session.getAttribute("userid");
-                Login user = loginRepo.findById(userId).orElse(null);                
-                cartService.checkout(user);
-                return "redirect:/";
-            }
-            return "redirect:/";
-        } catch (Exception e) {
-            return "redirect:/";
-        }
     }
 
     @PostMapping("/add")
@@ -183,7 +184,7 @@ public class CartController {
                     Cart cart = new Cart();
                     cart.setUser(user);
                     cart.setProduct(product);
-                    if( user.getUserType().equals("Wholesaler")) {
+                    if (user.getUserType().equals("Wholesaler")) {
                         cart.setQuantity(10);
                     } else {
                         cart.setQuantity(quantity);
@@ -203,6 +204,59 @@ public class CartController {
 
         return "redirect:/cart";
 
+    }
+
+    @GetMapping("/checkout")
+    public String checkout(HttpSession session, Model model) {
+        if (session.getAttribute("userid") != null) {
+            Integer userId = (Integer) session.getAttribute("userid");
+            Login user = loginRepo.findById(userId).orElse(null);
+            List<Cart> cartItems = cartService.getCartItems(user);
+            float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
+            float discount = 0.0f;
+            float tax = subtotal * 0.02f;
+            float total = subtotal + tax - discount;
+            Coupon appliedCoupon = (Coupon) session.getAttribute("coupon");
+            Float appliedDiscount = (Float) session.getAttribute("discount");
+            Float appliedTax = (Float) session.getAttribute("tax");
+            Float appliedTotal = (Float) session.getAttribute("total");
+            Float appliedsubtotal = (Float) session.getAttribute("subtotal");
+            if (appliedDiscount != null) {
+                discount = appliedDiscount;
+                tax = appliedTax;
+                total = appliedTotal;
+                subtotal = appliedsubtotal;
+                if( appliedCoupon != null) {
+                    model.addAttribute("coupon", appliedCoupon);
+                }
+            }
+            model.addAttribute("cart", cartItems);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("discount", discount);
+            model.addAttribute("tax", tax);
+            model.addAttribute("total", total);
+            CategoryService.addCategoriesToModel(model);
+            return "checkout";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @PostMapping("/checkout")
+    public String Checkout(HttpSession session, HttpServletResponse response,
+            @RequestParam String paymentMode) {
+        try {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            if (session.getAttribute("userid") != null) {
+                Integer userId = (Integer) session.getAttribute("userid");
+                Login user = loginRepo.findById(userId).orElse(null);
+                cartService.checkout(user,paymentMode);
+                return "redirect:/";
+            }
+            return "redirect:/";
+        } catch (Exception e) {
+            return "redirect:/";
+        }
     }
 
 }

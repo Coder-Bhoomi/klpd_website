@@ -21,6 +21,17 @@ public class OrderItem {
     @Column(nullable = false)
     private int prodQuantity;
 
+    @Column(length= 80)
+    private String Status;
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        Status = status;
+    }
+
     public int getOrderItemId() {
         return orderItemId;
     }

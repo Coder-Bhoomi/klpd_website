@@ -25,6 +25,11 @@ public class User {
     private LocalDate anniversary;
 
     @Column(length = 20)
+    private String childName;
+
+    private LocalDate childDob;
+
+    @Column(length = 20)
     private String gender;
 
     @Column(nullable = false, unique = true, length = 60)

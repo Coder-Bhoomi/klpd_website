@@ -9,13 +9,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.klpdapp.klpd.model.Category;
+import com.klpdapp.klpd.model.Segment;
 import com.klpdapp.klpd.Repository.CategoryRepo;
+import com.klpdapp.klpd.Repository.SegmentRepo;
 
 @Service
 public class CategoryService {
 
     @Autowired
     CategoryRepo ctgRepo;
+
+    @Autowired
+    SegmentRepo segmentRepo;
 
     public void addCategoriesToModel(Model model) {
         List<Category> categories = ctgRepo.findAll();
@@ -42,6 +47,8 @@ public class CategoryService {
         if (others != null) {
             categories.add(others);
         }
+        List<Segment> segments = segmentRepo.findAll();
+        model.addAttribute("segments", segments);
         model.addAttribute("categories", categories);
     }
     

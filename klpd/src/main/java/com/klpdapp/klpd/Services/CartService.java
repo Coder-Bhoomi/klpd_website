@@ -59,7 +59,8 @@ public class CartService {
         cartRepository.deleteById(cartId);
     }
 
-    public void checkout(Login user) {
+    public void checkout(Login user, String paymentMode) {
+        System.out.println("inside cartservice");
         List<Cart> carts = cartRepository.findByUser(user);
         float subtotal = calculateSubtotal(carts);
         float discount = 0.0f;
@@ -70,8 +71,10 @@ public class CartService {
         order.setUser(user);
         order.setTotalAmt(total);
         order.setOrderDate(LocalDate.now());
+        order.setPaymentMode(paymentMode);
         orderrepo.save(order);
-
+        System.out.println("order saved");
+        System.out.println("order id: " + order.getOrderId());
         for (Cart cart : carts) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);

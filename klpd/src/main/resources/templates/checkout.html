@@ -166,69 +166,83 @@
       </div>
     </div>
 
-    <div class="row g-4">
+    <div class="row">
+
+    <div class="col-md-8"><div class="row g-4">
       <!-- Left: Product Details -->
-      <div class="col-md-8">
+      <div class="col-md-12" th:each="cartItem : ${cart}">
         <div class="card-dark d-flex gap-3 align-items-start">
-          <img src="images/10.jpg" class="product-img" alt="Product">
+          <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
           <div>
-            <h5>Zim Baby Bedding Set ( Green )</h5>
+            <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
             <div class="mb-1">
-              <span class="fw-bold">₹499.00</span>
-              <span class="price-original">₹792.00</span>
+              <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
+              <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
             </div>
-            <div class="discount mb-1">37% OFF - ₹293.00 Saved</div>
+            <div class="discount mb-1"><span
+                th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>
+              % OFF - ₹<span
+                th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293.00</span> Saved
+            </div>
             <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
             <div class="d-flex gap-3 align-items-center">
-              <div class="quantity-box">
-                <i class="fas fa-trash-alt"></i>
-                <span>1</span>
-                <i class="fas fa-plus"></i>
+              <div class="quantity-box">Number of Items:
+                <span th:text="${cartItem.quantity}">1</span>
               </div>
             </div>
           </div>
+        </div>
+        </div>
         </div>
       </div>
 
       <!-- Right: Summary -->
       <div class="col-md-4">
         <div class="offer-box mb-3">
-          <span class="fw-bold text-success">UPGRADE - OFFER APPLIED</span><br>
-          Offer valid till 15th April 2025
+          <span class="fw-bold text-success"><span th:text="${coupon.couponName}"></span>- OFFER APPLIED</span><br>
+          Offer valid till <span th:text="${coupon.expireDate}"></span>
         </div>
         <div class="card-dark">
           <div class="section-title">Price Summary (1 Item)</div>
           <ul class="list-group price-summary">
             <li class="d-flex justify-content-between">
-              <span>Cart Total</span>
-              <span>₹792.00</span>
+              <span>Subtotal</span>
+              <span>₹<span th:text="${subtotal}">₹792.00</span></span>
             </li>
             <li class="d-flex justify-content-between">
-              <span>Coupon Discount</span>
-              <span class="text-success">- ₹293.00</span>
+              <span>Discount</span>
+              <span class="text-success">-₹<span th:text="${discount}">-₹293.00</span></span>
             </li>
+            <div class="d-flex justify-content-between">
+              <span>Tax (2%)</span>
+              <span>₹<span th:text="${tax}">$0.00</span></span>
+            </div>
             <li class="d-flex justify-content-between">
-              <span>Shipping & Handling</span>
+              <span>Shipping</span>
               <span class="text-success">FREE</span>
             </li>
             <li class="d-flex justify-content-between total-amount mt-3">
-              <span>Total Amount</span>
-              <span>₹499.00</span>
+              <span>Total</span>
+              <span>₹<span th:text="${total}">₹499.00</span></span>
             </li>
           </ul>
           <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
 
           <!-- Payment Dropdown -->
-          <div class="mt-4">
-            <label for="payment-method" class="form-label text-accent">Choose Payment Method</label>
-            <select id="payment-method" class="form-select">
-              <option selected value="upi">UPI / Google Pay / PhonePe</option>
-              <option value="card">Credit / Debit Card</option>
-              <option value="cod">Cash on Delivery</option>
-            </select>
-          </div>
+          <form th:action="@{/cart/checkout}" method="post">
 
-          <button class="btn btn-pay mt-4">Proceed to Pay</button>
+            <div class="mt-4">
+              <label for="payment-method" class="form-label text-accent">Choose Payment Method</label>
+              <select id="payment-method" class="form-select" name="paymentMode">
+                <option selected value="upi">UPI / Google Pay / PhonePe</option>
+                <option value="card">Credit / Debit Card</option>
+                <option value="cod">Cash on Delivery</option>
+              </select>
+            </div>
+
+            <button class="btn btn-pay mt-4" type="submit">Proceed to Pay</button>
+          </form>
+
         </div>
       </div>
     </div>

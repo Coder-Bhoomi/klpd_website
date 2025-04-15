@@ -28,28 +28,29 @@
                             <table class="table table-bordered table-dark">
                                 <thead>
                                     <tr>
+                                        <th scope="col">OrderItem ID</th>
                                         <th scope="col">Order ID</th>
                                         <th scope="col">User Id</th>
+                                        <th scope="col">Product</th>
+                                        <th scope="col">Product Quantity</th>
+                                        <th scope="col">Product Price</th>
                                         <th scope="col">Payment mode</th>
                                         <th scope="col">Order Date</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="orders:${Orders}">
-                                        <td class="editable" th:text="${orders.orderId}"></td>
-                                        <td class="editable" th:text="${orders.user.userId}"></td>
-                                        <td class="editable" th:text="${orders.paymentMode}"></td>
-                                        <td class="editable" th:text="${orders.orderDate}"></td>
-                                        <td class="editable" th:text="${orders.status}"></td>
-                                        <td>
-                                            <button class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                                data-bs-target="#tableModal">View Details</button>
-                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
-                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
-                                            <button class="btn btn-danger btn-sm">Cancel</button>
-                                        </td>
+                                    <tr th:each="OrderItems:${OrderItems}">
+                                        <td class="editable" th:text="${OrderItems.orderItemId}"></td>
+                                        <td class="editable" th:text="${OrderItems.order.orderId}"></td>
+                                        <td class="editable" th:text="${OrderItems.order.user.userId}"></td>
+                                        <td class="editable"> <image th:src="@{${OrderItems.product.images[0].imageUrl}}" alt="category image"
+                                            style="width: 70px; height: 70px;"> <span th:text="${OrderItems.product.prodName}"></span></td>
+                                        <td class="editable" th:text="${OrderItems.prodQuantity}"></td>
+                                        <td class="editable" th:text="${OrderItems.product.offerPrice}"></td>
+                                        <td class="editable" th:text="${OrderItems.order.paymentMode}"></td>
+                                        <td class="editable" th:text="${OrderItems.order.orderDate}"></td>
+                                        <td class="editable" th:text="${OrderItems.status}"></td>
                                     </tr>
                                 </tbody>
                             </table>

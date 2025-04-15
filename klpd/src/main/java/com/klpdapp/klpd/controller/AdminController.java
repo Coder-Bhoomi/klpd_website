@@ -45,6 +45,7 @@ import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Order;
+import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.SubCategory;
 import com.klpdapp.klpd.model.Segment;
@@ -90,7 +91,7 @@ public class AdminController {
 	AttrRepo attRepo;
 
 	@Autowired
-	LoginRepo loginRepo;
+	LoginRepo loginRepo;                                                                                                                        
 
 	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model, HttpSession session) {
@@ -110,7 +111,7 @@ public class AdminController {
 	@GetMapping("/user")
 	public String ShowUsers(Model model) {
 		List<Login> users = loginRepo.findAll();
-		model.addAttribute("user", users);
+		model.addAttribute("User", users);
 		
 		return "admin/user";
 	}
@@ -119,6 +120,8 @@ public class AdminController {
 	public String showOrders(Model model) {
 		List<Order> orders = orderRepo.findAll();
 		model.addAttribute("Orders", orders);
+		List<OrderItem> orderItems = orderItemRepository.findAll();
+		model.addAttribute("OrderItems", orderItems);
 		return "admin/order";
 	}
 

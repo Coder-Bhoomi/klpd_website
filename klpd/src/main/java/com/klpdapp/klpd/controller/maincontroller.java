@@ -15,11 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.klpdapp.klpd.Repository.AddressRepo;
@@ -39,21 +36,18 @@ import com.klpdapp.klpd.Repository.wholesalerRepo;
 import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.dto.AdminDto;
-import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Attribute;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
-import com.klpdapp.klpd.model.Segment;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wholeseller;
 import com.klpdapp.klpd.model.Wishlist;
 import com.klpdapp.klpd.model.Login;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 
@@ -210,8 +204,6 @@ public class maincontroller {
         }
         model.addAttribute("cartProductIds", cartProductIds);
         model.addAttribute("wishlistProductIds", wishlistProductIds);
-        List<Segment> segments = segmentRepo.findAll();
-        model.addAttribute("segments", segments);
         return "index";
     }
 

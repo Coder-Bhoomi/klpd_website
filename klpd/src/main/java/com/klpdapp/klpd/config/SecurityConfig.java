@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 @Configuration
@@ -41,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/login", "/submit", "/register", "/products", "/", "/search",
                                 "/category/{categoryId}", "/css/**", "/js/**", "/images/**",
-                                "/admin","/product/{pid}","error","/wholesaler","/CategoryImages/**","/SegmentImages/**",
+                                "/admin","/product/{pid}","/wholesaler","/CategoryImages/**","/SegmentImages/**",
                                 "/ProductImages/**","/registerwholesale")
                         .permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN") // only admin can access admin pages
@@ -53,6 +54,7 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .failureHandler(customAuthenticationFailureHandler())
+                        .successHandler(customAuthenticationSuccessHandler())
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -72,6 +74,23 @@ public class SecurityConfig {
         return (request, response, exception) -> {
             request.getSession().setAttribute("errorMessage", "Invalid email or password!");
             response.sendRedirect("/login?error=true");
+        };
+    }
+
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            String Role = authentication.getAuthorities().iterator().next().getAuthority();
+
+            if(Role.equals("ROLE_ADMIN")) {
+                response.sendRedirect("/admin/dashboard");
+            } else if (Role.equals("ROLE_CUSTOMER")) {
+                response.sendRedirect("/profile");
+            } else if (Role.equals("ROLE_WHOLESALER")) {
+                response.sendRedirect("/profile");
+            } 
+            else {
+                response.sendRedirect("/login?error=true");
+            }
         };
     }
 }
