@@ -28,29 +28,48 @@
                             <table class="table table-bordered table-dark">
                                 <thead>
                                     <tr>
-                                        <th scope="col">OrderItem ID</th>
                                         <th scope="col">Order ID</th>
                                         <th scope="col">User Id</th>
-                                        <th scope="col">Product</th>
+                                        <th scope="col" colspan="2">Product</th>
                                         <th scope="col">Product Quantity</th>
                                         <th scope="col">Product Price</th>
                                         <th scope="col">Payment mode</th>
+                                        <th scope="col">Delivery Address</th>
                                         <th scope="col">Order Date</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="OrderItems:${OrderItems}">
-                                        <td class="editable" th:text="${OrderItems.orderItemId}"></td>
-                                        <td class="editable" th:text="${OrderItems.order.orderId}"></td>
-                                        <td class="editable" th:text="${OrderItems.order.user.userId}"></td>
-                                        <td class="editable"> <image th:src="@{${OrderItems.product.images[0].imageUrl}}" alt="category image"
-                                            style="width: 70px; height: 70px;"> <span th:text="${OrderItems.product.prodName}"></span></td>
-                                        <td class="editable" th:text="${OrderItems.prodQuantity}"></td>
-                                        <td class="editable" th:text="${OrderItems.product.offerPrice}"></td>
-                                        <td class="editable" th:text="${OrderItems.order.paymentMode}"></td>
-                                        <td class="editable" th:text="${OrderItems.order.orderDate}"></td>
-                                        <td class="editable" th:text="${OrderItems.status}"></td>
+                                    <tr th:each="order :${OrderItems}">
+                                        <td class="editable" th:text="${order.order.orderId}"></td>
+                                        <td class="editable" th:text="${order.order.user.userId}"></td>
+                                        <td>
+                                            <image th:src="@{${order.product.images[0].imageUrl}}"
+                                                alt="category image" style="width: 70px; height: 70px;">
+                                        </td>
+                                        <td> <span th:text="${order.product.prodName}"></span></td>
+                                        <td class="editable" th:text="${order.prodQuantity}"></td>
+                                        <td class="editable" th:text="${order.product.offerPrice * order.prodQuantity}  "></td>
+                                        <td class="editable" th:text="${order.order.paymentMode}"></td>
+                                        <td class="editable"><span th:text="${order.order.address.address}"></span>
+                                            <span th:text="${order.order.address.landmark}"></span>
+                                            <span th:text="${order.order.address.city}"></span>
+                                            <span th:text="${order.order.address.state}"></span>
+                                            <span th:text="${order.order.address.pincode}"></span>
+                                            <span th:text="${order.order.address.country}"></span>
+                                        </td>
+                                        <td class="editable" th:text="${order.order.orderDate}"></td>
+                                        <td><form th:action="@{/admin/order/update}" method="post">
+                                            <input type="hidden" th:value="${order.orderItemId}" name="orderItemId">
+                                            <select class="form-select" name="status" style="min-width: 120px;" onchange="this.form.submit()">
+                                                <option value="Pending" th:selected="${order.status == 'Pending'}">Pending</option>
+                                                <option value="Shipped" th:selected="${order.status == 'Shipped'}">Shipped</option>
+                                                <option value="Delivered" th:selected="${order.status == 'Delivered'}">Delivered</option>
+                                                <option value="Cancelled" th:selected="${order.status == 'Cancelled'}">Cancelled</option>
+                                            </select>
+                                            
+                                            </form>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -60,101 +79,8 @@
             </div>
         </div>
 
-        </div>
-        </div>
-
-        <!-- Modal with Vertical Table -->
-        <div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="tableModalLabel">Orders Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Vertical Table -->
-                        <table class="table table-bordered table-dark">
-                            <tbody id="verticalTable">
-                                <tr>
-                                    <th>Order Iteam ID</th>
-                                    <td><span class="editable" id="id">1</span></td>
-                                </tr>
-                                <tr>
-                                    <th>Product ID</th>
-                                    <td><span class="editable" id="categoryId">C01</span></td>
-                                </tr>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <td><span class="editable" id="subCategoryId">SC01</span></td>
-                                </tr>
-                                <tr>
-                                    <th>Product Quantity</th>
-                                    <td><span class="editable" id="description">05</span></td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="editButton">Edit</button>
-                        <button type="button" class="btn btn-success d-none" id="saveButton">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        
-        <script>
-            const editButton = document.getElementById('editButton');
-            const saveButton = document.getElementById('saveButton');
-            const editableFields = document.querySelectorAll('.modal .editable');
-
-            editButton.addEventListener('click', () => {
-                editableFields.forEach(field => {
-                    const value = field.textContent;
-                    field.innerHTML = `<input type="text" class="form-control" value="${value}">`;
-                });
-                editButton.classList.add('d-none');
-                saveButton.classList.remove('d-none');
-            });
-
-            saveButton.addEventListener('click', () => {
-                editableFields.forEach(field => {
-                    const input = field.querySelector('input');
-                    field.textContent = input.value;
-                });
-                editButton.classList.remove('d-none');
-                saveButton.classList.add('d-none');
-                alert('Changes saved successfully!');
-            });
-
-            document.querySelectorAll('.edit-btn').forEach((editBtn) => {
-                editBtn.addEventListener('click', () => {
-                    const row = editBtn.closest('tr');
-                    row.querySelectorAll('.editable').forEach(cell => {
-                        const value = cell.textContent;
-                        cell.innerHTML = `<input type="text" class="form-control" value="${value}">`;
-                    });
-                    editBtn.classList.add('d-none');
-                    row.querySelector('.save-btn').classList.remove('d-none');
-                });
-            });
-
-            document.querySelectorAll('.save-btn').forEach((saveBtn) => {
-                saveBtn.addEventListener('click', () => {
-                    const row = saveBtn.closest('tr');
-                    row.querySelectorAll('.editable').forEach(cell => {
-                        const input = cell.querySelector('input');
-                        cell.textContent = input.value;
-                    });
-                    saveBtn.classList.add('d-none');
-                    row.querySelector('.edit-btn').classList.remove('d-none');
-                    alert('Row changes saved successfully!');
-                });
-            });
-        </script>
+    </main>
+    
 
 </body>
 

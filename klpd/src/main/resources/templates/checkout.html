@@ -153,50 +153,69 @@
   <div class="container checkout-container">
     <h3 class="text-center mb-5 fw-bold">Checkout</h3>
 
+    <form th:action="@{/cart/checkout}" method="post">
 
     <!-- Address Section -->
     <div class="card-dark mb-4">
-      <div class="d-flex justify-content-between align-items-center">
-        <div th:if="${address != null}" >
-          <div>Delivering to: <span class="fw-bold text-accent" ><span th:text="${address[0].city}">LUCKNOW </span>-<span th:text="${address[0].pincode}"></span></span></div>
-          <div style="font-size: 0.9rem;"><span th:text="${address[0].address}">614/P-62, Madhuban Vihar Colony, Lucknow</span>
-            <span th:text="${address[0].city}"></span><span th:text="${address[0].state}"></span>
-            <span th:text="${address[0].country}"></span></div>
-          Mobile: <span th:text="${address[0].number}">+91 1234567890</span>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="section-title">Select Delivery Address</h6>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
+          class="text-decoration-none text-accent fw-bold">+ ADD NEW</a>
+      </div>
+      <form th:action="@{/cart/checkout}" method="post">
+
+      <!-- Address List -->
+      <div class="address-list">
+        
+        <div th:each="addr, iter : ${address}" class="mb-3 p-3 rounded"
+          style="background-color: #2a2a2a; border: 1px solid #444; cursor: pointer;"
+          th:classappend="${iter.index == 0} ? 'selected-address' : ''" onclick="selectAddress(this)">
+          <input type="radio" name="selectedAddress" th:value="${addr.addressId}" th:checked="${iter.index == 0}">
+          <div class="d-flex justify-content-between">
+            <div>
+              <span class="fw-bold" th:text="${addr.name}">John Doe</span>
+            </div>
+          </div>
+          <div class="mt-1">
+            <span th:text="${addr.address}">614/P-62, Madhuban Vihar Colony</span>,
+            <span th:text="${addr.city}">Lucknow</span>,
+            <span th:text="${addr.state}">UP</span>,
+            <span th:text="${addr.pincode}">226020</span>
+          </div>
+          <div>Mobile: <span th:text="${addr.number}">+91 1234567890</span></div>
           
         </div>
-        <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
-          class="text-decoration-none text-accent fw-bold">CHANGE</a>
       </div>
     </div>
 
     <div class="row">
 
-    <div class="col-md-8"><div class="row g-4">
-      <!-- Left: Product Details -->
-      <div class="col-md-12" th:each="cartItem : ${cart}">
-        <div class="card-dark d-flex gap-3 align-items-start">
-          <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
-          <div>
-            <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
-            <div class="mb-1">
-              <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
-              <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
-            </div>
-            <div class="discount mb-1"><span
-                th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>
-              % OFF - ₹<span
-                th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293.00</span> Saved
-            </div>
-            <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
-            <div class="d-flex gap-3 align-items-center">
-              <div class="quantity-box">Number of Items:
-                <span th:text="${cartItem.quantity}">1</span>
+      <div class="col-md-8">
+        <div class="row g-4">
+          <!-- Left: Product Details -->
+          <div class="col-md-12" th:each="cartItem : ${cart}">
+            <div class="card-dark d-flex gap-3 align-items-start">
+              <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
+              <div>
+                <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
+                <div class="mb-1">
+                  <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
+                  <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
+                </div>
+                <div class="discount mb-1"><span
+                    th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>
+                  % OFF - ₹<span
+                    th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293.00</span> Saved
+                </div>
+                <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="quantity-box">Number of Items:
+                    <span th:text="${cartItem.quantity}">1</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        </div>
         </div>
       </div>
 
@@ -217,10 +236,6 @@
               <span>Discount</span>
               <span class="text-success">-₹<span th:text="${discount}">-₹293.00</span></span>
             </li>
-            <div class="d-flex justify-content-between">
-              <span>Tax (2%)</span>
-              <span>₹<span th:text="${tax}">$0.00</span></span>
-            </div>
             <li class="d-flex justify-content-between">
               <span>Shipping</span>
               <span class="text-success">FREE</span>
@@ -233,7 +248,6 @@
           <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
 
           <!-- Payment Dropdown -->
-          <form th:action="@{/cart/checkout}" method="post">
 
             <div class="mt-4">
               <label for="payment-method" class="form-label text-accent">Choose Payment Method</label>
@@ -245,11 +259,11 @@
             </div>
 
             <button class="btn btn-pay mt-4" type="submit">Proceed to Pay</button>
-          </form>
 
         </div>
       </div>
     </div>
+  </form>
   </div>
 
   <!-- Address Modal -->

@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-3 text-end text-light">
                         <p class="fw-bold">Ordered on <span th:text="${order.order.orderDate}"></span></p>
-                        <p style="font-size: 14px;">Your item has been delivered</p>
+                        <p style="font-size: 14px;">Your item has been <span th:text="${order.status}"></span> </p>
                     </div>
                 </div>
             </div>

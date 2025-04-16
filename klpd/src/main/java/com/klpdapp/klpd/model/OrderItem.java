@@ -22,14 +22,14 @@ public class OrderItem {
     private int prodQuantity;
 
     @Column(length= 80)
-    private String Status;
+    private String status;
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
     }
 
     public int getOrderItemId() {

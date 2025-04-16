@@ -125,6 +125,16 @@ public class AdminController {
 		return "admin/order";
 	}
 
+	@PostMapping("/order/update")
+	public String updateOrder(@RequestParam int orderItemId, @RequestParam String status) {
+		OrderItem order = orderItemRepository.findById(orderItemId).orElse(null);
+		if (order != null) {
+			order.setStatus(status);
+			orderItemRepository.save(order);
+		}
+		return "redirect:/admin/order";
+	}
+
 	@GetMapping({ "/category" })
 	public String ShowCategories(Model model) {
 		List<Category> categ = Catrepo.findAll();
