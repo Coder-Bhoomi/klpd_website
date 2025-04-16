@@ -25,6 +25,10 @@ public class Order {
 
     @Column(length = 80)
     private String status;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "address_id", nullable = false)
+    private Address address;
 
     public int getOrderId() {
         return orderId;
@@ -74,5 +78,12 @@ public class Order {
         this.status = status;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
     
 }

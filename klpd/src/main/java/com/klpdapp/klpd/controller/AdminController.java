@@ -91,7 +91,7 @@ public class AdminController {
 	AttrRepo attRepo;
 
 	@Autowired
-	LoginRepo loginRepo;                                                                                                                        
+	LoginRepo loginRepo;                                                                                                                              
 
 	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model, HttpSession session) {

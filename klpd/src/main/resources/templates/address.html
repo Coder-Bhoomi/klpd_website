@@ -22,7 +22,9 @@
             <div id="addressesContainer" th:each="add : ${address}">
                 <div class="address-card">
                     <h5 th:text="${add.name}"></h5>
-                    <p th:text="${add.address}"></p>
+                    <p th:text="${add.address}"></p><p th:text="${add.city}"></p>
+                    <p th:text="${add.state}"></p><p th:text="${add.country}"></p>
+                    <p th:text="${add.landmark}"></p>
                     <p>Phone: <span th:text="${add.number}"></span></p>
                     <p>Pincode: <span th:text="${add.pincode}"></span></p>
                     <div class="mb-2 d-flex">
@@ -62,6 +64,26 @@
                                     <textarea class="form-control bg-dark text-light" id="address"
                                         placeholder="Enter your Address" rows="3" th:field="*{address}"
                                         required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="city" class="form-label text-light">City</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="city"
+                                        placeholder="Enter City" th:field="*{city}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="state" class="form-label text-light">State</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="state"
+                                        placeholder="Enter State" th:field="*{state}" required>
+                                    </div>  
+                                <div class="mb-3">
+                                    <label for="country" class="form-label text-light">Country</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="country"
+                                        placeholder="Enter Country" th:field="*{country}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="landmark" class="form-label text-light">Landmark</label>
+                                    <input type="text" class="form-control bg-dark text-light" id="landmark"
+                                        placeholder="Enter Landmark" th:field="*{landmark}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="pincode" class="form-label text-light">Pincode</label>

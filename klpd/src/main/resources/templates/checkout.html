@@ -157,9 +157,13 @@
     <!-- Address Section -->
     <div class="card-dark mb-4">
       <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div>Delivering to: <span class="fw-bold text-accent">LUCKNOW - 226020</span></div>
-          <div style="font-size: 0.9rem;">614/P-62, Madhuban Vihar Colony, Lucknow</div>
+        <div th:if="${address != null}" >
+          <div>Delivering to: <span class="fw-bold text-accent" ><span th:text="${address[0].city}">LUCKNOW </span>-<span th:text="${address[0].pincode}"></span></span></div>
+          <div style="font-size: 0.9rem;"><span th:text="${address[0].address}">614/P-62, Madhuban Vihar Colony, Lucknow</span>
+            <span th:text="${address[0].city}"></span><span th:text="${address[0].state}"></span>
+            <span th:text="${address[0].country}"></span></div>
+          Mobile: <span th:text="${address[0].number}">+91 1234567890</span>
+          
         </div>
         <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
           class="text-decoration-none text-accent fw-bold">CHANGE</a>
@@ -198,7 +202,7 @@
 
       <!-- Right: Summary -->
       <div class="col-md-4">
-        <div class="offer-box mb-3">
+        <div class="offer-box mb-3" th:if="${coupon != null}">
           <span class="fw-bold text-success"><span th:text="${coupon.couponName}"></span>- OFFER APPLIED</span><br>
           Offer valid till <span th:text="${coupon.expireDate}"></span>
         </div>

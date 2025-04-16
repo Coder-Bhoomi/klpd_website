@@ -84,7 +84,10 @@ public class LoginController {
             login.setEmail(userDto.getEmail());
             login.setPassword(encodedPassword);
             login.setUserId(user.getUserId());
+            login.setName(userDto.getName());
             login.setCreatedAt(LocalDateTime.now());
+            login.setLastLoginAt(LocalDateTime.now()); // Set last login time
+            login.setEnabled(true); // Set user as enabled
             login.setUserType("Customer");
 
             Loginrepo.save(login);
@@ -98,7 +101,7 @@ public class LoginController {
             securityContext.setAuthentication(authentication);
 
             session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-            session.setAttribute("userid", user.getUserId());
+            session.setAttribute("userid", login.getId());
 
             redirectAttributes.addFlashAttribute("message", "Registered Successfully!");
             return "redirect:/profile";

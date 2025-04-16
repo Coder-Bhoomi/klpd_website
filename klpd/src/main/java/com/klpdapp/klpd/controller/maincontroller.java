@@ -473,7 +473,7 @@ public class maincontroller {
             model.addAttribute("user", user);
         }
         List<OrderItem> orderitem = orderitemrepo.findAllByOrder_User(loginuser);
-        model.addAttribute("orderitem", orderitem);
+        model.addAttribute("orderitems", orderitem);
          return "order";
     }
 

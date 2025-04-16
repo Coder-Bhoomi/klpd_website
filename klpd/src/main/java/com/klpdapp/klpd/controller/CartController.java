@@ -15,6 +15,7 @@ import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
+import com.klpdapp.klpd.Repository.AddressRepo;
 import com.klpdapp.klpd.Services.CartService;
 import com.klpdapp.klpd.Services.CouponService;
 import com.klpdapp.klpd.Services.CategoryService;
@@ -22,6 +23,7 @@ import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Coupon;
 import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Product;
+import com.klpdapp.klpd.model.Address;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,6 +53,9 @@ public class CartController {
 
     @Autowired
     LoginRepo loginRepo;
+
+    @Autowired
+    AddressRepo addRepo;
 
     @GetMapping
     public String showCart(Model model, HttpSession session) {
@@ -190,7 +195,11 @@ public class CartController {
                         cart.setQuantity(quantity);
                     }
                     float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
-                    cart.setProductTotal(price * quantity);
+                    if (user.getUserType().equals("Wholesaler")) {
+                        cart.setProductTotal(price * 10);
+                    } else {
+                        cart.setProductTotal(price * quantity);
+                    }                    
                     cartRepository.save(cart);
                 }
 
@@ -236,6 +245,8 @@ public class CartController {
             model.addAttribute("tax", tax);
             model.addAttribute("total", total);
             CategoryService.addCategoriesToModel(model);
+            List<Address> address = addRepo.findByUser(user);
+            model.addAttribute("address", address);
             return "checkout";
         } else {
             return "redirect:/login";
