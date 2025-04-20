@@ -1,59 +1,62 @@
 <!DOCTYPE html>
 <html lang="en" th:replace="admin/adminbase :: layout (~{::main})">
+
 <head>
-   
+
 </head>
+
 <body>
     <main class="main-content">
 
         <!-- Top Navbar -->
         <div class="top-navbar d-flex justify-content-between align-items-center">
             <h4>Welcome, Admin</h4>
-            <button class="btn btn-light ms-auto me-3" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+            <button class="btn btn-light ms-auto me-3" data-bs-toggle="modal"
+                data-bs-target="#logoutModal">Logout</button>
             <button class="btn btn-light">
                 <a href="/" class="text-decoration-none">Go to site</a>
             </button>
         </div>
 
         <!-- Content -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Top Sold Products</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-container">
-                                <table class="table table-bordered table-dark">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Product ID</th>
-                                            <th scope="col">Hap ID</th>
-                                            <th scope="col">Product Name</th>
-                                            <th scope="col">Brand</th>
-                                            <th scope="col">Category</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Total Sale</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="product : ${topsales}">
-                                            <td th:text="${product.pid}"></td>
-                                            <td th:text="${product.hapPid}"></td>
-                                            <td th:text="${product.prodName}"></td>
-                                            <td th:text="${product.brand}"></td>
-                                            <td th:text="${product.subcategory.category.categoryName}"></td>
-                                            <td th:text="${product.mrp}"></td>
-                                            <td th:text="${product.sales}"></td>
-                                        </tr>  
-                                    </tbody>
-                                </table>
-                            </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Top Sold Products</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Product ID</th>
+                                        <th scope="col">Hap ID</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Brand</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Total Sale</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${topsales}">
+                                        <td th:text="${product.pid}"></td>
+                                        <td th:text="${product.hapPid}"></td>
+                                        <td th:text="${product.prodName}"></td>
+                                        <td th:text="${product.brand}"></td>
+                                        <td th:text="${product.subcategory.category.categoryName}"></td>
+                                        <td th:text="${product.mrp}"></td>
+                                        <td th:text="${product.sales}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-        
+        </div>
+
 
         <!-- Product List Section -->
         <div class="row mt-5">
@@ -67,27 +70,27 @@
                             <table class="table table-bordered table-dark">
                                 <thead>
                                     <tr>
-                                        <tr>
-                                            <th scope="col">Product ID</th>
-                                            <th scope="col">Hap ID</th>
-                                            <th scope="col">Product Name</th>
-                                            <th scope="col">Brand</th>
-                                            <th scope="col">Category</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Stock</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="product : ${lessStock}">
-                                            <td th:text="${product.pid}"></td>
-                                            <td th:text="${product.hapPid}"></td>
-                                            <td th:text="${product.prodName}"></td>
-                                            <td th:text="${product.brand}"></td>
-                                            <td th:text="${product.subcategory.category.categoryName}"></td>
-                                            <td th:text="${product.mrp}"></td>
-                                            <td th:text="${product.stock}"></td>
-                                        </tr>  
-                                    </tbody>
+                                    <tr>
+                                        <th scope="col">Product ID</th>
+                                        <th scope="col">Hap ID</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Brand</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${lessStock}">
+                                        <td th:text="${product.pid}"></td>
+                                        <td th:text="${product.hapPid}"></td>
+                                        <td th:text="${product.prodName}"></td>
+                                        <td th:text="${product.brand}"></td>
+                                        <td th:text="${product.subcategory.category.categoryName}"></td>
+                                        <td th:text="${product.mrp}"></td>
+                                        <td th:text="${product.stock}"></td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>

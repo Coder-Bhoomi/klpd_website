@@ -83,7 +83,8 @@
                             <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
                                 method="post">
                                 <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
+                                <button type="submit" class="btn minus text-white" name="action"
+                                    value="minus">-</button>
                                 <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
                                     id="quantity-display" class="rounded">
                                 <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
@@ -112,7 +113,7 @@
             <h4 class="fw-bold mt-5">More Information</h4>
             <table class="table table-bordered info-table mt-4">
                 <tbody>
-                    <tr th:each = "attribute : ${product.attributes}">
+                    <tr th:each="attribute : ${product.attributes}">
                         <th th:text="${attribute.attributeName} ">Brand</th>
                         <td th:text="${attribute.attributeValue}"></td>
                     </tr>
@@ -154,10 +155,10 @@
                         </a>
 
                         <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
-                            <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}"
-                                method="post">
+                            <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}" method="post">
                                 <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
+                                <button type="submit" class="btn minus text-white" name="action"
+                                    value="minus">-</button>
                                 <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
                                     id="quantity-display" class="rounded">
                                 <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>

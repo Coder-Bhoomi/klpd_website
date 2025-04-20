@@ -3,9 +3,9 @@ function scrollToSection(id) {
 }
 
 // Remove the loading screen once the page is fully loaded
-window.addEventListener("load", function() {
+window.addEventListener("load", function () {
     document.getElementById("loading-screen").style.display = "none";
-    document.getElementById("main-content").style.display = "block";
+    document.getElementById("main-content").style.display = "block";
 });
 
 // JavaScript for Countdown Timer

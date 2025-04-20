@@ -4,23 +4,26 @@
     --bs-table-border-color: #333333 !important;
 }
 
-.info-table td, .info-table th {
+.info-table td,
+.info-table th {
     padding: 8px;
     border: 1px solid #ddd;
 }
 
 .custom-dropdown {
     height: 35px;
-    background-color: #eee; 
+    background-color: #eee;
     border: 1px solid #ccc;
     font-size: 14px;
-    padding: 0 10px; 
-    border-radius: 4px; 
+    padding: 0 10px;
+    border-radius: 4px;
     width: 150px;
 }
 
 .custom-dropdown:focus {
     outline: none;
-    border-color: #367D8A; /* Highlight color when focused */
-    box-shadow: 0 0 5px rgba(54, 125, 138, 0.5); /* Subtle shadow */
+    border-color: #367D8A;
+    /* Highlight color when focused */
+    box-shadow: 0 0 5px rgba(54, 125, 138, 0.5);
+    /* Subtle shadow */
 }

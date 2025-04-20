@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" th:replace="admin/adminbase :: layout (~{::main})">
+
 <head>
-    
+
 </head>
+
 <body>
 
 
@@ -22,8 +24,8 @@
                     <div class="card-header">
                         <h5>Coupon List</h5>
                         <button type="button" class="my-3 rounded-pill btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#addNewCoupon">
-                                    Add New Coupon
+                            data-bs-target="#addNewCoupon">
+                            Add New Coupon
                         </button>
                     </div>
                     <div class="card-body">
@@ -66,13 +68,13 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form action="/admin/addcoupon" method="post">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="CouponLabel">Add Coupon</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="card-body">
-                            <div class="row mb-3">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="CouponLabel">Add Coupon</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="row mb-3">
                                     <div class="col-6">
                                         <label for="couponCode" class="form-label">Coupon Code</label>
                                         <input type="text" class="form-control bg-dark text-light" id="couponCode"
@@ -113,51 +115,52 @@
                                         <textarea class="form-control bg-dark text-light" id="couponDescription"
                                             name="couponDescription" required></textarea>
                                     </div>
-                                    
+
                                 </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-    </div>
-</div>
- 
-<script>
-    const editButton = document.getElementById('editButton');
-    const saveButton = document.getElementById('saveButton');
-    const editableFields = document.querySelectorAll('.modal .editable');
+        </div>
+        </div>
 
-    document.querySelectorAll('.edit-btn').forEach((editBtn) => {
-        editBtn.addEventListener('click', () => {
-            const row = editBtn.closest('tr');
-            row.querySelectorAll('.editable').forEach(cell => {
-                const value = cell.textContent;
-                cell.innerHTML = `<input type="text" class="form-control" value="${value}">`;
-            });
-            editBtn.classList.add('d-none');
-            row.querySelector('.save-btn').classList.remove('d-none');
-        });
-    });
+        <script>
+            const editButton = document.getElementById('editButton');
+            const saveButton = document.getElementById('saveButton');
+            const editableFields = document.querySelectorAll('.modal .editable');
 
-    document.querySelectorAll('.save-btn').forEach((saveBtn) => {
-        saveBtn.addEventListener('click', () => {
-            const row = saveBtn.closest('tr');
-            row.querySelectorAll('.editable').forEach(cell => {
-                const input = cell.querySelector('input');
-                cell.textContent = input.value;
+            document.querySelectorAll('.edit-btn').forEach((editBtn) => {
+                editBtn.addEventListener('click', () => {
+                    const row = editBtn.closest('tr');
+                    row.querySelectorAll('.editable').forEach(cell => {
+                        const value = cell.textContent;
+                        cell.innerHTML = `<input type="text" class="form-control" value="${value}">`;
+                    });
+                    editBtn.classList.add('d-none');
+                    row.querySelector('.save-btn').classList.remove('d-none');
+                });
             });
-            saveBtn.classList.add('d-none');
-            row.querySelector('.edit-btn').classList.remove('d-none');
-            alert('Row changes saved successfully!');
-        });
-    });
-</script>
+
+            document.querySelectorAll('.save-btn').forEach((saveBtn) => {
+                saveBtn.addEventListener('click', () => {
+                    const row = saveBtn.closest('tr');
+                    row.querySelectorAll('.editable').forEach(cell => {
+                        const input = cell.querySelector('input');
+                        cell.textContent = input.value;
+                    });
+                    saveBtn.classList.add('d-none');
+                    row.querySelector('.edit-btn').classList.remove('d-none');
+                    alert('Row changes saved successfully!');
+                });
+            });
+        </script>
 
 </body>
+
 </html>

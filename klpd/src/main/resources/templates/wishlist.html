@@ -13,7 +13,7 @@
 
             <h4 class="mb-4">My Wishlist</h4>
             <div id="product-1" class="card mb-4 p-3" th:each="w : ${wishlist}">
-                <div class="row align-items-center d-flex" >
+                <div class="row align-items-center d-flex">
                     <div class="col-2">
                         <div th:if="${w.product.images != null and not #lists.isEmpty(w.product.images)}">
                             <img th:src="@{${w.product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
@@ -28,8 +28,9 @@
                             ★★★★☆
                         </div>
                         <div class="wishlist-price fw-bold" style="font-size: 1rem;">
-                            <span class="text-danger" style="font-size: 1.2rem;">₹<span th:text="${w.product.offerPrice}">699</span></span>
-                            <span class="text" style="color:#ccc;">₹<s  th:text="${w.product.mrp}">2,499</s></span>
+                            <span class="text-danger" style="font-size: 1.2rem;">₹<span
+                                    th:text="${w.product.offerPrice}">699</span></span>
+                            <span class="text" style="color:#ccc;">₹<s th:text="${w.product.mrp}">2,499</s></span>
                             <span class="text-success"><span th:text="${w.product.discount}">72</span>% off</span>
                         </div>
                     </div>
