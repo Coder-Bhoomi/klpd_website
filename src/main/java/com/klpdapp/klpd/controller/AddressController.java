@@ -22,6 +22,9 @@ import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.Login;
+import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.Services.AddressService;
+import com.klpdapp.klpd.model.Product;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -43,6 +46,9 @@ public class AddressController {
     
     @Autowired
     LoginRepo loginRepo;
+
+    @Autowired
+    AddressService addressService;
 
     @GetMapping
     public String ShowAddress(Model model, HttpSession session) {
@@ -75,17 +81,7 @@ public class AddressController {
                 Optional<Pincode> pincode = pincodeRepo.findByPincode((Integer) aDto.getPincode());
                 if (pincode.isPresent()) {
                     // Pincode exists, proceed to save the address
-                    Address a = new Address();
-                    a.setUser(user);
-                    a.setNumber(aDto.getNumber());
-                    a.setAddress(aDto.getAddress());
-                    a.setName(aDto.getName());
-                    a.setPincode(aDto.getPincode());
-                    a.setCity(aDto.getCity());
-                    a.setState(aDto.getState());
-                    a.setCountry(aDto.getCountry());
-                    a.setLandmark(aDto.getLandmark());
-                    addressrepo.save(a);
+                    addressService.addAddress(aDto, user);
                     return "redirect:/address";
                 } else {
                     redirectAttributes.addFlashAttribute("error", "Pincode not found. Please enter a valid pincode.");

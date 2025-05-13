@@ -16,8 +16,10 @@ import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.ProductRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.AddressRepo;
+import com.klpdapp.klpd.Services.AddressService;
 import com.klpdapp.klpd.Services.CartService;
 import com.klpdapp.klpd.Services.CouponService;
+import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.Services.CategoryService;
 import com.klpdapp.klpd.model.Cart;
 import com.klpdapp.klpd.model.Coupon;
@@ -57,11 +59,15 @@ public class CartController {
     @Autowired
     AddressRepo addRepo;
 
+    @Autowired
+    AddressService addressService;
+
     @GetMapping
     public String showCart(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             Login user = loginRepo.findById(userId).orElse(null);
+            
             List<Cart> cartItems = cartService.getCartItems(user);
             float subtotal = cartItems.stream()
                     .map(item -> item.getQuantity() * item.getProduct().getMrp())
@@ -264,6 +270,10 @@ public class CartController {
             CategoryService.addCategoriesToModel(model);
             List<Address> address = addRepo.findByUser(user);
             model.addAttribute("address", address);
+            //add new address dto to model to add new address
+                AddressDto aDto = new AddressDto();
+                aDto.setUserId(user.getUserId());
+                model.addAttribute("aDto", aDto);
             return "checkout";
         } else {
             return "redirect:/login";
@@ -280,7 +290,6 @@ public class CartController {
                 Login user = loginRepo.findById(userId).orElse(null);
                 Float couponDiscount = (Float) session.getAttribute("coupondiscount");
                 float discount = couponDiscount != null ? couponDiscount : 0.0f;
-            
                 cartService.checkout(user, paymentMode, selectedAddress, discount);
                 return "redirect:/";
             }
