@@ -155,99 +155,103 @@
 
     <form th:action="@{/cart/checkout}" method="post">
 
-    <!-- Address Section -->
-    <div class="card-dark mb-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="section-title">Select Delivery Address</h6>
-        <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
-          class="text-decoration-none text-accent fw-bold">+ ADD NEW</a>
-      </div>
-      <form th:action="@{/cart/checkout}" method="post">
+      <!-- Address Section -->
+      <div class="card-dark mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="section-title">Select Delivery Address</h6>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
+            class="text-decoration-none text-accent fw-bold">+ ADD NEW</a>
+        </div>
 
-      <!-- Address List -->
-      <div class="address-list">
-        
-        <div th:each="addr, iter : ${address}" class="mb-3 p-3 rounded"
-          style="background-color: #2a2a2a; border: 1px solid #444; cursor: pointer;"
-          th:classappend="${iter.index == 0} ? 'selected-address' : ''" onclick="selectAddress(this)">
-          <input type="radio" name="selectedAddress" th:value="${addr.addressId}" th:checked="${iter.index == 0}">
-          <div class="d-flex justify-content-between">
-            <div>
-              <span class="fw-bold" th:text="${addr.name}">John Doe</span>
+        <!-- Address List -->
+        <div class="address-list">
+
+          <div th:each="addr, iter : ${address}" class="mb-3 p-3 rounded"
+            style="background-color: #2a2a2a; border: 1px solid #444; cursor: pointer;"
+            th:classappend="${iter.index == 0} ? 'selected-address' : ''" onclick="selectAddress(this)">
+            <input type="radio" name="selectedAddress" th:value="${addr.addressId}" th:checked="${iter.index == 0}">
+            <div class="d-flex justify-content-between">
+              <div>
+                <span class="fw-bold" th:text="${addr.name}">John Doe</span>
+              </div>
             </div>
+            <div class="mt-1">
+              <span th:text="${addr.address}">614/P-62, Madhuban Vihar Colony</span>,
+              <span th:text="${addr.city}">Lucknow</span>,
+              <span th:text="${addr.state}">UP</span>,
+              <span th:text="${addr.pincode}">226020</span>
+            </div>
+            <div>Mobile: <span th:text="${addr.number}">+91 1234567890</span></div>
+
           </div>
-          <div class="mt-1">
-            <span th:text="${addr.address}">614/P-62, Madhuban Vihar Colony</span>,
-            <span th:text="${addr.city}">Lucknow</span>,
-            <span th:text="${addr.state}">UP</span>,
-            <span th:text="${addr.pincode}">226020</span>
-          </div>
-          <div>Mobile: <span th:text="${addr.number}">+91 1234567890</span></div>
-          
         </div>
       </div>
-    </div>
 
-    <div class="row">
+      <div class="row">
 
-      <div class="col-md-8">
-        <div class="row g-4">
-          <!-- Left: Product Details -->
-          <div class="col-md-12" th:each="cartItem : ${cart}">
-            <div class="card-dark d-flex gap-3 align-items-start">
-              <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
-              <div>
-                <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
-                <div class="mb-1">
-                  <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
-                  <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
-                </div>
-                <div class="discount mb-1"><span
-                    th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>
-                  % OFF - ₹<span
-                    th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293.00</span> Saved
-                </div>
-                <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
-                <div class="d-flex gap-3 align-items-center">
-                  <div class="quantity-box">Number of Items:
-                    <span th:text="${cartItem.quantity}">1</span>
+        <div class="col-md-8">
+          <div class="row g-4">
+            <!-- Left: Product Details -->
+            <div class="col-md-12" th:each="cartItem : ${cart}">
+              <div class="card-dark d-flex gap-3 align-items-start">
+                <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
+                <div>
+                  <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
+                  <div class="mb-1">
+                    <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
+                    <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
+                  </div>
+                  <div class="discount mb-1"><span
+                      th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>
+                    % OFF - ₹<span
+                      th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293.00</span>
+                    Saved
+                  </div>
+                  <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
+                  <div class="d-flex gap-3 align-items-center">
+                    <div class="quantity-box">Number of Items:
+                      <span th:text="${cartItem.quantity}">1</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Right: Summary -->
-      <div class="col-md-4">
-        <div class="offer-box mb-3" th:if="${coupon != null}">
-          <span class="fw-bold text-success"><span th:text="${coupon.couponName}"></span>- OFFER APPLIED</span><br>
-          Offer valid till <span th:text="${coupon.expireDate}"></span>
-        </div>
-        <div class="card-dark">
-          <div class="section-title">Price Summary (1 Item)</div>
-          <ul class="list-group price-summary">
-            <li class="d-flex justify-content-between">
-              <span>Subtotal</span>
-              <span>₹<span th:text="${subtotal}">₹792.00</span></span>
-            </li>
-            <li class="d-flex justify-content-between">
-              <span>Discount</span>
-              <span class="text-success">-₹<span th:text="${discount}">-₹293.00</span></span>
-            </li>
-            <li class="d-flex justify-content-between">
-              <span>Shipping</span>
-              <span class="text-success">FREE</span>
-            </li>
-            <li class="d-flex justify-content-between total-amount mt-3">
-              <span>Total</span>
-              <span>₹<span th:text="${total}">₹499.00</span></span>
-            </li>
-          </ul>
-          <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
+        <!-- Right: Summary -->
+        <div class="col-md-4">
+          <div class="offer-box mb-3" th:if="${coupon != null}">
+            <span class="fw-bold text-success"><span th:text="${coupon.couponName}"></span>- OFFER APPLIED</span><br>
+            Offer valid till <span th:text="${coupon.expireDate}"></span>
+          </div>
+          <div class="card-dark">
+            <div class="section-title">Price Summary (1 Item)</div>
+            <ul class="list-group price-summary">
+              <li class="d-flex justify-content-between">
+                <span>Subtotal</span>
+                <span>₹<span th:text="${subtotal}">₹792.00</span></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span>Discount</span>
+                <span class="text-success">-₹<span th:text="${discount}">-₹293.00</span></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span>Coupon discount</span>
+                <span class="text-success" th:if="${coupondiscount != null}">-₹<span th:text="${coupondiscount}">+₹0.00</span></span>
+                </li>
+              <li class="d-flex justify-content-between">
+                <span>Shipping</span>
+                <span class="text-success">FREE</span>
+              </li>
+              <li class="d-flex justify-content-between total-amount mt-3">
+                <span>Total</span>
+                <span>₹<span th:text="${total}">₹499.00</span></span>
+              </li>
+            </ul>
+            <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
 
-          <!-- Payment Dropdown -->
+            <!-- Payment Dropdown -->
 
             <div class="mt-4">
               <label for="payment-method" class="form-label text-accent">Choose Payment Method</label>
@@ -260,46 +264,66 @@
 
             <button class="btn btn-pay mt-4" type="submit">Proceed to Pay</button>
 
+          </div>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
   </div>
 
   <!-- Address Modal -->
   <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form>
+        <form id="addressForm" method="post" th:object="${aDto}" th:action="@{/address/add}">
           <div class="modal-header">
             <h5 class="modal-title" id="addressModalLabel">Update Delivery Address</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <div th:if="${error}" id="error-message" th:text="${error}" style="display:none;"></div>
             <div class="mb-3">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" placeholder="Your Name">
+              <label for="name" class="form-label text-light">Name</label>
+              <input type="text" class="form-control bg-dark text-light" id="name" placeholder="Enter Name"
+                th:field="*{name}" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Mobile Number</label>
-              <input type="text" class="form-control" placeholder="10-digit number">
+              <label for="phone" class="form-label text-light">Contact</label>
+              <input type="text" class="form-control bg-dark text-light" id="phone" placeholder="Enter Contact Number"
+                th:field="*{number}" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Pincode</label>
-              <input type="text" class="form-control" placeholder="e.g. 226020">
+              <label for="address" class="form-label text-light">Address</label>
+              <textarea class="form-control bg-dark text-light" id="address" placeholder="Enter your Address" rows="3"
+                th:field="*{address}" required></textarea>
             </div>
             <div class="mb-3">
-              <label class="form-label">Full Address</label>
-              <textarea class="form-control" rows="2" placeholder="House No., Street, Area"></textarea>
+              <label for="city" class="form-label text-light">City</label>
+              <input type="text" class="form-control bg-dark text-light" id="city" placeholder="Enter City"
+                th:field="*{city}" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">City</label>
-              <input type="text" class="form-control" placeholder="City">
+              <label for="state" class="form-label text-light">State</label>
+              <input type="text" class="form-control bg-dark text-light" id="state" placeholder="Enter State"
+                th:field="*{state}" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">State</label>
-              <input type="text" class="form-control" placeholder="State">
+              <label for="country" class="form-label text-light">Country</label>
+              <input type="text" class="form-control bg-dark text-light" id="country" placeholder="Enter Country"
+                th:field="*{country}" required>
             </div>
+            <div class="mb-3">
+              <label for="landmark" class="form-label text-light">Landmark</label>
+              <input type="text" class="form-control bg-dark text-light" id="landmark" placeholder="Enter Landmark"
+                th:field="*{landmark}" required>
+            </div>
+            <div class="mb-3">
+              <label for="pincode" class="form-label text-light">Pincode</label>
+              <input type="text" class="form-control bg-dark text-light" id="pincode" placeholder="Enter Pincode"
+                th:field="*{pincode}" required>
+            </div>
+            <input type="hidden" id="editIndex" value="-1">
+            <button type="submit" class="btn btn-primary w-100">Save Address</button>
+
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-pay">Save Address</button>

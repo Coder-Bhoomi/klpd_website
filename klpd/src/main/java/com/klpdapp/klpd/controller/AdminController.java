@@ -30,6 +30,8 @@ import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.CouponRepo;
 import com.klpdapp.klpd.Repository.ImagesRepo;
 import com.klpdapp.klpd.Repository.LoginRepo;
+import com.klpdapp.klpd.Repository.wholesalerRepo;
+import com.klpdapp.klpd.Repository.UserRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
 import com.klpdapp.klpd.Repository.OrderRepository;
 import com.klpdapp.klpd.Repository.ProductRepo;
@@ -49,6 +51,8 @@ import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Product;
 import com.klpdapp.klpd.model.SubCategory;
 import com.klpdapp.klpd.model.Segment;
+import com.klpdapp.klpd.model.User;
+import com.klpdapp.klpd.model.Wholeseller;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -91,7 +95,13 @@ public class AdminController {
 	AttrRepo attRepo;
 
 	@Autowired
-	LoginRepo loginRepo;                                                                                                                              
+	LoginRepo loginRepo;   
+	
+	@Autowired
+	wholesalerRepo wsRepo;
+
+	@Autowired
+	UserRepo userRepo;
 
 	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model, HttpSession session) {
@@ -112,7 +122,10 @@ public class AdminController {
 	public String ShowUsers(Model model) {
 		List<Login> users = loginRepo.findAll();
 		model.addAttribute("User", users);
-		
+		List<Wholeseller> wholesaler = wsRepo.findAll();
+		List<User> user = userRepo.findAll();
+		model.addAttribute("wholesaler",wholesaler);
+		model.addAttribute("customer",user);
 		return "admin/user";
 	}
 

@@ -49,7 +49,7 @@
                                         </td>
                                         <td> <span th:text="${order.product.prodName}"></span></td>
                                         <td class="editable" th:text="${order.prodQuantity}"></td>
-                                        <td class="editable" th:text="${order.product.offerPrice * order.prodQuantity}  "></td>
+                                        <td class="editable" th:text="${order.price}  "></td>
                                         <td class="editable" th:text="${order.order.paymentMode}"></td>
                                         <td class="editable"><span th:text="${order.order.address.address}"></span>
                                             <span th:text="${order.order.address.landmark}"></span>

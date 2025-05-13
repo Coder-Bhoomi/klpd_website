@@ -225,7 +225,7 @@ public class maincontroller {
                                 .should(f.match()
                                         .fields("prodName")
                                         .matching(query)
-                                        .boost(10.0f))
+                                        .boost(20.0f))
                                 .should(f.match()
                                         .fields("prodName", "brand")
                                         .matching(query)
@@ -474,7 +474,7 @@ public class maincontroller {
         }
         List<OrderItem> orderitem = orderitemrepo.findAllByOrder_User(loginuser);
         model.addAttribute("orderitems", orderitem);
-         return "order";
+        return "order";
     }
 
     @GetMapping("/notification")
@@ -514,5 +514,4 @@ public class maincontroller {
         return "/admin/login";
     }
 
-   
 }

@@ -61,8 +61,8 @@
                             </div>
                         </form>
 
-                            <small id="coupon-msg" class="text-success mt-1 d-block" style="display: none;">🎉 Coupon
-                                applied successfully!</small>
+                            <!--small id="coupon-msg" class="text-success mt-1 d-block" style="display: none;">🎉 Coupon
+                                applied successfully!</small-->
                         </div>
 
                         <h5 class="mb-3">Price Summary</h5>
@@ -75,7 +75,10 @@
                                 <span>Discount</span>
                                 <span class="text-success" >-₹<span th:text="${discount}">-₹293.00</span></span>
                               </li>
-                              
+                              <li class="d-flex justify-content-between">
+                                <span>Coupon discount</span>
+                                <span class="text-success" th:if="${coupondiscount != null}">-₹<span th:text="${coupondiscount}">+₹0.00</span></span>
+                                </li>
                               <li class="d-flex justify-content-between">
                                 <span>Shipping</span>
                                 <span class="text-success">FREE</span>
@@ -86,8 +89,19 @@
                               </li>
                         </ul>
                         <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
-
-                        <a href="/cart/checkout" class="btn btn-checkout text-decoration-none mt-3"><span>Checkout</span></a>
+                        <div th:if="${usertype == 'Wholesaler'}">
+                            <div th:if="${total <= 20000}" class="btn btn-checkout text-decoration-none mt-3">
+                                <span>Cart Value should be more than 20000</span>
+                            </div>
+                            <a th:unless="${total <= 20000}" href="/cart/checkout" class="btn btn-checkout text-decoration-none mt-3">
+                                <span>Checkout</span>
+                            </a>
+                        </div>
+                        <div th:unless="${usertype == 'Wholesaler'}">
+                            <a href="/cart/checkout" class="btn btn-checkout text-decoration-none mt-3">
+                                <span>Checkout</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

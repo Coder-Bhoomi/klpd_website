@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.klpdapp.klpd.Repository.CartRepo;
 import com.klpdapp.klpd.Repository.OrderItemRepository;
@@ -51,12 +52,10 @@ public class CartService {
         return cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
     }
 
-    public float calculateTax(float subtotal) {
-        return subtotal * 0.10f;
-    }
+    
 
-    public int calculateTotal(float subtotal, float tax, float discount) {
-        return (int) (subtotal + tax - discount);
+    public int calculateTotal(float subtotal, float discount) {
+        return (int) (subtotal  - discount);
     }
 
 
@@ -64,14 +63,18 @@ public class CartService {
         cartRepository.deleteById(cartId);
     }
 
-    public void checkout(Login user, String paymentMode, int AddressId) {
+    public void checkout(Login user, String paymentMode, int AddressId,float discount) {
         System.out.println("inside cartservice");
         List<Cart> carts = cartRepository.findByUser(user);
         float subtotal = calculateSubtotal(carts);
-        float discount = 0.0f;
-        float tax = calculateTax(subtotal);
-        int total = calculateTotal(subtotal, tax, discount);
+        System.out.println("subtotal: " + subtotal);
+        
+        System.out.println("discount: " + discount);
+        int total = calculateTotal(subtotal, discount);
+        System.out.println("total: " + total);
         Address address = addRepo.findById(AddressId).orElse(null);
+        float discountpercentage = (discount / subtotal) *100;
+        System.out.println("discount percentage: " + discountpercentage);
 
         Order order = new Order();
         order.setUser(user);
@@ -88,7 +91,10 @@ public class CartService {
             orderItem.setProdQuantity(cart.getQuantity());
             orderItem.setProduct(cart.getProduct());
             orderItem.setStatus("Pending");
+            orderItem.setPrice(cart.getProductTotal() - (cart.getProductTotal() * discountpercentage / 100));
+
             orderitemrepo.save(orderItem);
+
             
             Product product = productService.findById(cart.getProduct().getPid());
             productService.incrementSales(product.getPid());

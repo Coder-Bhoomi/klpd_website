@@ -63,28 +63,32 @@ public class CartController {
             Integer userId = (Integer) session.getAttribute("userid");
             Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartService.getCartItems(user);
-            float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
-            float discount = 0.0f;
-            float total = subtotal- discount;
+            float subtotal = cartItems.stream()
+                    .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                    .reduce(0.0f, Float::sum);
+            float discount = cartItems.stream()
+                    .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                    .reduce(0.0f, Float::sum)
+                    - cartItems.stream()
+                            .map(item -> item.getProductTotal())
+                            .reduce(0.0f, Float::sum);
+            float coupondiscount = 0.0f;
+            float total = subtotal - coupondiscount - discount;
             Coupon appliedCoupon = (Coupon) session.getAttribute("coupon");
-            Float appliedDiscount = (Float) session.getAttribute("discount");
+            Float appliedcoupondiscount = (Float) session.getAttribute("coupondiscount");
             Float appliedTotal = (Float) session.getAttribute("total");
-            Float appliedsubtotal = (Float) session.getAttribute("subtotal");
-            if (appliedDiscount != null) {
-                discount = appliedDiscount;
+            if (appliedcoupondiscount != null) {
+                coupondiscount = appliedcoupondiscount;
                 total = appliedTotal;
-                subtotal = appliedsubtotal;
                 model.addAttribute("coupon", appliedCoupon);
-                if (appliedCoupon != null) {
-                    System.out.println("Coupon applied:,/,/,/, " + appliedCoupon.getCouponName());
-                }
             }
             model.addAttribute("cart", cartItems);
             model.addAttribute("subtotal", subtotal);
             model.addAttribute("discount", discount);
+            model.addAttribute("coupondiscount", coupondiscount);
             model.addAttribute("total", total);
             CategoryService.addCategoriesToModel(model);
-
+            model.addAttribute("usertype", user.getUserType());
             return "cart";
         } else {
             return "redirect:/login";
@@ -97,20 +101,31 @@ public class CartController {
         Integer userId = (Integer) session.getAttribute("userid");
         Login user = loginRepo.findById(userId).orElse(null);
         List<Cart> cartItems = cartService.getCartItems(user);
-        float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
+        float subtotal = cartItems.stream()
+                .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                .reduce(0.0f, Float::sum);
+        float discount = cartItems.stream()
+                .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                .reduce(0.0f, Float::sum)
+                - cartItems.stream()
+                        .map(item -> item.getProductTotal())
+                        .reduce(0.0f, Float::sum);
         int items = cartItems.size();
         if (coupon.getMinQuantity() <= items & coupon.getMinCartValue() <= subtotal) {
-            float discount = 0.0f;
-            float discountbypercentage = (subtotal * coupon.getDiscountRate()) / 100;
+            float coupondiscount = 0.0f;
+            float coupondiscountbypercentage = (cartItems.stream()
+                    .map(item -> item.getProductTotal())
+                    .reduce(0.0f, Float::sum) * coupon.getDiscountRate()) / 100;
             if (coupon.getUptoAmount() > 0) {
-                discount = Math.min(discountbypercentage, coupon.getUptoAmount());
+                coupondiscount = Math.min(coupondiscountbypercentage, coupon.getUptoAmount());
             } else {
-                discount = discountbypercentage;
+                coupondiscount = coupondiscountbypercentage;
             }
-            float total = subtotal - discount;
+            float total = subtotal - coupondiscount - discount;
             session.setAttribute("cart", cartItems);
             session.setAttribute("subtotal", subtotal);
             session.setAttribute("discount", discount);
+            session.setAttribute("coupondiscount", coupondiscount);
             session.setAttribute("total", total);
             session.setAttribute("coupon", coupon);
         } else {
@@ -121,7 +136,8 @@ public class CartController {
 
     @PostMapping("/update")
     public String updateCart(HttpServletRequest request, @RequestParam Integer cartId,
-            @RequestParam(required = false) String action, @RequestParam Integer quantity, Model model, HttpSession session) {
+            @RequestParam(required = false) String action, @RequestParam Integer quantity, Model model,
+            HttpSession session) {
         Cart cartItem = cartRepository.findById(cartId).orElse(null);
         if (cartItem != null) {
             if ("minus".equals(action) && cartItem.getQuantity() > 1) {
@@ -133,22 +149,31 @@ public class CartController {
             }
             Product Product = cartItem.getProduct();
             cartItem.setProductTotal(
-                    cartItem.getQuantity() * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
+                    cartItem.getQuantity()
+                            * (Product.getOfferPrice() != null ? Product.getOfferPrice() : Product.getMrp()));
             cartRepository.save(cartItem);
             model.addAttribute("message", "Cart updated successfully.");
         }
         Integer userId = (Integer) session.getAttribute("userid");
         Login user = loginRepo.findById(userId).orElse(null);
         List<Cart> cartItems = cartService.getCartItems(user);
-        // Calculate subtotal, discount, tax, and total
-        float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
-        System.out.println(subtotal);
-            float discount = 0.0f;
-            float total = subtotal - discount;
-            model.addAttribute("cart", cartItems);
-            model.addAttribute("subtotal", subtotal);
-            model.addAttribute("discount", discount);
-            model.addAttribute("total", total);
+        // Calculate subtotal, coupondiscount, tax, and total
+        float subtotal = cartItems.stream()
+                    .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                    .reduce(0.0f, Float::sum);
+            float discount = cartItems.stream()
+                    .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                    .reduce(0.0f, Float::sum)
+                    - cartItems.stream()
+                            .map(item -> item.getProductTotal())
+                            .reduce(0.0f, Float::sum);
+            float coupondiscount = 0.0f;
+            float total = subtotal - coupondiscount - discount;
+        model.addAttribute("cart", cartItems);
+        model.addAttribute("subtotal", subtotal);
+        model.addAttribute("discount", discount);
+        model.addAttribute("coupondiscount", coupondiscount);
+        model.addAttribute("total", total);
         String referer = request.getHeader("Referer");
         return "redirect:" + referer;
     }
@@ -181,17 +206,12 @@ public class CartController {
                     Cart cart = new Cart();
                     cart.setUser(user);
                     cart.setProduct(product);
-                    if (user.getUserType().equals("Wholesaler")) {
-                        cart.setQuantity(10);
-                    } else {
-                        cart.setQuantity(quantity);
-                    }
+                    cart.setQuantity(quantity);
+
                     float price = (product.getOfferPrice() != null) ? product.getOfferPrice() : product.getMrp();
-                    if (user.getUserType().equals("Wholesaler")) {
-                        cart.setProductTotal(price * 10);
-                    } else {
-                        cart.setProductTotal(price * quantity);
-                    }                    
+
+                    cart.setProductTotal(price * quantity);
+
                     cartRepository.save(cart);
                 }
 
@@ -213,24 +233,33 @@ public class CartController {
             Integer userId = (Integer) session.getAttribute("userid");
             Login user = loginRepo.findById(userId).orElse(null);
             List<Cart> cartItems = cartService.getCartItems(user);
-            float subtotal = cartItems.stream().map(item -> item.getProductTotal()).reduce(0.0f, Float::sum);
-            float discount = 0.0f;
-            float total = subtotal - discount;
+            float subtotal = cartItems.stream()
+                    .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                    .reduce(0.0f, Float::sum);
+            float discount = cartItems.stream()
+                    .map(item -> item.getQuantity() * item.getProduct().getMrp())
+                    .reduce(0.0f, Float::sum)
+                    - cartItems.stream()
+                            .map(item -> item.getProductTotal())
+                            .reduce(0.0f, Float::sum);
+            float coupondiscount = 0.0f;
+            float total = subtotal - coupondiscount - discount;
             Coupon appliedCoupon = (Coupon) session.getAttribute("coupon");
-            Float appliedDiscount = (Float) session.getAttribute("discount");
+            Float appliedcoupondiscount = (Float) session.getAttribute("coupondiscount");
             Float appliedTotal = (Float) session.getAttribute("total");
             Float appliedsubtotal = (Float) session.getAttribute("subtotal");
-            if (appliedDiscount != null) {
-                discount = appliedDiscount;
+            if (appliedcoupondiscount != null) {
+                coupondiscount = appliedcoupondiscount;
                 total = appliedTotal;
                 subtotal = appliedsubtotal;
-                if( appliedCoupon != null) {
+                if (appliedCoupon != null) {
                     model.addAttribute("coupon", appliedCoupon);
                 }
             }
             model.addAttribute("cart", cartItems);
             model.addAttribute("subtotal", subtotal);
             model.addAttribute("discount", discount);
+            model.addAttribute("coupondiscount", coupondiscount);
             model.addAttribute("total", total);
             CategoryService.addCategoriesToModel(model);
             List<Address> address = addRepo.findByUser(user);
@@ -243,13 +272,16 @@ public class CartController {
 
     @PostMapping("/checkout")
     public String Checkout(HttpSession session, HttpServletResponse response,
-            @RequestParam String paymentMode,@RequestParam int selectedAddress) {
+            @RequestParam String paymentMode, @RequestParam int selectedAddress) {
         try {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             if (session.getAttribute("userid") != null) {
                 Integer userId = (Integer) session.getAttribute("userid");
                 Login user = loginRepo.findById(userId).orElse(null);
-                cartService.checkout(user,paymentMode,selectedAddress);
+                Float couponDiscount = (Float) session.getAttribute("coupondiscount");
+                float discount = couponDiscount != null ? couponDiscount : 0.0f;
+            
+                cartService.checkout(user, paymentMode, selectedAddress, discount);
                 return "redirect:/";
             }
             return "redirect:/";

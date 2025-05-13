@@ -24,6 +24,17 @@ public class OrderItem {
     @Column(length= 80)
     private String status;
 
+    @Column( length = 20)
+    private Float price;
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
     public String getStatus() {
         return status;
     }

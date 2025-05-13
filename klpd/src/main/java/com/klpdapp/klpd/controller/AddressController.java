@@ -81,7 +81,10 @@ public class AddressController {
                     a.setAddress(aDto.getAddress());
                     a.setName(aDto.getName());
                     a.setPincode(aDto.getPincode());
-
+                    a.setCity(aDto.getCity());
+                    a.setState(aDto.getState());
+                    a.setCountry(aDto.getCountry());
+                    a.setLandmark(aDto.getLandmark());
                     addressrepo.save(a);
                     return "redirect:/address";
                 } else {
