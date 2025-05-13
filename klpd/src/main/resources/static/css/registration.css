@@ -59,15 +59,17 @@ form {
 .input-box2 {
     position: relative;
     margin: 30px 0;
-    width: 90%; /* Ensures consistent width for the input box */
+    width: 90%;
+    /* Ensures consistent width for the input box */
     margin-left: 20px;
     border: 2px solid white;
     border-radius: 10px;
 }
 
 .input-box2 input {
-    width: 100%; 
-    padding: 13px 20px 13px 20px; /* Equal padding on both sides */
+    width: 100%;
+    padding: 13px 20px 13px 20px;
+    /* Equal padding on both sides */
     background: #eee;
     border-radius: 8px;
     border: 1px solid white;
@@ -79,12 +81,15 @@ form {
 
 .input-box2 i {
     position: absolute;
-    right: 15px; /* Positions icon inside the text box */
-    top: 50%; /* Vertically centers the icon */
+    right: 15px;
+    /* Positions icon inside the text box */
+    top: 50%;
+    /* Vertically centers the icon */
     transform: translateY(-50%);
     font-size: 20px;
     color: #888;
-    pointer-events: none; /* Prevents icon from interfering with input clicks */
+    pointer-events: none;
+    /* Prevents icon from interfering with input clicks */
 }
 
 .input-box input::placeholder {

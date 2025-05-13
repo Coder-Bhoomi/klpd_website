@@ -16,31 +16,39 @@
                 <!-- Left: Cart Items -->
                 <div class="col-md-8">
                     <!-- Product Item -->
-                    <div class="card-dark d-flex justify-content-between align-items-center mb-3" th:each="cartItem : ${cart}">
+                    <div class="card-dark d-flex justify-content-between align-items-center mb-3"
+                        th:each="cartItem : ${cart}">
                         <div class="d-flex gap-3 align-items-center">
                             <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
                             <div>
                                 <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
                                 <div class="mb-1">
                                     <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
-                                    <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
+                                    <span class="price-original"
+                                        th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
                                 </div>
-                                <div class="discount">You save ₹<span th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293</span>
-                                    (<span th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>)%</div>
+                                <div class="discount">You save ₹<span
+                                        th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293</span>
+                                    (<span
+                                        th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>)%
+                                </div>
                                 <div class="mt-2 quantity-box">
-                                    
-                                <form th:action="@{/cart/update}" method="post" >
+
+                                    <form th:action="@{/cart/update}" method="post">
                                         <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                        <button type="submit" class="fas fa-minus btn text-white" name="action" value="minus"></button>
+                                        <button type="submit" class="fas fa-minus btn text-white" name="action"
+                                            value="minus"></button>
                                         <input type="hidden" name="quantity" th:value="${cartItem.quantity}" min="1"
                                             id="quantity-display" class="rounded ">
                                         <span th:text="${cartItem.quantity}">1</span>
-                                        <button type="submit" class="btn fas fa-plus text-white" name="action" value="plus"></button>
+                                        <button type="submit" class="btn fas fa-plus text-white" name="action"
+                                            value="plus"></button>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <a class="btn-remove text-decoration-none" th:href="@{cart/delete(id=${cartItem.cartId})}"><i class="fas fa-trash-alt"> </i>  Remove</a>
+                        <a class="btn-remove text-decoration-none" th:href="@{cart/delete(id=${cartItem.cartId})}"><i
+                                class="fas fa-trash-alt"> </i> Remove</a>
                     </div>
 
                     <!-- You can duplicate the above block for more products -->
@@ -54,12 +62,13 @@
                             <label for="coupon" class="form-label">Have a Coupon Code?</label>
                             <form th:action="@{/cart/apply-coupon}" method="post">
 
-                            <div class="input-group">
-                                <input type="text" id="coupon" class="form-control bg-dark text-white border-secondary"  name="couponCode"
-                                    placeholder="Enter coupon code">
-                                <button class="btn btn-outline-warning" type="submit" >Apply</button>
-                            </div>
-                        </form>
+                                <div class="input-group">
+                                    <input type="text" id="coupon"
+                                        class="form-control bg-dark text-white border-secondary" name="couponCode"
+                                        placeholder="Enter coupon code">
+                                    <button class="btn btn-outline-warning" type="submit">Apply</button>
+                                </div>
+                            </form>
 
                             <!--small id="coupon-msg" class="text-success mt-1 d-block" style="display: none;">🎉 Coupon
                                 applied successfully!</small-->
@@ -70,8 +79,8 @@
                             <li class="d-flex justify-content-between">
                                 <span>Subtotal</span>
                                 <span>₹<span th:text="${subtotal}">₹792.00</span></span>
-                              </li>
-                              <li class="d-flex justify-content-between">
+                            </li>
+                            <li class="d-flex justify-content-between">
                                 <span>Discount</span>
                                 <span class="text-success" >-₹<span th:text="${discount}">-₹293.00</span></span>
                               </li>
@@ -82,11 +91,11 @@
                               <li class="d-flex justify-content-between">
                                 <span>Shipping</span>
                                 <span class="text-success">FREE</span>
-                              </li>
-                              <li class="d-flex justify-content-between total-amount mt-3">
+                            </li>
+                            <li class="d-flex justify-content-between total-amount mt-3">
                                 <span>Total</span>
                                 <span>₹<span th:text="${total}">₹499.00</span></span>
-                              </li>
+                            </li>
                         </ul>
                         <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
                         <div th:if="${usertype == 'Wholesaler'}">

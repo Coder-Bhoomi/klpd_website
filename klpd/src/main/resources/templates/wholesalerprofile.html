@@ -22,16 +22,16 @@
                         <label for="firstName" class="form-label">Wholesaler Name</label>
                         <div class="col-md-12">
                             <input type="text" class="form-control bg-dark text-light" th:field="*{name}"
-                                id="WholesalerName" name="firstName" placeholder="WholesalerName name" aria-label="First name"
-                                readonly>
+                                id="WholesalerName" name="firstName" placeholder="WholesalerName name"
+                                aria-label="First name" readonly>
                         </div>
                     </div>
                 </div>
                 <div class="mb-5">
                     <label for="companyName" class="form-label">Company Name</label>
                     <div>
-                        <input type="text" class="form-control bg-dark text-light" th:field="*{companyName}" id="companyName"
-                            name="companyName" placeholder="Company Name" readonly>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{companyName}"
+                            id="companyName" name="companyName" placeholder="Company Name" readonly>
                     </div>
                 </div>
                 <div class="mb-5">
@@ -44,15 +44,15 @@
                 <div class="mb-5">
                     <label for="officeAddress" class="form-label">Official Address</label>
                     <div>
-                        <input type="text" class="form-control bg-dark text-light" th:field="*{officeAddress}" id="officeAddress"
-                            name="officeAddress" placeholder="Official Address" readonly>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{officeAddress}"
+                            id="officeAddress" name="officeAddress" placeholder="Official Address" readonly>
                     </div>
                 </div>
                 <div class="mb-5">
                     <label for="shippingAddress" class="form-label">Shipping Address</label>
                     <div>
-                        <input type="text" class="form-control bg-dark text-light" th:field="*{shippingAddress}" id="shippingAddress"
-                            name="shippingAddress" placeholder="Shipping Address" readonly>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{shippingAddress}"
+                            id="shippingAddress" name="shippingAddress" placeholder="Shipping Address" readonly>
                     </div>
                 </div>
                 <div class="mb-5">
@@ -69,12 +69,13 @@
                             id="contactNumber" name="contactNumber" placeholder="Contact number" readonly>
                     </div>
                 </div>
-                <div class = "mb-5">
+                <div class="mb-5">
                     <label for="OrganizationNumber" class="form-label">Organization Number</label>
                     <div>
                         <input type="text" class="form-control bg-dark text-light" th:field="*{organisationNumber}"
-                            id="OrganizationNumber" name="OrganizationNumber" placeholder="Organization number" readonly>
-                </div>
+                            id="OrganizationNumber" name="OrganizationNumber" placeholder="Organization number"
+                            readonly>
+                    </div>
             </form>
         </div>
         <script>
@@ -90,7 +91,7 @@
 
                 // Toggle read-only state for input fields and disable radio buttons when not editing
                 formFields.forEach((field) => {
-                        field.readOnly = !isEditing; // Enable/Disable other fields
+                    field.readOnly = !isEditing; // Enable/Disable other fields
                 });
 
                 // If in Save mode, submit the form programmatically

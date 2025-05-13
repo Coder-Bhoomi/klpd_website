@@ -20,11 +20,11 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="card-header">
-						<h5 class="d-inline">Segment List  </h5>
+						<h5 class="d-inline">Segment List </h5>
 						<button type="button" class="my-3 rounded-pill btn btn-primary mx-5" data-bs-toggle="modal"
-                                    data-bs-target="#addsegmentModal">
-                                    Add New Segment
-                                </button>
+							data-bs-target="#addsegmentModal">
+							Add New Segment
+						</button>
 					</div>
 					<div class="card-body">
 						<div class="table-container">
@@ -39,7 +39,8 @@
 								</thead>
 								<tbody>
 									<tr th:each="seg : ${segment}">
-										<form th:action="@{/admin/segment/update}" enctype="multipart/form-data" method="post">
+										<form th:action="@{/admin/segment/update}" enctype="multipart/form-data"
+											method="post">
 											<input type="hidden" name="segmentId" th:value="${seg.segmentId}" />
 
 											<td th:text="${seg.segmentId}"></td>
@@ -49,10 +50,15 @@
 													th:value="${seg.segmentName}" />
 											</td>
 											<td>
-												<img th:src ="@{'/SegmentImages/' + ${seg.segmentImage}}" class="d-inline" alt="segment image" style="width: 100px; height: 100px;">
+												<img th:src="@{'/SegmentImages/' + ${seg.segmentImage}}"
+													class="d-inline" alt="segment image"
+													style="width: 100px; height: 100px;">
 												<input type="file" class="mx-5 d-none " name="newSegmentImage">
-												<button type="button" class="btn btn-primary btn-sm replace-btn rounded-pill mx-5">Replace</button>
-												<button type="submit" class="btn btn-success btn-sm save-image-btn d-none">Save</button>											</td>
+												<button type="button"
+													class="btn btn-primary btn-sm replace-btn rounded-pill mx-5">Replace</button>
+												<button type="submit"
+													class="btn btn-success btn-sm save-image-btn d-none">Save</button>
+											</td>
 											<td>
 												<button class="btn btn-warning btn-sm edit-btn">Edit</button>
 												<button type="submit"
@@ -68,75 +74,75 @@
 			</div>
 		</div>
 		<div class="modal fade" id="addsegmentModal" tabindex="-1" aria-labelledby="segmentLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
 					<form th:action="@{/admin/addsegment}" method="post" enctype="multipart/form-data">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="segmentLabel">Add Segment</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="segmentname" class="form-label">Segment Name</label>
-                        <input type="text" class="form-control bg-grey rounded p-2 text-light" id="segmentname"
-                            name="segmentName" required>
-						<label for="segmentImage" class="form-label">Image</label>
-						<input type="file" class="form-control bg-grey rounded p-2 text-light" id="segmentImage"
-							name="segmentImage" required>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-		<script>
-			// For edit button
-			document.querySelectorAll('.edit-btn').forEach((editBtn) => {
-				editBtn.addEventListener('click', (event) => {
-					event.preventDefault();
-					const row = editBtn.closest('tr');
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="segmentLabel">Add Segment</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<label for="segmentname" class="form-label">Segment Name</label>
+							<input type="text" class="form-control bg-grey rounded p-2 text-light" id="segmentname"
+								name="segmentName" required>
+							<label for="segmentImage" class="form-label">Image</label>
+							<input type="file" class="form-control bg-grey rounded p-2 text-light" id="segmentImage"
+								name="segmentImage" required>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary">Save changes</button>
+						</div>
+				</div>
+			</div>
+			<script>
+				// For edit button
+				document.querySelectorAll('.edit-btn').forEach((editBtn) => {
+					editBtn.addEventListener('click', (event) => {
+						event.preventDefault();
+						const row = editBtn.closest('tr');
 
-					row.querySelector('.segment-name').classList.add('d-none');
-					row.querySelector('input[name="segmentName"]').classList.remove('d-none');
+						row.querySelector('.segment-name').classList.add('d-none');
+						row.querySelector('input[name="segmentName"]').classList.remove('d-none');
 
-					editBtn.classList.add('d-none');
-					row.querySelector('.save-btn').classList.remove('d-none');
+						editBtn.classList.add('d-none');
+						row.querySelector('.save-btn').classList.remove('d-none');
+					});
 				});
-			});
 
-			// For save button
-			document.querySelectorAll('.save-btn').forEach((saveBtn) => {
-				saveBtn.addEventListener('click', (event) => {
-					event.preventDefault();
+				// For save button
+				document.querySelectorAll('.save-btn').forEach((saveBtn) => {
+					saveBtn.addEventListener('click', (event) => {
+						event.preventDefault();
 
-					const row = saveBtn.closest('tr');
+						const row = saveBtn.closest('tr');
 
-					const inputField = row.querySelector('input[name="segmentName"]');
-					const updatedValue = inputField.value;
+						const inputField = row.querySelector('input[name="segmentName"]');
+						const updatedValue = inputField.value;
 
-					row.querySelector('.segment-name').textContent = updatedValue;
-					row.querySelector('.segment-name').classList.remove('d-none');
-					inputField.classList.add('d-none');
+						row.querySelector('.segment-name').textContent = updatedValue;
+						row.querySelector('.segment-name').classList.remove('d-none');
+						inputField.classList.add('d-none');
 
-					saveBtn.classList.add('d-none');
-					row.querySelector('.edit-btn').classList.remove('d-none');
+						saveBtn.classList.add('d-none');
+						row.querySelector('.edit-btn').classList.remove('d-none');
 
-					alert('Changes saved successfully!');
+						alert('Changes saved successfully!');
+					});
 				});
-			});
-    document.querySelectorAll('.replace-btn').forEach((replaceBtn) => {
-        replaceBtn.addEventListener('click', (event) => {
-            event.preventDefault();
-            const row = replaceBtn.closest('tr');
-            
-            row.querySelector('input[name="newSegmentImage"]').classList.remove('d-none');
-            replaceBtn.classList.add('d-none');
-            row.querySelector('.save-image-btn').classList.remove('d-none');
-        });
-    });
+				document.querySelectorAll('.replace-btn').forEach((replaceBtn) => {
+					replaceBtn.addEventListener('click', (event) => {
+						event.preventDefault();
+						const row = replaceBtn.closest('tr');
 
-		</script>
-		
+						row.querySelector('input[name="newSegmentImage"]').classList.remove('d-none');
+						replaceBtn.classList.add('d-none');
+						row.querySelector('.save-image-btn').classList.remove('d-none');
+					});
+				});
+
+			</script>
+
 	</main>
 </body>
 

@@ -9,7 +9,7 @@
     border-radius: 5px;
 }
 
-.sidebar .nav-link + .collapse .nav-link {
+.sidebar .nav-link+.collapse .nav-link {
     margin-left: 45px;
 }
 
@@ -25,12 +25,12 @@
     border-color: #444 !important;
 }
 
-.card{
+.card {
     border: 1px solid #121212;
     background-color: #1f1f1f;
 }
 
-.card-title{
+.card-title {
     color: green;
 }
 
@@ -50,6 +50,6 @@
     padding: 10%;
 }
 
-.wishlist-rating{
+.wishlist-rating {
     color: gold;
 }

@@ -95,7 +95,8 @@
                             <div id="attributesContainer">
                                 <!-- Existing attributes -->
                                 <div class="attribute-row mb-2">
-                                    <select class="form-select bg-grey text-light col-sm-5" name="attributes[0].attributeName">
+                                    <select class="form-select bg-grey text-light col-sm-5"
+                                        name="attributes[0].attributeName">
                                         <option value="">Select Attribute</option>
                                         <option th:each="attr : ${attributes}" th:value="${attr}" th:text="${attr}">
                                         </option>

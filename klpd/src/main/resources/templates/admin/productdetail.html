@@ -146,15 +146,15 @@
                                         <input class="d-none" type="file" name="PrimaryImage" id="primaryImageInput"
                                             onchange="previewPrimaryImage(event)" />
                                     </label>
-    
-                                        <!-- Display Primary Image with Replace Button -->
-                                        <div class="position-relative text-center mt-2" style="display: none;"
-                                            id="primaryImageContainer">
-                                            <img id="primaryImagePreview" class="border rounded w-100" height="200" />
-                                            <button id="replaceButton"
-                                                class="btn btn-dark position-absolute top-50 start-50 translate-middle"
-                                                style="display: none;" onclick="replacePrimaryImage()">Replace</button>
-                                        </div>
+
+                                    <!-- Display Primary Image with Replace Button -->
+                                    <div class="position-relative text-center mt-2" style="display: none;"
+                                        id="primaryImageContainer">
+                                        <img id="primaryImagePreview" class="border rounded w-100" height="200" />
+                                        <button id="replaceButton"
+                                            class="btn btn-dark position-absolute top-50 start-50 translate-middle"
+                                            style="display: none;" onclick="replacePrimaryImage()">Replace</button>
+                                    </div>
                                     <div class="position-relative text-center mt-2" id="primaryImageContainer2">
                                         <img id="primaryImagePreview2" th:src="@{${product.images[0].imageUrl}}"
                                             class="border img-fluid mb-3 rounded w-100" height="200" />
@@ -275,11 +275,11 @@
                 document.getElementById("editButton").addAttribute("disabled");
             });
 
-            document.getElementById("primaryImageContainer","primaryImageContainer2").addEventListener("mouseenter", function () {
+            document.getElementById("primaryImageContainer", "primaryImageContainer2").addEventListener("mouseenter", function () {
                 document.getElementById("replaceButton").style.display = "block";
             });
 
-            document.getElementById("primaryImageContainer","primaryImageContainer2").addEventListener("mouseleave", function () {
+            document.getElementById("primaryImageContainer", "primaryImageContainer2").addEventListener("mouseleave", function () {
                 document.getElementById("replaceButton").style.display = "none";
             });
             function previewPrimaryImage(event) {

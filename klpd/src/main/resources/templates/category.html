@@ -20,7 +20,8 @@
 
                 <!-- Clear Filter Button -->
                 <div class="d-flex align-items-center">
-                    <a class="btn p-2 text-secondary" th:href="@{/products(categoryId=${param.categoryId}, query=${param.query})}">Clear Filters</a>
+                    <a class="btn p-2 text-secondary"
+                        th:href="@{/products(categoryId=${param.categoryId}, query=${param.query})}">Clear Filters</a>
                     <div class="vr mx-3"></div>
                 </div>
 
@@ -226,7 +227,8 @@
                                 th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
                             </button>
                         </form>
-                        <a th:href="@{/product/{pid}(pid=${product.pid})}" style="text-decoration: none; color: inherit;">
+                        <a th:href="@{/product/{pid}(pid=${product.pid})}"
+                            style="text-decoration: none; color: inherit;">
                             <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
                                 <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
                             </div>
@@ -246,7 +248,8 @@
                             <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
                                 method="post">
                                 <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
-                                <button type="submit" class="btn minus text-white" name="action" value="minus">-</button>
+                                <button type="submit" class="btn minus text-white" name="action"
+                                    value="minus">-</button>
                                 <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
                                     id="quantity-display" class="rounded">
                                 <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
