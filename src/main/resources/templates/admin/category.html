@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="admin/adminbase :: layout (~{::main})">
+
+<head>
+
+</head>
+
+<body>
+	<!-- Main Content -->
+	<main class="main-content">
+
+		<!-- Top Navbar -->
+		<div class="top-navbar d-flex justify-content-between align-items-center">
+			<h4>Welcome, Admin</h4>
+			<button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+		</div>
+
+		<!-- Product List Section -->
+		<div class="row mt-4">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="d-inline">Category List</h5>
+						<button type="button" class="my-3 rounded-pill btn btn-primary mx-5" data-bs-toggle="modal"
+							data-bs-target="#addcategoryModal">
+							Add New Category
+						</button>
+					</div>
+					<div class="card-body">
+						<div class="table-container">
+							<table class="table table-bordered table-dark" id="horizontalTable">
+								<thead>
+									<tr>
+										<th scope="col">Category ID</th>
+										<th scope="col">Category Name</th>
+										<th scope="col">Segment Name</th>
+										<th scope="col">Category Image</th>
+										<th scope="col">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="cat : ${category}">
+										<form th:action="@{/admin/category/update}" enctype="multipart/form-data"
+											method="post">
+											<input type="hidden" name="categoryId" th:value="${cat.categoryId}" />
+
+											<td th:text="${cat.categoryId}"></td>
+											<td>
+												<span class="category-name" th:text="${cat.categoryName}"></span>
+												<input type="text" class="form-control d-none" name="categoryName"
+													th:value="${cat.categoryName}" />
+											</td>
+											<td>
+												<span class="segment-name" th:text="${cat.segment.segmentName}"></span>
+												<select class="form-control d-none" name="segmentName">
+													<option th:each="seg : ${segments}" th:value="${seg.segmentId}"
+														th:text="${seg.segmentName}"
+														th:selected="${seg.segmentId == cat.segment.segmentId}">
+													</option>
+												</select>
+
+											</td>
+											<td>
+												<image th:src="@{'/CategoryImages/' + ${cat.categoryImage}}"
+													alt="category image" style="width: 100px; height: 100px;">
+													<input type="file" class="mx-5 d-none" name="newCategoryImage">
+													<button type="button"
+														class="btn btn-primary btn-sm replace-btn rounded-pill">Replace</button>
+													<button type="submit"
+														class="btn btn-success btn-sm save-image-btn d-none">Save</button>
+											</td>
+											<td>
+												<button class="btn btn-warning btn-sm edit-btn">Edit</button>
+												<button type="submit"
+													class="btn btn-primary btn-sm save-btn d-none">Save</button>
+											</td>
+										</form>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="addcategoryModal" tabindex="-1" aria-labelledby="CategoryLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<form th:action="@{/admin/addCategory}" method="post" enctype="multipart/form-data">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="CategoryLabel">Add Category</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<label for="categoryId" class="form-label">Category Id</label>
+							<input type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryId"
+								name="categoryId" required>
+							<label for="categoryname" class="form-label">Category Name</label>
+							<input type="text" class="form-control bg-grey rounded p-2 text-light" id="categoryname"
+								name="categoryName" required>
+							<label for="segmentname" class="form-label">Segment Name</label>
+							<select class="form-control bg-grey" name="segmentName">
+								<option th:each="seg : ${segments}" th:value="${seg.segmentId}"
+									th:text="${seg.segmentName}"></option>
+							</select>
+							<label for="categoryimage" class="form-label">Category Image</label>
+							<input type="file" class="form-control bg-grey rounded p-2 text-light" id="categoryimage"
+								name="categoryimage" required>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// For edit button
+			document.querySelectorAll('.edit-btn').forEach((editBtn) => {
+				editBtn.addEventListener('click', (event) => {
+					event.preventDefault();
+					const row = editBtn.closest('tr');
+
+					row.querySelector('.category-name').classList.add('d-none');
+					row.querySelector('input[name="categoryName"]').classList.remove('d-none');
+					row.querySelector('.segment-name').classList.add('d-none');
+					row.querySelector('select[name="segmentName"]').classList.remove('d-none');
+
+					editBtn.classList.add('d-none');
+					row.querySelector('.save-btn').classList.remove('d-none');
+				});
+			});
+			//image replace
+			document.querySelectorAll('.replace-btn').forEach((replaceBtn) => {
+				replaceBtn.addEventListener('click', (event) => {
+					event.preventDefault();
+					const row = replaceBtn.closest('tr');
+
+					row.querySelector('input[name="newCategoryImage"]').classList.remove('d-none');
+					replaceBtn.classList.add('d-none');
+					row.querySelector('.save-image-btn').classList.remove('d-none');
+				});
+			});
+		</script>
+	</main>
+</body>
+
+</html>

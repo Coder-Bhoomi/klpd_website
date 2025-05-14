@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="admin/adminbase :: layout (~{::main})">
+
+<head>
+
+</head>
+
+<body>
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <h4>Welcome, Admin</h4>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+
+        <!-- Product List Section -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Product List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-dark" id="horizontalTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Product ID</th>
+                                        <th scope="col">HAP ID</th>
+                                        <th scope="col">Product Name</th>
+                                        <th scope="col">Brand</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${product}">
+                                        <td th:text="${product.pid}"></td>
+                                        <td th:text="${product.hapPid}"></td>
+                                        <td th:text="${product.prodName}"></td>
+                                        <td th:text="${product.brand}"></td>
+                                        <td th:text="${product.offerPrice}"></td>
+                                        
+                                        <td>
+                                            <a th:href="@{/admin/{pid}(pid=${product.pid})}"
+                                                class="btn btn-primary btn-sm">View
+                                                Details</a>
+                                            <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                            <button class="btn btn-primary btn-sm save-btn d-none">Save</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Modal with Vertical Table -->
+    <!--div th:each="product : ${product}">
+            <div th:id="'productModal' + ${product.pid}" class="modal fade" tabindex="-1"
+                aria-labelledby="productModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="tableModalLabel" th:text="${product.prodName}">Product Details
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <-- Vertical Table ->
+
+                            <table class="table table-bordered table-dark">
+                                <tbody id="verticalTable">
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <td><span class="editable" id="id" th:text="${product.pid}">1</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Category ID</th>
+                                        <td><span class="editable" id="categoryId"
+                                                th:text="${product.category.categoryId}">C01</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Sub Category ID</th>
+                                        <td><span class="editable" id="subCategoryId"
+                                                th:text="${product.subcategory.subcategoryId}">SC01</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.description}">Cooker</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Stock</th>
+                                        <td><span class="editable" id="availability"
+                                                th:text="${product.stock}">100</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Created At</th>
+                                        <td><span class="editable" id="createdAt"
+                                                th:text="${product.createdAt}">01-01-2001</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>percentage</th>
+                                        <td><span class="editable" id="description"><span
+                                                    th:text="${product.percentage}">15</span>%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Diameter</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.diameter}"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Thickness</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.thickness}">5mm</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Capacity</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.capacity}">5L</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Model</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.model}">Induction</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Length</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.length}">10cm</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Height</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.height}">10cm</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Weight</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.weight}">5kg</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Carton Dimension</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.cartonDimension}">10cm</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Guarantee</th>
+                                        <td><span class="editable" id="description" th:text="${product.guarantee}">5
+                                                Years</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Warranty</th>
+                                        <td><span class="editable" id="description" th:text="${product.warranty}">1
+                                                Year</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Color</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.color}">Black</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Material</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.material}">Steel</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Finish</th>
+                                        <td><span class="editable" id="description"
+                                                th:text="${product.finish}">Good</span></td>
+                                    </tr>
+
+                                </tbody>                                                                              
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="editButton">Edit</button>
+                            <button type="button" class="btn btn-success d-none" id="saveButton">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div-->
+    <script>
+        const editButton = document.getElementById('editButton');
+        const saveButton = document.getElementById('saveButton');
+        const editableFields = document.querySelectorAll('.modal .editable');
+
+        editButton.addEventListener('click', () => {
+            editableFields.forEach(field => {
+                const value = field.textContent;
+                field.innerHTML = `<input type="text" class="form-control" value="${value}">`;
+            });
+            editButton.classList.add('d-none');
+            saveButton.classList.remove('d-none');
+        });
+
+        saveButton.addEventListener('click', () => {
+            editableFields.forEach(field => {
+                const input = field.querySelector('input');
+                field.textContent = input.value;
+            });
+            editButton.classList.remove('d-none');
+            saveButton.classList.add('d-none');
+            alert('Changes saved successfully!');
+        });
+
+        document.querySelectorAll('.edit-btn').forEach((editBtn) => {
+            editBtn.addEventListener('click', () => {
+                const row = editBtn.closest('tr');
+                row.querySelectorAll('.editable').forEach(cell => {
+                    const value = cell.textContent;
+                    cell.innerHTML = `<input type="text" class="form-control" value="${value}">`;
+                });
+                editBtn.classList.add('d-none');
+                row.querySelector('.save-btn').classList.remove('d-none');
+            });
+        });
+
+        document.querySelectorAll('.save-btn').forEach((saveBtn) => {
+            saveBtn.addEventListener('click', () => {
+                const row = saveBtn.closest('tr');
+                row.querySelectorAll('.editable').forEach(cell => {
+                    const input = cell.querySelector('input');
+                    cell.textContent = input.value;
+                });
+                saveBtn.classList.add('d-none');
+                row.querySelector('.edit-btn').classList.remove('d-none');
+                alert('Row changes saved successfully!');
+            });
+        });
+    </script>
+
+</body>
+
+</html>

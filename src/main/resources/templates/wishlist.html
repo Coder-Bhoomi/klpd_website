@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="userdashboard::layout(~{::main})">
+
+<head>
+
+</head>
+
+<body class="text-light" style="background-color: #121212;">
+
+    <!-- Main Content -->
+    <main>
+        <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
+
+            <h4 class="mb-4">My Wishlist</h4>
+            <div id="product-1" class="card mb-4 p-3" th:each="w : ${wishlist}">
+                <div class="row align-items-center d-flex">
+                    <div class="col-2">
+                        <div th:if="${w.product.images != null and not #lists.isEmpty(w.product.images)}">
+                            <img th:src="@{${w.product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
+                                style="border-radius: 5px;">
+                        </div>
+
+                    </div>
+                    <div class="col-8">
+                        <p class="text-light mb-1" th:text="${w.product.prodName}">Kadhai - Cast Iron Blacksmith Hybrid
+                            Series</p>
+                        <div class="wishlist-rating">
+                            ★★★★☆
+                        </div>
+                        <div class="wishlist-price fw-bold" style="font-size: 1rem;">
+                            <span class="text-danger" style="font-size: 1.2rem;">₹<span
+                                    th:text="${w.product.offerPrice}">699</span></span>
+                            <span class="text" style="color:#ccc;">₹<s th:text="${w.product.mrp}">2,499</s></span>
+                            <span class="text-success"><span th:text="${w.product.discount}">72</span>% off</span>
+                        </div>
+                    </div>
+                    <div class="col-2 text-end">
+                        <button data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                            th:data-bs-id="${w.wishlistId}" class="btn btn-dark text-danger">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="POST" action="/wishlist/delete">
+                    <div class="modal-content bg-dark">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Remove
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to remove this item from your wishlist?
+                            <!-- Hidden input to store the wishlist ID -->
+                            <input type="hidden" id="wishlistIdInput" name="wishlistId" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Yes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <script>
+            const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+            confirmDeleteModal.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget; // Button that triggered the modal
+                const wishlistId = button.getAttribute('data-bs-id'); // Extract wishlist ID
+                const wishlistIdInput = confirmDeleteModal.querySelector('#wishlistIdInput');
+                wishlistIdInput.value = wishlistId; // Set the hidden input value
+            });
+
+            // Variable to store the ID of the product to delete
+            let productIdToDelete = null;
+
+            // Function to set the product ID when showing the delete modal
+            function showDeleteModal(productId) {
+                productIdToDelete = productId; // Store the product ID in a global variable
+            }
+
+            // Event listener for the "Yes" button in the delete modal
+            document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
+                if (productIdToDelete != null) {
+                    // Find and remove the product element from the DOM
+                    const productElement = document.getElementById(`product-${productIdToDelete}`);
+                    if (productElement) {
+                        productElement.remove();
+                    }
+
+                    // Hide the modal after deleting the item
+                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById("confirmDeleteModal"));
+                    deleteModal.hide();
+
+                    // Reset the global variable
+                    productIdToDelete = null;
+                }
+            });
+
+        </script>
+
+    </main>
+</body>
+
+</html>

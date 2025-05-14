@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" th:replace="base::layout(~{::main})">
+
+<head>
+
+</head>
+
+<body>
+    <main style="padding-bottom: 120px; padding-top: 40px;">
+
+        <!-- Main content -->
+        <div class="container">
+            <div class="row w-100">
+                <!-- Image Section -->
+                <div class="col-md-5 d-flex flex-column align-items-center position-relative">
+                    <!-- Heart Icon -->
+                    <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${product.pid}" />
+                        <button
+                            class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                            style="top: 12px; right: 70px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
+                            th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
+                        </button>
+                    </form>
+                    </i>
+                    <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
+                        class="img-fluid mb-3" style="width: 85%; border-radius: 8px;">
+                    <div class="d-flex justify-content-center flex-row" style="width: 85%;">
+                        <img th:each="image : ${product.images}" th:src="@{${image.imageUrl}}" alt="Thumbnail"
+                            class="img-thumbnail m-1" style="width: 20%; cursor: pointer;">
+                    </div>
+
+                </div>
+
+                <!-- Details Section (Single Product) -->
+                <div th:if="${error != null}">
+                    <p th:text="${error}"></p>
+                </div>
+                <div class="col-md-7 mt-4">
+                    <div th:if="${product != null}">
+                        <h1 class="fw-bold" th:text="${product.prodName}">Artisan Tadka Pan</h1>
+                        <p class="price fw-bold" style="font-size: 22px;">
+                            <s th:text="${product.mrp}">1800</s>
+                            <strong class="text-danger" th:text="${product.offerPrice}"><span
+                                    class="text-danger">₹</span> 749</strong>
+                            <!-- <span class="text-success" id="discountPercentage">14% OFF</span> -->
+                        </p>
+                        <p class="text mb-3 fw-bold" style="color: grey !important;">(inclusive of all taxes)</p>
+
+                        <!-- Rating Section -->
+                        <div class="rating d-flex align-items-center mb-3">
+                            <span class="me-2 text-warning">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </span>
+                            <span class="text-muted">(4.3/5)</span>
+                        </div>
+                    </div>
+
+                    <!-- Size Dropdown -->
+                    <form th:action="@{/product/{pid}(pid=${product.pid})}" method="get">
+                        <div class="d-flex align-items-center mb-3">
+
+                            <label for="size" class="form-label fw-bold me-2 mb-0">Select Size:</label>
+                            <select id="size" class="form-select custom-dropdown" name="selectedSize"
+                                onchange="this.form.submit()">
+                                <option value="" disabled selected>Select a size</option>
+                                <option th:each="size : ${sizes}" th:value="${size}" th:text="${size}">
+                                </option>
+                            </select>
+                            <input type="hidden" name="selectedSubcategoryId"
+                                th:value="${product.subcategory.subcategoryId}" />
+                        </div>
+                    </form>
+
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons d-flex gap-3 mt-4">
+                        <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus text-white" name="action"
+                                    value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display" class="rounded">
+                                <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
+                            </form>
+                        </div>
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block  p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
+                    <p th:utext="${product.description}"></p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- More Information Section -->
+        <div class="container my-5 mt-5">
+            <h4 class="fw-bold mt-5">More Information</h4>
+            <table class="table table-bordered info-table mt-4">
+                <tbody>
+                    <tr th:each="attribute : ${product.attributes}">
+                        <th th:text="${attribute.attributeName} ">Brand</th>
+                        <td th:text="${attribute.attributeValue}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Related Product -->
+        <section class="best-selling container">
+            <h2 class="text-center fw-bold my-3">Related Product</h2>
+            <div class="row mb-5">
+                <div class="col-md-3 mt-3" th:each="rp : ${relatedProducts}">
+
+                    <div class="product-card2 position-relative">
+                        <!-- Heart Icon -->
+                        <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${rp.pid}" />
+                            <button
+                                class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                                style="top: 25px; right: 25px; width: 40px; height: 40px; border-radius: 50%; background: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
+                                th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(rp.pid)} ? 'color: red;' : ''">
+                            </button>
+                        </form>
+                        <a th:href="@{/product/{pid}(pid=${rp.pid})}" style="text-decoration: none; color: inherit;">
+                            <div th:if="${rp.images != null and not #lists.isEmpty(rp.images)}">
+                                <img th:src="@{${rp.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid"
+                                    style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            </div>
+                            <p class="text-center text-truncate p-2 px-3" th:text="${rp.prodName}">Product Name</p>
+                            <p class="text-center">
+                                <span th:if="${rp.offerPrice != null}">
+                                    Price: <s th:text="${rp.mrp}">Rs.1800</s>
+                                    <span class="text-danger" th:text="${rp.offerPrice}">Rs.1620</span>
+                                </span>
+                                <span th:if="${rp.offerPrice == null}">
+                                    Price: <span class="text-danger" th:text="${rp.mrp}">Rs.1800</span>
+                                </span>
+                            </p>
+                        </a>
+
+                        <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
+                            <form th:if="${cartItem.product.pid == rp.pid}" th:action="@{/cart/update}" method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus text-white" name="action"
+                                    value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display" class="rounded">
+                                <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
+                            </form>
+                        </div>
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(rp.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${rp.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <a th:href="@{/category/{id}(id=${product.subcategory.category.categoryId})}">
+                <button type="button" class="btn button d-block mx-auto p-2 mt-5 rounded-pill"
+                    style="background-color: #367D8A; color: #fff; font-size: 14px;">
+                    <span>View All</span>
+                </button>
+            </a>
+
+            <script>
+                // Function to calculate the discount percentage
+                function calculateDiscount() {
+                    const mrp = parseFloat(document.querySelector("[th\\:text='${product.mrp}']").innerText.replace('Rs.', '').trim());
+                    const offerPrice = parseFloat(document.querySelector("[th\\:text='${product.offerPrice}']").innerText.replace('Rs.', '').trim());
+
+                    if (mrp && offerPrice && mrp > 0) {
+                        const discount = ((mrp - offerPrice) / mrp) * 100;
+                        document.getElementById('discountPercentage').innerText = `${discount.toFixed(2)}% OFF`;
+                    }
+                }
+                window.onload = calculateDiscount;
+
+                //wishlist toggle
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.querySelectorAll('.heart-icon').forEach(icon => {
+                        icon.addEventListener('click', function () {
+                            this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
+                        });
+                    });
+                });
+            </script>
+        </section>
+    </main>
+
+</body>
+
+</html>

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en" th:replace="base::layout(~{::main})">
+
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+    <main style="padding-bottom: 120px;">
+        <!-- Main Content Placeholder -->
+
+        <section class="best-selling container mt-1">
+            <h2 class="text-center fw-bold my-3 mt-5"
+                th:text="${category != null ? category.categoryName : (query != null ? #strings.concat('Results for: ', query) : 'No results')}">
+            </h2>
+
+            <!-- Filters and Sorting -->
+            <div class="d-flex mb-3 gap-3">
+
+                <!-- Clear Filter Button -->
+                <div class="d-flex align-items-center">
+                    <a class="btn p-2 text-secondary"
+                        th:href="@{/products(categoryId=${param.categoryId}, query=${param.query})}">Clear Filters</a>
+                    <div class="vr mx-3"></div>
+                </div>
+
+                <!-- Sort By Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortByDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Sort by
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="sortByDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy='priceAsc', diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                Low to High Price
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy='priceDesc', diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                High to Low Price
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Brand
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="colorDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=null, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Brand
+                            </a>
+                        </li>
+                        <li th:each="brand : ${brands}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${brand}"></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Color Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Color
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="colorDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=null, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Colors
+                            </a>
+                        </li>
+                        <li th:each="color : ${colors}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${color}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Guarantee Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="guaranteeDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Guarantee
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="guaranteeDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=null, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Guarantees
+                            </a>
+                        </li>
+                        <li th:each="guarantee : ${guarantees}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${guarantee}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Diameter Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="diameterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Diameter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="diameterDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=null, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Diameters
+                            </a>
+                        </li>
+                        <li th:each="diameter : ${diameters}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${diameter}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Thickness Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="thicknessDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Thickness
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="thicknessDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=null, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Thickness
+                            </a>
+                        </li>
+                        <li th:each="thickness : ${thicknesses}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${thickness}, capacity=${param.capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${thickness}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Capacity Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="capacityDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Capacity
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="capacityDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=null, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}">
+                                All Capacities
+                            </a>
+                        </li>
+                        <li th:each="capacity : ${capacities}">
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${capacity}, minDiscount=${param.minDiscount}, maxDiscount=${param.maxDiscount})}"
+                                th:text="${capacity}"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Discount Filter -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="discountDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Discount
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="discountDropdown">
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=10, maxDiscount=20)}">
+                                10% to 20% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=20, maxDiscount=30)}">
+                                20% to 30% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=30, maxDiscount=40)}">
+                                30% to 40% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=40, maxDiscount=50)}">
+                                40% to 50% Off
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item"
+                                th:href="@{/products(query=${param.query}, categoryId=${param.categoryId}, brand=${param.brand}, color=${param.color}, guarantee=${param.guarantee}, sortBy=${param.sortBy}, diameter=${param.diameter}, thickness=${param.thickness}, capacity=${param.capacity}, minDiscount=50, maxDiscount=100)}">
+                                50% and Above
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <hr>
+            <div class="row product-grid">
+                <div class="col-md-3 mt-4" th:each="product : ${products}">
+                    <div class="product-card2 position-relative">
+                        <!-- Heart Icon -->
+                        <form id="wishlistForm" th:action="@{/wishlist/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <button
+                                class="fas fa-heart heart-icon position-absolute d-flex justify-content-center align-items-center shadow"
+                                style="top: 15px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: white; color: grey; cursor: pointer; transition: all 0.3s; border: none !important;"
+                                th:styleappend="${wishlistProductIds != null and wishlistProductIds.contains(product.pid)} ? 'color: red;' : ''">
+                            </button>
+                        </form>
+                        <a th:href="@{/product/{pid}(pid=${product.pid})}"
+                            style="text-decoration: none; color: inherit;">
+                            <div th:if="${product.images != null and not #lists.isEmpty(product.images)}">
+                                <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1" class="img-fluid">
+                            </div>
+
+                            <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name</p>
+                            <p class="text-center">
+                                <span th:if="${product.offerPrice != null}">
+                                    Price: ₹<s th:text="${product.mrp}">Rs.1800</s>
+                                    ₹<span class="text-danger" th:text="${product.offerPrice}">Rs.1620</span>
+                                </span>
+                                <span th:if="${product.offerPrice == null}">
+                                    Price: ₹<span class="text-danger" th:text="${product.mrp}">Rs.1800</span>
+                                </span>
+                            </p>
+                        </a>
+                        <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
+                            <form th:if="${cartItem.product.pid == product.pid}" th:action="@{/cart/update}"
+                                method="post">
+                                <input type="hidden" th:value="${cartItem.cartId}" name="cartId">
+                                <button type="submit" class="btn minus text-white" name="action"
+                                    value="minus">-</button>
+                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                                    id="quantity-display" class="rounded">
+                                <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
+                            </form>
+                        </div>
+
+                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                            th:action="@{/cart/add}" method="post">
+                            <input type="hidden" name="productId" th:value="${product.pid}" />
+                            <input type="hidden" name="quantity" value="1" min="1" />
+                            <button type="submit" class="btn cartbutton d-block mx-auto p-2 px-4"
+                                style="background-color: #367D8A; color: #ffff; font-size: 16px;">
+                                <span>Add to Cart</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.querySelectorAll('.heart-icon').forEach(icon => {
+                        icon.addEventListener('click', function () {
+                            this.classList.toggle('text-danger'); // Bootstrap's 'text-danger' class for red color
+                        });
+                    });
+                });
+
+            </script>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="userdashboard::layout(~{::main})">
+
+<head>
+
+</head>
+
+<body class="text-light" style="background-color: #121212;">
+
+    <!-- Main Content -->
+    <main>
+
+        <div class="p-4 px-5 rounded" style="background-color: #1f1f1f;">
+            <!-- Form with th:action for submitting to the update profile endpoint -->
+            <form id="personalInfoForm" th:action="@{/profile/update}" th:object="${userdto}" method="post">
+                <div class="d-flex justify-content-between">
+                    <h4>Personal Information</h4>
+                    <button type="submit" class="btn btn-primary" id="editButton">Edit</button>
+                </div>
+                <div class="mt-4 mb-5">
+                    <div class="row">
+                        <label for="firstName" class="form-label">Name</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control bg-dark text-light" th:field="*{firstName}"
+                                id="firstName" name="firstName" placeholder="First name" aria-label="First name"
+                                readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control bg-dark text-light" th:field="*{middleName}"
+                                id="middleName" name="middleName" placeholder="Middle name" aria-label="Middle name"
+                                readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control bg-dark text-light" th:field="*{lastName}"
+                                id="lastName" name="lastName" placeholder="Last name" aria-label="Last name" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="gender" class="form-label">Gender</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="male" value="Male"
+                                th:checked="${userdto.gender == 'Male'}" th:field="*{gender}" disabled>
+                            <label class="form-check-label" for="male">Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="female" value="Female"
+                                th:checked="${userdto.gender == 'Female'}" th:field="*{gender}" disabled>
+                            <label class="form-check-label" for="female">Female</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="others" value="Others"
+                                th:checked="${userdto.gender == 'Others'}" th:field="*{gender}" disabled>
+                            <label class="form-check-label" for="others">Others</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div>
+                        <input type="email" class="form-control bg-dark text-light" th:field="*{email}" id="email"
+                            name="email" placeholder="E-mail Address" readonly>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control bg-dark text-light"
+                        th:value="${#temporals.format(userdto.dob, 'yyyy-MM-dd')}" id="dob" name="dob" readonly>
+                </div>
+                <div class="mb-5">
+                    <label for="spousedob" class="form-label">Spouse Dob</label>
+                    <input type="date" class="form-control bg-dark text-light" id="spouse-dob" name="dob" readonly>
+                </div>
+                <div class="mb-5">
+                    <label for="spousedob" class="form-label">Marriage Anniversary Date</label>
+                    <input type="date" class="form-control bg-dark text-light" id="spouse-dob" name="dob" readonly>
+                </div>
+                <div class="mb-5">
+                    <label for="spousedob" class="form-label">Child Name</label>
+                    <input type="text" class="form-control bg-dark text-light" id="spouse-dob" name="dob" readonly>
+                </div>
+                <div class="mb-5">
+                    <label for="spousedob" class="form-label">Child DOB</label>
+                    <input type="date" class="form-control bg-dark text-light" id="spouse-dob" name="dob" readonly>
+                </div>
+                <div class="mb-5">
+                    <label for="contactNumber" class="form-label">Contact Number</label>
+                    <div>
+                        <input type="text" class="form-control bg-dark text-light" th:field="*{mobile}"
+                            id="contactNumber" name="contactNumber" placeholder="Contact number" readonly>
+                    </div>
+                </div>
+            </form>
+            <div class="mb-2 d-flex">
+                <form id="deactivateForm" th:action="@{/profile/deactivate}" method="post">
+                    <button type="submit" class="btn btn-primary me-2">Deactivate Account</button>
+                </form>
+
+                <form id="deleteForm" th:action="@{/profile/delete}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+        <script>
+            const editButton = document.getElementById("editButton");
+            const formFields = document.querySelectorAll("#personalInfoForm input, #personalInfoForm input[type='radio']");
+
+            editButton.addEventListener("click", (event) => {
+                event.preventDefault(); // Prevent form submission on Edit button click
+                const isEditing = editButton.textContent === "Edit";
+
+                // Toggle button text
+                editButton.textContent = isEditing ? "Save" : "Edit";
+
+                // Toggle read-only state for input fields and disable radio buttons when not editing
+                formFields.forEach((field) => {
+                    if (field.type === "radio") {
+                        field.disabled = !isEditing; // Enable/Disable radio buttons based on edit mode
+                    }
+                    else {
+                        field.readOnly = !isEditing; // Enable/Disable other fields
+                    }
+                });
+
+                // If in Save mode, submit the form programmatically
+                if (!isEditing) {
+                    const genderRadioButtons = document.querySelectorAll('input[name="gender"]');
+                    genderRadioButtons.forEach((button) => {
+                        button.disabled = false; // Ensure that radio buttons are enabled when saving
+                    });
+
+                    document.getElementById("personalInfoForm").submit();
+                }
+            });
+
+
+        </script>
+    </main>
+
+</body>
+
+</html>

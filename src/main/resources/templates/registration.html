@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" th:replace="base::layout(~{::main})">
+
+<head>
+    <style>
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            /* Center the button horizontally */
+            margin-top: 1rem;
+            /* Adjust margin as needed */
+        }
+
+        .social {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            /* Text color */
+            background-color: #4285F4;
+            /* Google's brand color */
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .social:hover {
+            background-color: #357ABD;
+            /* Darker shade on hover */
+            transform: translateY(-2px);
+            /* Slight lift effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .social:active {
+            transform: translateY(0);
+            /* Reset lift effect on click */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .social i {
+            margin-right: 10px;
+            /* Space between icon and text */
+            font-size: 20px;
+            /* Adjust icon size */
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="container2 mx-auto mt-5 mb-5">
+            <!-- Render both forms -->
+            <div class="form-box login" id="loginForm">
+                <form th:action="@{/submit}" th:object="${dto}" method="post">
+                    <h1>Login</h1>
+                    <div th:if="${param.error}">
+                        <p th:text="${session.errorMessage}" class="alert alert-success alert-dismissible mx-auto"
+                            style="background-color: #367D8A; border: #367D8A; color: white; width: 90%;"></p>
+                    </div>
+                    <div class="input-box2">
+                        <input type="email" name="email" placeholder="E-mail" th:field="${dto.email}" required>
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="input-box2 pass">
+                        <input type="password" name="password" placeholder="Password" class="password"
+                            th:field="${dto.password}" required>
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div class="forget-link">
+                        <a href="#">Forget password?</a>
+                    </div>
+                    <button type="submit" class="btn2">Login</button>
+                    <div class="social-icons mt-4">
+                        <a class="social" href="/oauth2/authorization/google"><i class="fa-brands fa-google"></i> Login
+                            with Google</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-box register" id="registerForm">
+                <form th:action="@{/register}" th:object="${dto}" method="post">
+                    <h1>Registration</h1>
+                    <div class="input-box2">
+                        <input type="text" placeholder="Name" th:field="${dto.name}" required>
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="input-box2">
+                        <input type="email" placeholder="E-mail" th:field="${dto.email}" required>
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="input-box2 pass1">
+                        <input type="password" placeholder="Password" th:field="${dto.password}" class="password1"
+                            required>
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn2">Register</button>
+                    <p>or register with social platforms</p>
+                    <div class="social-icons mt-4">
+                        <a class="social" href="#"><i class="fa-brands fa-square-instagram"></i></a>
+                        <a class="social" href="#"><i class="fa-brands fa-square-x-twitter"></i></a>
+                        <a class="social" href="#"><i class="fa-brands fa-square-facebook"></i></a>
+                        <a class="social" href="#"><i class="fa-brands fa-square-whatsapp"></i></a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Toggle panel -->
+            <div class="toggle-box">
+                <div class="toggle-panel toggle-left" id="toggleLogin">
+                    <h1>Hello Welcome!</h1>
+                    <p>Don't have an account?</p>
+                    <button class="btn2 register-btn" id="showRegister">Register Now</button>
+                </div>
+                <div class="toggle-panel toggle-right" id="toggleRegister">
+                    <h1>Welcome Back!</h1>
+                    <p>Already have an account?</p>
+                    <button class="btn2 login-btn" id="showLogin">Login</button>
+                </div>
+            </div>
+        </div>
+        <script>
+            const container = document.querySelector('.container2');
+            const registerBtn = document.querySelector('.register-btn');
+            const loginBtn = document.querySelector('.login-btn');
+            const password = document.querySelector('.password');
+            const password1 = document.querySelector('.password1');
+            const pass = document.querySelector('.pass');
+            const pass1 = document.querySelector('.pass1');
+            const email = document.querySelector('.input-box input[type="email"]');
+            const name = document.querySelector('.input-box2 input[type="text"]');
+
+            registerBtn.addEventListener('click', () => {
+                container.classList.add('active');
+            });
+            loginBtn.addEventListener('click', () => {
+                container.classList.remove('active');
+            });
+
+
+
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2, 6}$/;
+
+            // Validation for the name field
+            function validateName() {
+                if (name.value.trim() === "") {
+                    name.style.borderColor = 'red';
+                    return false;
+                } else {
+                    name.style.borderColor = 'green';
+                    return true;
+                }
+            }
+
+            // Validation for the email field
+            function validateEmail() {
+                if (!emailRegex.test(email.value)) {
+                    email.style.borderColor = 'red';
+                    return false;
+                } else {
+                    email.style.borderColor = 'green';
+                    return true;
+                }
+            }
+            password.addEventListener('input', () => {
+                if (password.value.length < 4) {
+                    pass.style.borderColor = 'red';
+                } else if (password.value.length >= 4 && password.value.length < 8) {
+                    pass.style.borderColor = 'yellow';
+
+                } else if (password.value.length >= 8) {
+                    pass.style.borderColor = 'green';
+
+                }
+            })
+            password1.addEventListener('input', () => {
+                if (password1.value.length < 4) {
+                    pass1.style.borderColor = 'red';
+                } else if (password1.value.length >= 4 && password1.value.length < 8) {
+                    pass1.style.borderColor = 'yellow';
+
+                } else if (password1.value.length >= 8) {
+                    pass1.style.borderColor = 'green';
+                }
+            })
+        </script>
+    </main>
+</body>
+
+</html>
