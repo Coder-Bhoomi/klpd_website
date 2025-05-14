@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="admin/adminbase :: layout (~{::main})">
+
+<head>
+
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Top Navbar -->
+        <div class="top-navbar d-flex justify-content-between align-items-center">
+            <h4>Welcome, Admin</h4>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+        </div>
+
+        <!-- Content -->
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <!-- Account Settings Section -->
+                <div class="card form-section mb-5">
+                    <div class="card-header">
+                        <h5>Account Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${message}">
+                            <p th:text="${message}" class="alert alert-success alert-dismissible"></p>
+                        </div>
+                        <form th:action="@{/admin/changepassword}" method="post">
+                            <div class="mb-3">
+                                <label for="adminEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control bg-dark text-light" id="adminEmail"
+                                    value="admin@gmail.com" required>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="oldpassword" class="form-label">Enter Old Password</label>
+                                <input type="password" class="form-control bg-dark text-light" id="oldpassword"
+                                    name="oldpassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adminPassword" class="form-label">Change Password</label>
+                                <input type="password" class="form-control bg-dark text-light" id="adminPassword"
+                                    name="newpassword" placeholder="********">
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control bg-dark text-light" id="confirmPassword"
+                                    name="confirmpassword" placeholder="********">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Account</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Site Settings Section -->
+                <div class="card form-section mb-5">
+                    <div class="card-header">
+                        <h5>Site Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="#" method="post">
+                            <div class="mb-3">
+                                <label for="siteName" class="form-label">Site Name</label>
+                                <input type="text" class="form-control bg-dark text-light" id="siteName"
+                                    value="MYHAP.IN" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="siteLogo" class="form-label">Site Logo</label>
+                                <input type="file" class="form-control bg-dark text-light" id="siteLogo"
+                                    accept="image/*">
+                            </div>
+                            <div class="mb-3">
+                                <label for="siteTheme" class="form-label">Site Theme Color</label>
+                                <input type="color" class="form-control bg-dark text-light" id="siteTheme"
+                                    value="#007bff">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Site Settings</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Payment Settings Section -->
+                <div class="card form-section mb-5">
+                    <div class="card-header">
+                        <h5>Payment Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="#" method="post">
+                            <div class="mb-3">
+                                <label for="paymentGateway" class="form-label">Payment Gateway</label>
+                                <select class="form-select bg-dark text-light" id="paymentGateway" required>
+                                    <option value="Stripe">Stripe</option>
+                                    <option value="PayPal">PayPal</option>
+                                    <option value="Razorpay">Razorpay</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="gatewayApiKey" class="form-label">API Key</label>
+                                <input type="text" class="form-control bg-dark text-light" id="gatewayApiKey"
+                                    placeholder="Enter API Key" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Payment Settings</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

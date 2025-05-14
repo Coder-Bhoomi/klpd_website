@@ -83,5 +83,4 @@ public class Product {
     @IndexedEmbedded
     private List<Attribute> attributes;
     // Getters and Setters
-
 }

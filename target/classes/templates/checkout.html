@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .checkout-container {
+      margin-top: 2rem;
+    }
+
+    .card-dark {
+      background-color: #1f1f1f;
+      border: none;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .product-img {
+      width: 120px;
+      border-radius: 10px;
+    }
+
+    .price-original {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .discount {
+      color: #4caf50;
+    }
+
+    .offer-box {
+      background-color: #2a2a2a;
+      border-left: 4px solid #367D8A;
+      padding: 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    .price-summary li {
+      background: transparent;
+      border: none;
+      padding: 0.4rem 0;
+    }
+
+    .total-amount {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .btn-pay {
+      background-color: #367D8A;
+      color: white;
+      border-radius: 30px;
+      padding: 0.8rem;
+      width: 100%;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .btn-pay:hover {
+      background-color: #1f5b65;
+    }
+
+    .quantity-box {
+      background-color: #2a2a2a;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      gap: 0.6rem;
+    }
+
+    .quantity-box i {
+      cursor: pointer;
+      color: #ffffff;
+    }
+
+    .delivery-text {
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+
+    .text-accent {
+      color: #367D8A;
+    }
+
+    select.form-select {
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 0.6rem;
+      font-size: 1rem;
+      box-shadow: none;
+    }
+
+    select.form-select:focus {
+      border-color: #367D8A;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(221, 114, 16, 0.25);
+    }
+
+    .modal-content {
+      background-color: #1f1f1f;
+      color: #fff;
+      border-radius: 12px;
+    }
+
+    .modal-header,
+    .modal-footer {
+      border-color: #333;
+    }
+
+    .btn-close {
+      filter: invert(1);
+    }
+
+    .form-control {
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+    }
+
+    .form-control:focus {
+      border-color: #DD7210;
+      box-shadow: none;
+    }
+
+    .form-label {
+      color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container checkout-container">
+    <h5 class="text-decoration-none"><a href="/cart">Back to Cart</a> </h5>
+    <h3 class="text-center mb-5 fw-bold">Checkout</h3>
+    <form th:action="@{/cart/checkout}" method="post">
+
+      <!-- Address Section -->
+      <div class="card-dark mb-4">
+       <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="section-title">Select Delivery Address</h6>
+          <a href="#" data-bs-toggle="modal" data-bs-target="#addressModal"
+            class="text-decoration-none text-accent fw-bold">+ ADD NEW</a>
+        </div>
+        <form th:action="@{/cart/checkout}" method="post">
+
+          <!-- Address List -->
+          <div class="address-list">
+
+            <div th:each="addr, iter : ${address}" class="mb-3 p-3 rounded"
+              style="background-color: #2a2a2a; border: 1px solid #444; cursor: pointer;"
+              th:classappend="${iter.index == 0} ? 'selected-address' : ''" onclick="selectAddress(this)">
+              <input type="radio" name="selectedAddress" th:value="${addr.addressId}" th:checked="${iter.index == 0}">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <span class="fw-bold" th:text="${addr.name}">John Doe</span>
+                </div>
+              </div>
+              <div class="mt-1">
+                <span th:text="${addr.address}">614/P-62, Madhuban Vihar Colony</span>,
+                <span th:text="${addr.city}">Lucknow</span>,
+                <span th:text="${addr.state}">UP</span>,
+                <span th:text="${addr.pincode}">226020</span>
+              </div>
+              <div>Mobile: <span th:text="${addr.number}">+91 1234567890</span></div>
+
+            </div>
+          </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-8">
+          <div class="row g-4">
+            
+            <!-- Left: Product Details -->
+            <div class="col-md-12" th:each="cartItem : ${cart}">
+              <div class="card-dark d-flex gap-3 align-items-start">
+                <img th:src="@{${cartItem.product.images[0].imageUrl}}" class="product-img" alt="Product">
+                <div>
+                  <h5 th:text="${cartItem.product.prodName}">Zim Baby Bedding Set ( Green )</h5>
+                  <div class="mb-1">
+                    <span class="fw-bold" th:text="${cartItem.productTotal}">₹499.00</span>
+                    <span class="price-original" th:text="${cartItem.product.mrp * cartItem.quantity}">₹792.00</span>
+                  </div>
+                  <div class="discount mb-1"><span
+                      th:text="${(((cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal)/(cartItem.product.mrp * cartItem.quantity)) * 100}">37</span>
+                    % OFF - ₹<span
+                      th:text="${(cartItem.product.mrp * cartItem.quantity) - cartItem.productTotal}">293.00</span>
+                    Saved
+                  </div>
+                  <div class="delivery-text mb-2"><i class="fas fa-truck"></i> Free delivery by <b>Apr 28</b></div>
+                  <div class="d-flex gap-3 align-items-center">
+                    <div class="quantity-box">Number of Items:
+                      <span th:text="${cartItem.quantity}">1</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Summary -->
+        <div class="col-md-4">
+          <div class="offer-box mb-3" th:if="${coupon != null}">
+            <span class="fw-bold text-success"><span th:text="${coupon.couponName}"></span>- OFFER APPLIED</span><br>
+            Offer valid till <span th:text="${coupon.expireDate}"></span>
+          </div>
+          <div class="card-dark">
+            <div class="section-title">Price Summary (1 Item)</div>
+            <ul class="list-group price-summary">
+              <li class="d-flex justify-content-between">
+                <span>Subtotal</span>
+                <span>₹<span th:text="${subtotal}">₹792.00</span></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span>Discount</span>
+                <span class="text-success">-₹<span th:text="${discount}">-₹293.00</span></span>
+              </li>
+              <li class="d-flex justify-content-between">
+                <span>Shipping</span>
+                <span class="text-success">FREE</span>
+              </li>
+              <li class="d-flex justify-content-between total-amount mt-3">
+                <span>Total</span>
+                <span>₹<span th:text="${total}">₹499.00</span></span>
+              </li>
+            </ul>
+            <p class="mt-2 text-secondary" style="font-size: 0.85rem;">(inclusive of all taxes)</p>
+
+            <!-- Payment Dropdown -->
+
+            <div class="mt-4">
+              <label for="payment-method" class="form-label text-accent">Choose Payment Method</label>
+              <select id="payment-method" class="form-select" name="paymentMode">
+                <option selected value="upi">UPI / Google Pay / PhonePe</option>
+                <option value="card">Credit / Debit Card</option>
+                <option value="cod">Cash on Delivery</option>
+              </select>
+            </div>
+
+            <button class="btn btn-pay mt-4" type="submit" onclick="return validateCheckout()">Proceed to Pay</button>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Address Modal -->
+  <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="addressForm" method="post" th:object="${aDto}" th:action="@{/address/add}">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addressModalLabel">Update Delivery Address</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div th:if="${error}" id="error-message" th:text="${error}" style="display:none;"></div>
+            <div class="mb-3">
+              <label for="name" class="form-label text-light">Name</label>
+              <input type="text" class="form-control bg-dark text-light" id="name" placeholder="Enter Name"
+                th:field="*{name}" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label text-light">Contact</label>
+              <input type="text" class="form-control bg-dark text-light" id="phone" placeholder="Enter Contact Number"
+                th:field="*{number}" required>
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label text-light">Address</label>
+              <textarea class="form-control bg-dark text-light" id="address" placeholder="Enter your Address" rows="3"
+                th:field="*{address}" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="city" class="form-label text-light">City</label>
+              <input type="text" class="form-control bg-dark text-light" id="city" placeholder="Enter City"
+                th:field="*{city}" required>
+            </div>
+            <div class="mb-3">
+              <label for="state" class="form-label text-light">State</label>
+              <input type="text" class="form-control bg-dark text-light" id="state" placeholder="Enter State"
+                th:field="*{state}" required>
+            </div>
+            <div class="mb-3">
+              <label for="country" class="form-label text-light">Country</label>
+              <input type="text" class="form-control bg-dark text-light" id="country" placeholder="Enter Country"
+                th:field="*{country}" required>
+            </div>
+            <div class="mb-3">
+              <label for="landmark" class="form-label text-light">Landmark</label>
+              <input type="text" class="form-control bg-dark text-light" id="landmark" placeholder="Enter Landmark"
+                th:field="*{landmark}" required>
+            </div>
+            <div class="mb-3">
+              <label for="pincode" class="form-label text-light">Pincode</label>
+              <input type="text" class="form-control bg-dark text-light" id="pincode" placeholder="Enter Pincode"
+                th:field="*{pincode}" required>
+            </div>
+            <input type="hidden" id="editIndex" value="-1">
+            <button type="submit" class="btn btn-primary w-100">Save Address</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<script>
+    function validateCheckout() {
+      // Check if an address is selected
+      const addressSelected = document.querySelector('input[name="selectedAddress"]:checked');
+      if (!addressSelected) {
+        alert('Please select a delivery address.');
+        return false;
+      }
+      
+      // Check if there are products to checkout
+      const productSection = document.getElementById('product-section');
+      if (!productSection || productSection.children.length === 0) {
+        alert('Your cart is empty. Add products to proceed.');
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

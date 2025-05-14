@@ -22,9 +22,7 @@ import com.klpdapp.klpd.dto.AddressDto;
 import com.klpdapp.klpd.model.Address;
 import com.klpdapp.klpd.model.Pincode;
 import com.klpdapp.klpd.model.Login;
-import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.Services.AddressService;
-import com.klpdapp.klpd.model.Product;
 
 import jakarta.servlet.http.HttpSession;
 
