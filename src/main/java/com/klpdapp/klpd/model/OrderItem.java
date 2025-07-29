@@ -1,5 +1,7 @@
 package com.klpdapp.klpd.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -24,8 +26,18 @@ public class OrderItem {
     @Column(length= 80)
     private String status;
 
-    @Column( length = 20)
+    
     private Float price;
+
+    private LocalDate deliveryDate;
+
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
 
     public Float getPrice() {
         return price;

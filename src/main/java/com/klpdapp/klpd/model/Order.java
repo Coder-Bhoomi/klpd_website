@@ -30,6 +30,10 @@ public class Order {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
+    @ManyToOne
+    @JoinColumn(name = "coupon_id", nullable = true)
+    private Coupon coupon;
+
     public int getOrderId() {
         return orderId;
     }
@@ -84,6 +88,12 @@ public class Order {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+    public Coupon getCoupon() {
+        return coupon;
+    }
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
     }
     
 }

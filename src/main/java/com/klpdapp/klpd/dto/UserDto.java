@@ -14,6 +14,12 @@ public class UserDto {
     private long mobile;
     private String status;
     private String password;
+    private LocalDate SpouseDob;
+
+    private LocalDate anniversary;
+    private String childName;
+
+    private LocalDate childDob;
 
     public String getPassword() {
         return password;
@@ -80,6 +86,30 @@ public class UserDto {
     }
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+    public LocalDate getSpouseDob() {
+        return SpouseDob;
+    }
+    public void setSpouseDob(LocalDate spouseDob) {
+        SpouseDob = spouseDob;
+    }
+    public LocalDate getAnniversary() {
+        return anniversary;
+    }
+    public void setAnniversary(LocalDate anniversary) {
+        this.anniversary = anniversary;
+    }
+    public String getChildName() {
+        return childName;
+    }
+    public void setChildName(String childName) {
+        this.childName = childName;
+    }
+    public LocalDate getChildDob() {
+        return childDob;
+    }
+    public void setChildDob(LocalDate childDob) {
+        this.childDob = childDob;
     }
 
     

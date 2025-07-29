@@ -63,22 +63,16 @@ public class ProductController {
         // Check if size and subcategory are selected
         if (selectedSize != null && !selectedSize.isEmpty() && selectedSubcategoryId != null) {
             boolean isInductionBase = false;
-            System.out.println("Selected Size: " + selectedSize);
-            System.out.println("Selected Subcategory: " + selectedSubcategoryId);
-
             if (prod.getProdName().toLowerCase().contains("induction")) {
                 isInductionBase = true;
-                System.out.println("Induction Base");
             }
             List<Product> products; 
             // fetch the product based on size and subcatory with respect to induction or non-induction
             if (isInductionBase) {
                 products = pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
-                System.out.print("isInduction Base");
+            
             } else {
                 products = pRepo.findNonInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
-                System.out.println("Not induction base");
-                System.out.println(products);
             }
 
             if (!products.isEmpty()) {

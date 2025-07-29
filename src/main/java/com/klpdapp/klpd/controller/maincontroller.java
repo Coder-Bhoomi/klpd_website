@@ -1,5 +1,6 @@
 package com.klpdapp.klpd.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -460,31 +461,92 @@ public class maincontroller {
         return "coupon";
     }
 
-    @GetMapping("/order")
-    public String ShowOrder(Model model, HttpSession session) {
-        CategoryService.addCategoriesToModel(model);
-        Integer userId = (Integer) session.getAttribute("userid");
-        Login loginuser = loginRepo.findById(userId).orElse(null);
-        if (loginuser.getUserType().equals("Wholesaler")) {
-            Wholeseller user = wRepo.findById(loginuser.getUserId()).orElse(null);
-            model.addAttribute("user", user);
-        } else if (loginuser.getUserType().equals("Customer")) {
-            User user = uRepo.findById(loginuser.getUserId()).orElse(null);
-            model.addAttribute("user", user);
-        }
-        List<OrderItem> orderitem = orderitemrepo.findAllByOrder_User(loginuser);
-        model.addAttribute("orderitems", orderitem);
-        return "order";
+  @GetMapping("/order")
+public String ShowOrder(
+    @RequestParam(required = false) String status,
+    @RequestParam(required = false) String timePeriod,
+    @RequestParam(required = false) String sort,
+    Model model, 
+    HttpSession session) {
+    
+    CategoryService.addCategoriesToModel(model);
+    Integer userId = (Integer) session.getAttribute("userid");
+    Login loginuser = loginRepo.findById(userId).orElse(null);
+    
+    if (loginuser.getUserType().equals("Wholesaler")) {
+        Wholeseller user = wRepo.findById(loginuser.getUserId()).orElse(null);
+        model.addAttribute("user", user);
+    } else if (loginuser.getUserType().equals("Customer")) {
+        User user = uRepo.findById(loginuser.getUserId()).orElse(null);
+        model.addAttribute("user", user);
     }
+    
+    // Get all order items for the user first and sort based on date latest to oldest
+    List<OrderItem> orderitems = orderitemrepo.findAllByOrder_UserOrderByOrder_OrderDateDesc(loginuser);
+    // Apply status filter if provided
+    if (status != null && !status.isEmpty()) {
+        orderitems = orderitems.stream()
+            .filter(item -> item.getStatus().equalsIgnoreCase(status))
+            .collect(Collectors.toList());
+    }
+    
+    // Apply time period filter if provided
+    if (timePeriod != null && !timePeriod.isEmpty()) {
+        LocalDate cutoffDate = calculateCutoffDate(timePeriod);
+        orderitems = orderitems.stream()
+            .filter(item -> item.getOrder().getOrderDate().isAfter(cutoffDate))
+            .collect(Collectors.toList());
+    }
+    // Apply sorting if provided
+if (sort != null && !sort.isEmpty()) {
+    switch (sort) {
+        case "newest":
+            orderitems.sort(Comparator.comparing(
+                item -> item.getOrder().getOrderDate(), 
+                Comparator.reverseOrder()));
+            break;
+        case "oldest":
+            orderitems.sort(Comparator.comparing(
+                item -> item.getOrder().getOrderDate()));
+            break;
+        case "price-high":
+            orderitems.sort(Comparator.comparing(
+                item -> item.getProduct().getOfferPrice(), 
+                Comparator.reverseOrder()));
+            break;
+        case "price-low":
+            orderitems.sort(Comparator.comparing(
+                item -> item.getProduct().getOfferPrice()));
+            break;
+    }
+}
+    
+    model.addAttribute("orderitems", orderitems);
+    return "order";
+}
+
+private LocalDate calculateCutoffDate(String timePeriod) {
+    switch (timePeriod) {
+        case "Last 30 days":
+            return LocalDate.now().minusDays(30);
+        case "2024":
+            return LocalDate.of(2024, 1, 1);
+        case "2023":
+            return LocalDate.of(2023, 1, 1);
+        case "2022":
+            return LocalDate.of(2022, 1, 1);
+        default:
+            return LocalDate.MIN; // return earliest possible date if no match
+    }
+}
 
     @GetMapping("/notification")
     public String ShowNotification(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userid");
         Login loginuser = loginRepo.findById(userId).orElse(null);
-        System.out.println(loginuser.getEmail());
+    
         if (loginuser.getUserType().equals("Wholesaler")) {
             Wholeseller user = wRepo.findById(loginuser.getUserId()).orElse(null);
-            System.out.println(user.getName());
             model.addAttribute("user", user);
         } else if (loginuser.getUserType().equals("Customer")) {
             User user = uRepo.findById(loginuser.getUserId()).orElse(null);

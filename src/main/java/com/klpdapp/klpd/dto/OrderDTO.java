@@ -9,6 +9,7 @@ public class OrderDTO {
     private String paymentMode;
     private LocalDate orderDate;
     private String status;
+    private int couponid;
     public int getOrderId() {
         return orderId;
     }
@@ -45,7 +46,11 @@ public class OrderDTO {
     public void setStatus(String status) {
         this.status = status;
     }
-
-  
+    public int getCouponid() {
+        return couponid;
+    }
+    public void setCouponid(int couponid) {
+        this.couponid = couponid;
+    }
 }
 

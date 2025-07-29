@@ -42,14 +42,14 @@ public class ProfileController {
 
     @Autowired
     wholesalerRepo wRepo;
-    
+
     @GetMapping
     public String ShowProfile(Model model, HttpSession session) {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             Login loginuser = Loginrepo.findById(userId).orElse(null);
             CategoryService.addCategoriesToModel(model);
-            if(loginuser.getUserType().equals("Wholesaler")) {
+            if (loginuser.getUserType().equals("Wholesaler")) {
                 Wholeseller wholesaler = wRepo.findById(loginuser.getUserId()).orElse(null);
                 model.addAttribute("user", wholesaler);
                 WholesellerDto wholesalerDto = new WholesellerDto();
@@ -66,7 +66,7 @@ public class ProfileController {
                 model.addAttribute("wdto", wholesalerDto);
                 return "wholesalerprofile";
 
-            } else if(loginuser.getUserType().equals("Customer")) {
+            } else if (loginuser.getUserType().equals("Customer")) {
                 User user = uRepo.findById(loginuser.getUserId()).orElse(null);
                 model.addAttribute("user", user);
                 if (user != null) {
@@ -80,22 +80,21 @@ public class ProfileController {
                     userDto.setMobile(user.getMobile());
                     userDto.setStatus(user.getStatus());
                     userDto.setPassword(loginuser.getPassword());
-                    
+
                     // Set parsed name fields
                     userDto.setFirstName(nameParts[0]);
                     userDto.setMiddleName(nameParts[1]);
                     userDto.setLastName(nameParts[2]);
-    
+
                     // Add UserDto to the model
                     model.addAttribute("userdto", userDto);
                 }
                 return "profile";
-            }
-            else {
+            } else {
                 return "redirect:/login";
             }
-            
-            } else {
+
+        } else {
             return "redirect:/login";
         }
     }
@@ -122,17 +121,12 @@ public class ProfileController {
 
     @PostMapping("/update")
     public String updateProfile(@ModelAttribute UserDto udto, HttpSession session) {
-        System.out.println("Received UserDto: " + udto);
-
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             Login loginuser = Loginrepo.findByUserId(userId).orElse(null);
             User existingUser = uRepo.findById(loginuser.getUserId()).orElse(null);
-            System.out.println("Existing user before update: " + existingUser);
-            System.out.println("Gender: " + udto.getGender());
-            System.out.println("Dob: " + udto.getDob());
-            System.out.println("Number: " + udto.getMobile());
             if (existingUser != null) {
+                // Handle name
                 String firstName = udto.getFirstName() != null ? udto.getFirstName() : "";
                 String middleName = udto.getMiddleName() != null ? udto.getMiddleName() : "";
                 String lastName = udto.getLastName() != null ? udto.getLastName() : "";
@@ -144,38 +138,45 @@ public class ProfileController {
                 if (!lastName.isEmpty()) {
                     fullName += " " + lastName;
                 }
+                existingUser.setName(fullName.trim().isEmpty() ? existingUser.getName() : fullName);
 
-                existingUser.setName(fullName);
-                existingUser.setEmail(
-                        (udto.getEmail() != null && !udto.getEmail().isEmpty())
-                                ? udto.getEmail()
-                                : existingUser.getEmail());
-                existingUser.setGender(udto.getGender());
-                existingUser.setDob(udto.getDob());
-                existingUser.setMobile(udto.getMobile());
+                // Only update fields that were actually provided in the form
+                if (udto.getEmail() != null && !udto.getEmail().isEmpty()) {
+                    existingUser.setEmail(udto.getEmail());
+                }
+
+                if (udto.getGender() != null) {
+                    existingUser.setGender(udto.getGender());
+                }
+
+                if (udto.getDob() != null) {
+                    existingUser.setDob(udto.getDob());
+                }
+
+                existingUser.setSpouseDob(udto.getSpouseDob()); // can be null
+                existingUser.setAnniversary(udto.getAnniversary()); // can be null
+                existingUser.setChildName(udto.getChildName());
+                existingUser.setChildDob(udto.getChildDob()); // can be null
+
+                if (udto.getMobile() != 0) { // assuming 0 is not a valid mobile number
+                    existingUser.setMobile(udto.getMobile());
+                }
 
                 uRepo.save(existingUser);
-
                 return "redirect:/profile";
-            } else {
-                // If the user does not exist, redirect to login
-                return "redirect:/login";
             }
-        } else {
-            // If no session is active, redirect to login
             return "redirect:/login";
         }
+        return "redirect:/login";
     }
 
     @PostMapping("/updatewholesaler")
     public String updateWholesalerProfile(@ModelAttribute WholesellerDto wdto, HttpSession session) {
-        System.out.println("Received WholesellerDto: " + wdto);
 
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             Login loginuser = Loginrepo.findById(userId).orElse(null);
             Wholeseller existingWholesaler = wRepo.findById(loginuser.getUserId()).orElse(null);
-            System.out.println("Existing wholesaler before update: " + existingWholesaler);
             if (existingWholesaler != null) {
                 existingWholesaler.setName(wdto.getName());
                 existingWholesaler.setCompanyName(wdto.getCompanyName());
@@ -199,8 +200,6 @@ public class ProfileController {
         }
     }
 
-    
-
     @PostMapping("/deactivate")
     public String deactivateAccount(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userid");
@@ -219,5 +218,4 @@ public class ProfileController {
         return "redirect:/login";
     }
 
-    
 }

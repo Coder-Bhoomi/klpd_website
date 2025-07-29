@@ -205,7 +205,6 @@ public class AdminController {
 		}
 		category.setCategoryName(categoryName);
 		category.setSegment(segmentRepo.findById(SegmentID).orElse(null));
-		System.out.println(categoryName);
 		if (newCategoryImage != null && !newCategoryImage.isEmpty()) {
 			String uploadDir = "public/CategoryImages/";
 			String originalFileName = newCategoryImage.getOriginalFilename();
@@ -232,7 +231,7 @@ public class AdminController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(fileName);
+
 			category.setCategoryImage(fileName); // Update image in the database
 		}
 		Catrepo.save(category);
@@ -259,7 +258,7 @@ public class AdminController {
 
 		// Update segment name
 		segment.setSegmentName(segmentName);
-		System.out.println(segmentName);
+		
 		// If a new image is uploaded, update the image
 		if (newSegmentImage != null && !newSegmentImage.isEmpty()) {
 			String uploadDir = "public/SegmentImages/";
@@ -287,7 +286,6 @@ public class AdminController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(fileName);
 			segment.setSegmentImage(fileName); // Update image in the database
 		}
 
@@ -419,7 +417,7 @@ public class AdminController {
 			prepo.save(existingProduct);
 		}
 
-		return "redirect:/admin/productdetail/" + product.getPid();
+		return "redirect:/admin/" + product.getPid();
 	}
 
 	private void handleImageUploads(Product product, MultipartFile primaryImage,
@@ -585,7 +583,6 @@ public class AdminController {
 	public String addNewProduct(@ModelAttribute ProductDto prodDto,
 			@RequestParam("secondaryImageInput") List<MultipartFile> secondaryImgURL,
 			@RequestParam("PrimaryImage") MultipartFile primaryImgURL) throws IOException {
-		System.out.println("Secondary img length=" + secondaryImgURL.size());
 		Product prod = new Product();
 		prod.setCompanyPid(prodDto.getCompanyPid());
 		prod.setHapPid(prodDto.getHapPid());
@@ -605,7 +602,6 @@ public class AdminController {
 			Attribute attribute = new Attribute();
 			attribute.setProduct(prod);
 			attribute.setAttributeName(attributeDto.getAttributeName());
-			System.out.println("Name:" + attributeDto.getAttributeName() + "Value:" + attributeDto.getAttributeValue());
 			attribute.setAttributeValue(attributeDto.getAttributeValue());
 			attRepo.save(attribute);
 		}

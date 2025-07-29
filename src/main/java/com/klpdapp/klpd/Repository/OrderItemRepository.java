@@ -11,5 +11,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {
 
 
     List<OrderItem> findAllByOrder_User(Login loginuser);
+
+    List<OrderItem> findAllByOrder_UserOrderByOrder_OrderDateDesc(Login loginuser);
     
 }

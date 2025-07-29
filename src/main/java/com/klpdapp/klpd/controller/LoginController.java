@@ -125,11 +125,9 @@ public class LoginController {
 
     @PostMapping("/registerwholesale") 
     public String wholesaleRegister(@ModelAttribute WholesellerDto wholesellerDto, RedirectAttributes redirectAttributes) {
-        // Handle wholesale registration logic here
-        System.out.println("wholesaler");
+
         try {
             // Encode the password
-            System.out.println("inside try block");
             String encodedPassword = passwordEncoder.encode(wholesellerDto.getPassword());
 
             // Create a new wholesaler object

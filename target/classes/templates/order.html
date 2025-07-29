@@ -14,48 +14,72 @@
             <h4 class="mb-4">My Orders</h4>
             <div class="d-flex gap-3">
                 <!-- Status Filter -->
-                <div class="dropdown mb-4">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Order Status
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="colorDropdown">
-                        <li>
-                            <a class="dropdown-item">On the Way</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">Delivered</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">Cancelled</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">Returned</a>
-                        </li>
-                    </ul>
+                <div class="d-flex gap-3">
+                    <!-- Order Status Filter -->
+                    <div class="dropdown mb-4">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="statusDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Order Status
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status='On the Way', timePeriod=${param.timePeriod})}">On the
+                                    Way</a></li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status='Delivered', timePeriod=${param.timePeriod})}">Delivered</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status='Shipped', timePeriod=${param.timePeriod})}">Shipped</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status='Pending', timePeriod=${param.timePeriod})}">Pending</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status='Cancelled', timePeriod=${param.timePeriod})}">Cancelled</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status='Returned', timePeriod=${param.timePeriod})}">Returned</a>
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/order(timePeriod=${param.timePeriod})}">All
+                                    Statuses</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Order Time Filter -->
+                    <div class="dropdown mb-4">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="timeDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Order Time
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="timeDropdown">
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status=${param.status}, timePeriod='Last 30 days')}">Last 30
+                                    days</a></li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status=${param.status}, timePeriod='2024')}">2024</a></li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status=${param.status}, timePeriod='2023')}">2023</a></li>
+                            <li><a class="dropdown-item"
+                                    th:href="@{/order(status=${param.status}, timePeriod='2022')}">2022</a></li>
+                            <li><a class="dropdown-item" th:href="@{/order(status=${param.status})}">All Time</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown mb-4">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Sort By
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                            <li><a class="dropdown-item" th:href="@{/order(sort='newest')}">Newest First</a></li>
+                            <li><a class="dropdown-item" th:href="@{/order(sort='oldest')}">Oldest First</a></li>
+                            <li><a class="dropdown-item" th:href="@{/order(sort='price-high')}">Price: High to Low</a>
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/order(sort='price-low')}">Price: Low to High</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
-                <!-- Time Filter -->
-                <div class="dropdown mb-4">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="colorDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Order Time
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="colorDropdown">
-                        <li>
-                            <a class="dropdown-item">Last 30 days</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">2024</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">2023</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">2022</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
 
             <div id="product-1" class="card mb-4 p-3" th:each="order : ${orderitems}">
@@ -76,6 +100,7 @@
                     <div class="col-3 text-end text-light">
                         <p class="fw-bold">Ordered on <span th:text="${order.order.orderDate}"></span></p>
                         <p style="font-size: 14px;">Your item has been <span th:text="${order.status}"></span> </p>
+                        <p style="font-size: 14px;">Your item will arrive on <span th:text="${order.deliveryDate}"></span></p>
                     </div>
                 </div>
             </div>

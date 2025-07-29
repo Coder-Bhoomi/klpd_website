@@ -74,7 +74,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         
         // Store user ID in session
         session.setAttribute("userid", user.getId());
-        System.out.println("User ID stored in session: " + user.getId());
 
         // Return OAuth2User with proper roles
         return oauth2User;

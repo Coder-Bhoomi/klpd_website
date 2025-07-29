@@ -18,6 +18,7 @@ import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
 import com.klpdapp.klpd.model.Address;
+import com.klpdapp.klpd.model.Coupon;
 
 @Service
 public class CartService {
@@ -62,28 +63,25 @@ public class CartService {
         cartRepository.deleteById(cartId);
     }
 
-    public void checkout(Login user, String paymentMode, int AddressId,float discount) {
-        System.out.println("inside cartservice");
+    public void checkout(Login user, String paymentMode, int AddressId,float discount, Coupon coupon) {
         List<Cart> carts = cartRepository.findByUser(user);
         float subtotal = calculateSubtotal(carts);
-        System.out.println("subtotal: " + subtotal);
-        
-        System.out.println("discount: " + discount);
+       
         int total = calculateTotal(subtotal, discount);
-        System.out.println("total: " + total);
         Address address = addRepo.findById(AddressId).orElse(null);
         float discountpercentage = (discount / subtotal) *100;
-        System.out.println("discount percentage: " + discountpercentage);
-
+        System.out.println("coupon"+coupon);
         Order order = new Order();
         order.setUser(user);
         order.setTotalAmt(total);
         order.setOrderDate(LocalDate.now());
         order.setPaymentMode(paymentMode);
         order.setAddress(address);
+        if (coupon != null) {
+            System.out.println("coupon is not null");
+            order.setCoupon(coupon);
+        }
         orderrepo.save(order);
-        System.out.println("order saved");
-        System.out.println("order id: " + order.getOrderId());
         for (Cart cart : carts) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
@@ -91,7 +89,7 @@ public class CartService {
             orderItem.setProduct(cart.getProduct());
             orderItem.setStatus("Pending");
             orderItem.setPrice(cart.getProductTotal() - (cart.getProductTotal() * discountpercentage / 100));
-
+            orderItem.setDeliveryDate(LocalDate.now().plusDays(5)); // Example: 5 days later
             orderitemrepo.save(orderItem);
 
             
@@ -101,4 +99,4 @@ public class CartService {
 
         cartRepository.deleteByUser(user);
     }   
-}
+}   

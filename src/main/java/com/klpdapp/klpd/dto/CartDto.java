@@ -5,7 +5,9 @@ public class CartDto {
     private int userId;
     private int productId;
     private int quantity;
-    private int productTotal;
+    private float productTotal;
+    private float productPrice;
+    private String deliveryDate;
     public int getCartId() {
         return cartId;
     }
@@ -30,11 +32,23 @@ public class CartDto {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public int getProductTotal() {
+    public float getProductTotal() {
         return productTotal;
     }
-    public void setProductTotal(int productTotal) {
+    public void setProductTotal(float productTotal) {
         this.productTotal = productTotal;
+    }
+    public float getProductPrice() {
+        return productPrice;
+    }
+    public void setProductPrice(float productPrice) {
+        this.productPrice = productPrice;
+    }
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     

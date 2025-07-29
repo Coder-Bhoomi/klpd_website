@@ -52,12 +52,9 @@ public class WishlistController {
         if (session.getAttribute("userid") != null) {
             Integer userId = (Integer) session.getAttribute("userid");
             Login loginuser = loginRepo.findById(userId).orElse(null);
-            System.out.println("userId: " + userId);
-            System.out.println("loginuser: " + loginuser.getEmail());
-            System.out.println("loginuser: " + loginuser.getUserType());
+        
             if(loginuser.getUserType().equals("Wholesaler")) {
                 Wholeseller wholesaler = wRepo.findById(loginuser.getUserId()).orElse(null);
-                System.out.println("wholesaler: " + wholesaler.getName());
                 model.addAttribute("user", wholesaler);
             } else if(loginuser.getUserType().equals("Customer")) {
                 User user = uRepo.findById(loginuser.getUserId()).orElse(null);
@@ -99,7 +96,7 @@ public class WishlistController {
                     wishlist.setUser(user);
                     wishlist.setProduct(product);
                     wishlistRepo.save(wishlist);
-                    System.out.println("added");
+            
                 }
 
                 model.addAttribute("message", "Product added to wishlist!");

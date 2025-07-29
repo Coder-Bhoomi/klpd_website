@@ -1,10 +1,15 @@
 package com.klpdapp.klpd.dto;
 
+import java.util.Date;
+
 public class OrderItemDto {
     private int orderItemId;
     private int productId;
     private int orderId;
     private int prodQuantity; 
+    private String status;
+    private Float price;
+    private Date deliveryDate;
     public int getOrderItemId() {
         return orderItemId;
     }
@@ -28,6 +33,24 @@ public class OrderItemDto {
     }
     public void setProdQuantity(int prodQuantity) {
         this.prodQuantity = prodQuantity;
+    }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public Float getPrice() {
+        return price;
+    }
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+    public void setDeliveryDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     // Getters and Setters
