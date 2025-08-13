@@ -49,32 +49,38 @@
 
                         <!-- Rating Section -->
                         <div class="rating d-flex align-items-center mb-3">
-                            <span class="me-2 text-warning">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star-half-stroke"></i>
-                                <i class="fa-regular fa-star"></i>
+                            <span class="me-2 text-warning" th:each="i : ${#numbers.sequence(1, 5)}">
+                                <!-- Full star -->
+                                <i th:if="${product.rating != null and i <= product.rating}"
+                                    class="fas fa-star text-warning"></i>
+
+                                <!-- Half star -->
+                                <i th:if="${product.rating != null and i > product.rating and i <= product.rating + 0.5}"
+                                    class="fas fa-star-half-alt text-warning"></i>
+
+                                <!-- Empty star -->
+                                <i th:if="${product.rating == null or i > product.rating + 0.5}"
+                                    class="far fa-star text-warning"></i>
                             </span>
-                            <span class="text-muted">(4.3/5)</span>
+                            <span th:text="|${product.rating}/5 out of ${numberOfReview} Reviews|"></span>
                         </div>
                     </div>
 
-                    <!-- Size Dropdown -->
+                    <!-- Size Buttons Form -->
                     <form th:action="@{/product/{pid}(pid=${product.pid})}" method="get">
-                        <div class="d-flex align-items-center mb-3">
+                        <div class="d-flex align-items-center mb-3 flex-wrap">
+                            <label class="form-label fw-bold me-2 mb-0">Select Size:</label>
 
-                            <label for="size" class="form-label fw-bold me-2 mb-0">Select Size:</label>
-                            <select id="size" class="form-select custom-dropdown" name="selectedSize"
-                                onchange="this.form.submit()">
-                                <option value="" disabled selected>Select a size</option>
-                                <option th:each="size : ${sizes}" th:value="${size}" th:text="${size}">
-                                </option>
-                            </select>
                             <input type="hidden" name="selectedSubcategoryId"
                                 th:value="${product.subcategory.subcategoryId}" />
+
+                            <button type="submit" th:each="size : ${sizes}" name="selectedSize" th:value="${size}"
+                                th:text="${size}" class="btn btn-outline-primary me-2 mb-2"
+                                th:classappend="${size == selectedSize} ? ' active'">
+                            </button>
                         </div>
                     </form>
+
 
 
                     <!-- Action Buttons -->
@@ -90,7 +96,8 @@
                                 <button type="submit" class="btn plus text-white" name="action" value="plus">+</button>
                             </form>
                         </div>
-                        <form th:if="${cartProductIds == null or not cartProductIds.contains(product.pid)}"
+                        <form
+                            th:if="${cartProductIds == null or not cartProductIds.contains(product.pid) and product.stock > 0}"
                             th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
@@ -99,9 +106,15 @@
                                 <span>Add to Cart</span>
                             </button>
                         </form>
+                        <button th:if="${product.stock <= 0}" class="btn btn-danger cardbutton d-block p-2 px-4"
+                            disabled>
+                            <span>Out of Stock</span>
+                        </button>
                     </div>
 
-                    <p class="availability text-success mt-4">In stock! Usually ships within 24 hours.</p>
+                    <p class="availability text-success mt-4"><span th:if="${product.stock > 0}">In stock!</span>
+                        <span th:if="${product.stock <= 0}">Out of stock</span> Usually ships within 24 hours.
+                    </p>
                     <p th:utext="${product.description}"></p>
                 </div>
 
@@ -121,6 +134,73 @@
             </table>
         </div>
 
+        <!-- Customer Reviews Section -->
+        <div class="container my-5">
+            <h4 class="fw-bold">Customer Reviews</h4>
+
+            <!-- Review summary -->
+            <div class="row mt-4">
+                <div class="col-md-3 text-center">
+                    <h2 class="text-warning" th:if="${product.rating != null}" th:text="${product.rating}">4.5</h2>
+                    <div class="mb-2">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}">
+                            <i th:if="${product.rating != null and i <= product.rating}"
+                                class="fas fa-star text-warning"></i>
+                            <i th:if="${product.rating != null and i > product.rating and i <= product.rating + 0.5}"
+                                class="fas fa-star-half-alt text-warning"></i>
+                            <i th:if="${product.rating == null or i > product.rating + 0.5}"
+                                class="far fa-star text-warning"></i>
+                        </span>
+                    </div>
+                    <p>Based on <span th:text="${numberOfReview}">24</span> reviews</p>
+                </div>
+
+                <!-- Rating distribution -->
+                <div class="col-md-5">
+                    <div th:each="star : ${#numbers.sequence(5, 1)}" class="d-flex align-items-center mb-2">
+                        <span class="me-2" th:text="${star} + ' stars'">5 stars</span>
+                        <div class="progress flex-grow-1" style="height: 10px;">
+                            <div class="progress-bar bg-warning"
+                                th:style="'width: ' + ${ratingDistribution != null ? ratingDistribution.get(star) : 0} + '%'"
+                                th:attr="data-percentage=${ratingDistribution != null ? ratingDistribution.get(star) : 0}">
+                            </div>
+                        </div>
+                        <span class="ms-2"
+                            th:text="${ratingDistribution != null ? ratingDistribution.get(star) : 0} + '%'">70%</span>
+                    </div>
+                </div>
+
+
+                <!-- Write review button -->
+                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                    <a th:href="@{/product/{pid}/review(pid=${product.pid})}" class="btn btn-primary">
+                        <i class="fas fa-pen me-2"></i>Write a Review
+                    </a>
+                </div>
+            </div>
+
+            <!-- Reviews list -->
+            <div class="mt-5">
+                <div th:each="review : ${reviews}" class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5 th:text="${review.user.name}">User Name</h5>
+                                <div class="rating mb-2">
+                                    <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                        <i
+                                            th:class="${i <= review.rating} ? 'fa-solid fa-star text-warning' : 'fa-regular fa-star text-warning'"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <small class="text-muted"
+                                th:text="${#temporals.format(review.date, 'yyyy-MM-dd')}">2023-10-15</small>
+                        </div>
+                        <p class="card-text" th:text="${review.comment}">This is a great product! I love it.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Related Product -->
         <section class="best-selling container">
             <h2 class="text-center fw-bold my-3">Related Product</h2>

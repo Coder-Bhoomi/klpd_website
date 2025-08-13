@@ -71,7 +71,7 @@ public class Product {
     @GenericField
     private Float offerPrice;
 
-    private int rating;
+    private Float rating;   
 
     private int sales;
 

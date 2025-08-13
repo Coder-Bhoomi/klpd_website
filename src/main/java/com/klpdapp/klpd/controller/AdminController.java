@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +27,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.klpdapp.klpd.Repository.AdminRepo;
 import com.klpdapp.klpd.Repository.CategoryRepo;
 import com.klpdapp.klpd.Repository.CouponRepo;
-import com.klpdapp.klpd.Repository.ImagesRepo;
 import com.klpdapp.klpd.Repository.LoginRepo;
 import com.klpdapp.klpd.Repository.wholesalerRepo;
 import com.klpdapp.klpd.Repository.UserRepo;
@@ -44,7 +42,6 @@ import com.klpdapp.klpd.model.Admin;
 import com.klpdapp.klpd.model.Attribute;
 import com.klpdapp.klpd.model.Category;
 import com.klpdapp.klpd.model.Coupon;
-import com.klpdapp.klpd.model.Images;
 import com.klpdapp.klpd.model.Login;
 import com.klpdapp.klpd.model.Order;
 import com.klpdapp.klpd.model.OrderItem;
@@ -53,6 +50,7 @@ import com.klpdapp.klpd.model.SubCategory;
 import com.klpdapp.klpd.model.Segment;
 import com.klpdapp.klpd.model.User;
 import com.klpdapp.klpd.model.Wholeseller;
+import com.klpdapp.klpd.Services.ImageService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -72,9 +70,6 @@ public class AdminController {
 
 	@Autowired
 	ProductRepo prepo;
-
-	@Autowired
-	ImagesRepo imgRepo;
 
 	@Autowired
 	AdminRepo adrepo;
@@ -102,6 +97,9 @@ public class AdminController {
 
 	@Autowired
 	UserRepo userRepo;
+
+	@Autowired
+	ImageService imageservice;
 
 	@GetMapping({ "/dashboard" })
 	public String showIndex(Model model, HttpSession session) {
@@ -133,7 +131,8 @@ public class AdminController {
 	public String showOrders(Model model) {
 		List<Order> orders = orderRepo.findAll();
 		model.addAttribute("Orders", orders);
-		List<OrderItem> orderItems = orderItemRepository.findAll();
+		//Find by desc order by date
+		List<OrderItem> orderItems = orderItemRepository.findByOrderByOrder_OrderDateDesc();
 		model.addAttribute("OrderItems", orderItems);
 		return "admin/order";
 	}
@@ -387,7 +386,7 @@ public class AdminController {
 			RedirectAttributes redirectAttributes) {
 		// Fetch the existing product from the database
 		Product existingProduct = prepo.findById(product.getPid()).orElse(null);
-		handleImageUploads(product, primaryImage, secondaryImages, removedImages);
+		imageservice.handleImageUploads(product, primaryImage, secondaryImages, removedImages);
 
 		if (existingProduct != null) {
 			// Update only necessary fields
@@ -401,7 +400,7 @@ public class AdminController {
 			existingProduct.setStock(product.getStock());
 			existingProduct.setSubcategory(product.getSubcategory());
 
-			updateProductImages(existingProduct, product.getImages());
+			imageservice.updateProductImages(existingProduct, product.getImages());
 
 			// Update attributes
 			updateProductAttributes(existingProduct, product.getAttributes());
@@ -420,91 +419,7 @@ public class AdminController {
 		return "redirect:/admin/" + product.getPid();
 	}
 
-	private void handleImageUploads(Product product, MultipartFile primaryImage,
-			MultipartFile[] secondaryImages, List<Integer> removedImages) {
-		List<Images> images = new ArrayList<>();
-
-		// Handle primary image
-		if (primaryImage != null && !primaryImage.isEmpty()) {
-			String primaryImageUrl = product.getPid() + "_primaryImage_" + primaryImage.getOriginalFilename();
-			String uploadDir = "public/ProductImages/";
-			Path uploadPath = Paths.get(uploadDir);
-			if (!Files.exists(uploadPath)) {
-				try {
-					Files.createDirectories(uploadPath);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			Images primaryImg = new Images();
-			primaryImg.setImageUrl(primaryImageUrl);
-			primaryImg.setIsPrimary(true);
-			images.add(primaryImg);
-		} else if (product.getImages() != null) {
-			// Keep existing primary image if not changed
-			product.getImages().stream()
-					.filter(Images::getIsPrimary)
-					.findFirst()
-					.ifPresent(images::add);
-		}
-
-		// Handle secondary images
-		if (secondaryImages != null) {
-			for (MultipartFile file : secondaryImages) {
-				if (!file.isEmpty()) {
-					String imageUrl = product.getPid() + "_secondaryImage_" + file.getOriginalFilename();
-					String uploadDir = "public/ProductImages/";
-					Path uploadPath = Paths.get(uploadDir);
-					if (!Files.exists(uploadPath)) {
-						try {
-							Files.createDirectories(uploadPath);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					Images img = new Images();
-					img.setImageUrl(imageUrl);
-					img.setIsPrimary(false);
-					images.add(img);
-				}
-			}
-		}
-
-		// Add existing secondary images that weren't removed
-		if (product.getImages() != null) {
-			product.getImages().stream()
-					.filter(img -> !img.getIsPrimary())
-					.filter(img -> removedImages == null ||
-							!removedImages.contains(img.getImgId()))
-					.forEach(images::add);
-		}
-
-		product.setImages(images);
-	}
-	private void updateProductImages(Product product, List<Images> updatedImages) {
-        if (updatedImages == null || updatedImages.isEmpty()) {
-            return;
-        }
-        
-        // Set product reference for all images
-        updatedImages.forEach(img -> img.setpid(product));
-        
-        // Save all images (new ones will be inserted, existing ones updated)
-        imgRepo.saveAll(updatedImages);
-        
-        // Delete images that are no longer referenced
-        List<Integer> currentImageIds = updatedImages.stream()
-                .map(Images::getImgId)
-                .filter(id -> id != 0)
-                .collect(Collectors.toList());
-        
-        if (!currentImageIds.isEmpty()) {
-            //imgRepo.deleteByPidAndImgIdNotIn(product, currentImageIds);
-        } else {
-            imgRepo.deleteByPid(product);
-        }
-    }
-
+	
 	private void updateProductAttributes(Product product, List<Attribute> updatedAttributes) {
 		if (updatedAttributes == null) {
 			return;
@@ -578,90 +493,48 @@ public class AdminController {
 		sCatRepo.save(subCat);
 		return "redirect:/admin/product";
 	}
+@PostMapping("/addNewProduct")
+public String addNewProduct(@ModelAttribute ProductDto prodDto,
+                            @RequestParam("secondaryImageInput") List<MultipartFile> secondaryImgURL,
+                            @RequestParam("PrimaryImage") MultipartFile primaryImgURL) throws IOException {
 
-	@PostMapping("/addNewProduct")
-	public String addNewProduct(@ModelAttribute ProductDto prodDto,
-			@RequestParam("secondaryImageInput") List<MultipartFile> secondaryImgURL,
-			@RequestParam("PrimaryImage") MultipartFile primaryImgURL) throws IOException {
-		Product prod = new Product();
-		prod.setCompanyPid(prodDto.getCompanyPid());
-		prod.setHapPid(prodDto.getHapPid());
-		SubCategory subCat = sCatRepo.findById(prodDto.getSubcategory()).orElse(null);
-		prod.setSubcategory(subCat);
-		prod.setBrand(prodDto.getBrand());
-		prod.setProdName(prodDto.getProdName());
-		prod.setDescription(prodDto.getDescription());
-		prod.setCreatedAt(LocalDate.now());
-		prod.setStock(prodDto.getStock());
-		prod.setMrp(prodDto.getMrp());
-		prod.setDiscount(prodDto.getDiscount());
-		prod.setOfferPrice(prodDto.getMrp() - (prodDto.getMrp() * prodDto.getDiscount() / 100));
-		prod.setSales(0);
-		prepo.save(prod);
-		for (AttributeDto attributeDto : prodDto.getAttributes()) {
-			Attribute attribute = new Attribute();
-			attribute.setProduct(prod);
-			attribute.setAttributeName(attributeDto.getAttributeName());
-			attribute.setAttributeValue(attributeDto.getAttributeValue());
-			attRepo.save(attribute);
-		}
+    Product prod = new Product();
+    prod.setCompanyPid(prodDto.getCompanyPid());
+    prod.setHapPid(prodDto.getHapPid());
+    SubCategory subCat = sCatRepo.findById(prodDto.getSubcategory()).orElse(null);
+    prod.setSubcategory(subCat);
+    prod.setBrand(prodDto.getBrand());
+    prod.setProdName(prodDto.getProdName());
+    prod.setDescription(prodDto.getDescription());
+    prod.setCreatedAt(LocalDate.now());
+    prod.setStock(prodDto.getStock());
+    prod.setMrp(prodDto.getMrp());
+    prod.setDiscount(prodDto.getDiscount());
+    prod.setOfferPrice(prodDto.getMrp() - (prodDto.getMrp() * prodDto.getDiscount() / 100));
+    prod.setSales(0);
+    prepo.save(prod);
 
-		if (!primaryImgURL.isEmpty()) {
-			Images img = new Images();
-			img.setpid(prod);
-			MultipartFile file = primaryImgURL;
-			String uploadDir = "public/ProductImages/";
-			String fileName = prod.getPid() + "_primaryImage_" + file.getOriginalFilename();
-			Path uploadPath = Paths.get(uploadDir);
-			if (!Files.exists(uploadPath)) {
-				try {
-					Files.createDirectories(uploadPath);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			try (InputStream inputStream = file.getInputStream()) {
-				Path filePath = uploadPath.resolve(fileName);
-				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			img.setImageUrl("/ProductImages/" + fileName);
-			img.setIsPrimary(true);
-			imgRepo.save(img);
-		}
-		if (secondaryImgURL != null) {
-			for (MultipartFile file : secondaryImgURL) {
-				if (!file.isEmpty()) {
-					Images img = new Images();
-					img.setpid(prod);
-					String uploadDir = "public/ProductImages/";
-					String fileName = prod.getPid() + "_secondaryImage_" + file.getOriginalFilename();
-					Path uploadPath = Paths.get(uploadDir);
-					if (!Files.exists(uploadPath)) {
-						try {
-							Files.createDirectories(uploadPath);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					try (InputStream inputStream = file.getInputStream()) {
-						Path filePath = uploadPath.resolve(fileName);
-						Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-					} catch (IOException e) {
-						throw new IOException("Could not save uploaded file: " + fileName);
-					}
-					img.setImageUrl("/ProductImages/" + fileName);
-					img.setIsPrimary(false);
-					imgRepo.save(img);
-				}
-			}
-		}
-		return "redirect:/admin/product";
-	}
+    for (AttributeDto attributeDto : prodDto.getAttributes()) {
+        Attribute attribute = new Attribute();
+        attribute.setProduct(prod);
+        attribute.setAttributeName(attributeDto.getAttributeName());
+        attribute.setAttributeValue(attributeDto.getAttributeValue());
+        attRepo.save(attribute);
+    }
+
+    // Upload and save primary image
+    imageservice.saveImage(primaryImgURL, prod, true);
+
+    // Upload and save secondary images
+    if (secondaryImgURL != null) {
+        for (MultipartFile file : secondaryImgURL) {
+            imageservice.saveImage(file, prod, false);
+        }
+    }
+
+    return "redirect:/admin/product";
+}
+
 
 	@PostMapping("/addCoupon")
 	public String addCoupon(@RequestParam String couponCode,

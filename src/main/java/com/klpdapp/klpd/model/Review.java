@@ -17,13 +17,14 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Login user;
 
     private LocalDate date;
 
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @Column(nullable = false)
     private int rating;
 
     public int getReviewId() {
@@ -42,11 +43,11 @@ public class Review {
         this.product = product;
     }
 
-    public User getUser() {
+    public Login getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Login user) {
         this.user = user;
     }
 

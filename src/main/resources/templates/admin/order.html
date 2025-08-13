@@ -36,6 +36,7 @@
                                         <th scope="col">Payment mode</th>
                                         <th scope="col">Delivery Address</th>
                                         <th scope="col">Order Date</th>
+                                        <th scope="Col">Delivery Date</th>
                                         <th scope="col">Status</th>
                                     </tr>
                                 </thead>
@@ -61,6 +62,7 @@
                                             <span th:text="${order.order.address.country}"></span>
                                         </td>
                                         <td class="editable" th:text="${order.order.orderDate}"></td>
+                                        <td class="editable" th:text="${order.deliveryDate}"></td>
                                         <td>
                                             <form th:action="@{/admin/order/update}" method="post">
                                                 <input type="hidden" th:value="${order.orderItemId}" name="orderItemId">

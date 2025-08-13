@@ -27,5 +27,10 @@ public class ProductService {
        Product product = productRepository.findById(pid).orElse(null);
        return product;
     }
+
+    @Transactional
+    public void save(Product product) {
+        productRepository.save(product);
+    }
     
 }
