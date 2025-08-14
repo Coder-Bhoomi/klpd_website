@@ -262,6 +262,18 @@
                     <span>View All</span>
                 </button>
             </a>
+            <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const mainImage = document.getElementById('mainImage');
+        const thumbnails = document.querySelectorAll('.img-thumbnail');
+
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function () {
+                mainImage.src = this.src; // Set clicked image as main image
+            });
+        });
+    });
+</script>
 
             <script>
                 // Function to calculate the discount percentage

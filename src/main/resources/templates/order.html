@@ -102,7 +102,7 @@
                         <p style="font-size: 14px;"
                             th:if="${order.deliveryDate != null and order.deliveryDate > T(java.time.LocalDate).now()}">
                             Your item will arrive on <span th:text="${order.deliveryDate}"></span>
-                            <p style="font-size: 14px;">Your item has been <span th:text="${order.status}"></span> </p>
+                            Your item has been <span th:text="${order.status}"></span>
                         </p>
 
                         <!-- Already delivered -->
