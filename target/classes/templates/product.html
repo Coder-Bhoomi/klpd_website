@@ -40,8 +40,8 @@
                     <div th:if="${product != null}">
                         <h1 class="fw-bold" th:text="${product.prodName}">Artisan Tadka Pan</h1>
                         <p class="price fw-bold" style="font-size: 22px;">
-                            <s th:text="${product.mrp}">1800</s>
-                            <strong class="text-danger" th:text="${product.offerPrice}"><span
+                            ₹<s th:text="${product.mrp}">1800</s>
+                            ₹<strong class="text-danger" th:text="${product.offerPrice}"><span
                                     class="text-danger">₹</span> 749</strong>
                             <!-- <span class="text-success" id="discountPercentage">14% OFF</span> -->
                         </p>
@@ -97,7 +97,7 @@
                             </form>
                         </div>
                         <form
-                            th:if="${cartProductIds == null or not cartProductIds.contains(product.pid) and product.stock > 0}"
+                            th:if="${(cartProductIds == null or not cartProductIds.contains(product.pid)) and product.stock > 0}"
                             th:action="@{/cart/add}" method="post">
                             <input type="hidden" name="productId" th:value="${product.pid}" />
                             <input type="hidden" name="quantity" value="1" min="1" />
@@ -225,11 +225,11 @@
                             <p class="text-center text-truncate p-2 px-3" th:text="${rp.prodName}">Product Name</p>
                             <p class="text-center">
                                 <span th:if="${rp.offerPrice != null}">
-                                    Price: <s th:text="${rp.mrp}">Rs.1800</s>
-                                    <span class="text-danger" th:text="${rp.offerPrice}">Rs.1620</span>
+                                    Price: ₹<s th:text="${rp.mrp}">Rs.1800</s>
+                                    ₹<span class="text-danger" th:text="${rp.offerPrice}">Rs.1620</span>
                                 </span>
                                 <span th:if="${rp.offerPrice == null}">
-                                    Price: <span class="text-danger" th:text="${rp.mrp}">Rs.1800</span>
+                                    Price: ₹<span class="text-danger" th:text="${rp.mrp}">Rs.1800</span>
                                 </span>
                             </p>
                         </a>
@@ -263,17 +263,17 @@
                 </button>
             </a>
             <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const mainImage = document.getElementById('mainImage');
-        const thumbnails = document.querySelectorAll('.img-thumbnail');
+                document.addEventListener('DOMContentLoaded', function () {
+                    const mainImage = document.getElementById('mainImage');
+                    const thumbnails = document.querySelectorAll('.img-thumbnail');
 
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function () {
-                mainImage.src = this.src; // Set clicked image as main image
-            });
-        });
-    });
-</script>
+                    thumbnails.forEach(thumbnail => {
+                        thumbnail.addEventListener('click', function () {
+                            mainImage.src = this.src; // Set clicked image as main image
+                        });
+                    });
+                });
+            </script>
 
             <script>
                 // Function to calculate the discount percentage

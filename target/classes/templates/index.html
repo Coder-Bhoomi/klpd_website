@@ -91,10 +91,13 @@
                         <div class="row">
                             <div class="col-md-6 col-lg-4 my-4" th:each="category : ${segment.category}">
                                 <div class="category-card">
-                                    <img th:src="@{'/CategoryImages/'+${category.categoryImage}}" style="height:200px">
-                                    <a class="text-white category-title"
-                                        th:href="@{/category/{id}(id=${category.categoryId})}"
-                                        th:text="${category.categoryName}" style="text-decoration: none;"></a>
+                                    <a th:href="@{/category/{id}(id=${category.categoryId})}" style="text-decoration: none;">
+                                        <img th:src="@{'/CategoryImages/'+${category.categoryImage}}"
+                                            style="height:200px">
+                                        <p class="text-white category-title"
+                                            th:href="@{/category/{id}(id=${category.categoryId})}"
+                                            th:text="${category.categoryName}" ></p>
+                                    </a>
                                 </div>
                             </div>
 
@@ -127,8 +130,7 @@
                             </form>
                             <div class="best-seller">Best Seller</div>
                             <div class="rating">
-                                <span class="star">⭐ 4.4</span> <span class="reviews"
-                                    style="color: grey;">(28.5K)</span>
+                                <span class="star">⭐ <span th:text="${product.rating}">4.4</span></span>
                             </div>
                             <a th:href="@{/product/{pid}(pid=${product.pid})}"
                                 style="text-decoration: none; color: inherit;">
@@ -140,30 +142,13 @@
                                 <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name
                                 </p>
                                 <p class="text-center">
-                                    <div class="star-rating">
-                                    <span th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <!-- Full star -->
-                                        <i th:if="${product.rating != null and i <= product.rating}"
-                                            class="fas fa-star text-warning"></i>
 
-                                        <!-- Half star -->
-                                        <i th:if="${product.rating != null and i > product.rating and i <= product.rating + 0.5}"
-                                            class="fas fa-star-half-alt text-warning"></i>
-
-                                        <!-- Empty star -->
-                                        <i th:if="${product.rating == null or i > product.rating + 0.5}"
-                                            class="far fa-star text-warning"></i>
-                                    </span>
-                                    <span th:if="${product.rating != null}"
-                                        th:text="'(' + ${#numbers.formatDecimal(product.rating, 1, 1)} + ')'"
-                                        class="ml-1"></span>
-                                </div>
                                     <span th:if="${product.offerPrice != null}">
-                                        Price: <s th:text="${product.mrp}">1800</s>
-                                        Rs.<span class="text-danger" th:text="${product.offerPrice}">1620</span>
+                                        Price: ₹<s th:text="${product.mrp}">1800</s>
+                                        ₹<span class="text-danger" th:text="${product.offerPrice}">1620</span>
                                     </span>
                                     <span th:if="${product.offerPrice == null}">
-                                        Price: Rs.<span class="text-danger" th:text="${product.mrp}">1800</span>
+                                        Price: ₹<span class="text-danger" th:text="${product.mrp}">1800</span>
                                     </span>
                                 </p>
                                 <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">
@@ -255,34 +240,18 @@
                                     <img th:src="@{${product.images[0].imageUrl}}" alt="Best Seller 1"
                                         class="img-fluid">
                                 </div>
-
+                                <div class="rating">
+                                    <span class="star">⭐ <span th:text="${product.rating}">4.4</span></span>
+                                </div>
                                 <p class="text-center text-truncate p-2 px-3" th:text="${product.prodName}">Product Name
                                 </p>
                                 <p class="text-center">
-                                    <div class="star-rating">
-                                    <span th:each="i : ${#numbers.sequence(1, 5)}">
-                                        <!-- Full star -->
-                                        <i th:if="${product.rating != null and i <= product.rating}"
-                                            class="fas fa-star text-warning"></i>
-
-                                        <!-- Half star -->
-                                        <i th:if="${product.rating != null and i > product.rating and i <= product.rating + 0.5}"
-                                            class="fas fa-star-half-alt text-warning"></i>
-
-                                        <!-- Empty star -->
-                                        <i th:if="${product.rating == null or i > product.rating + 0.5}"
-                                            class="far fa-star text-warning"></i>
-                                    </span>
-                                    <span th:if="${product.rating != null}"
-                                        th:text="'(' + ${#numbers.formatDecimal(product.rating, 1, 1)} + ')'"
-                                        class="ml-1"></span>
-                                </div>
                                     <span th:if="${product.offerPrice != null}">
-                                        Price: Rs.<s th:text="${product.mrp}">1800</s>
-                                        Rs.<span class="text-danger" th:text="${product.offerPrice}">1620</span>
+                                        Price: ₹<s th:text="${product.mrp}">1800</s>
+                                        ₹<span class="text-danger" th:text="${product.offerPrice}">1620</span>
                                     </span>
                                     <span th:if="${product.offerPrice == null}">
-                                        Price: Rs.<span class="text-danger" th:text="${product.mrp}">1800</span>
+                                        Price: ₹<span class="text-danger" th:text="${product.mrp}">1800</span>
                                     </span>
                                 </p>
                                 <div th:each="cartItem : ${cartItem}" class="text-center mx-auto">

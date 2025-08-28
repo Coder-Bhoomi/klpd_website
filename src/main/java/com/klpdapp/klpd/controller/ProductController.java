@@ -81,10 +81,12 @@ public class ProductController {
             }
             // Get the products based on size 
             List<Product> products = isInductionBase
-            ? pRepo.findInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId)
-            : pRepo.findNonInductionProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId);
+            ? pRepo.findProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId,true)
+            : pRepo.findProductsBySizeAndSubcategory(selectedSize, selectedSubcategoryId,false);
             // print the products
             System.out.println("Products found: " + products.size());
+            products.forEach(product -> System.out.println(" - " + product.getProdName()));
+            
 
 
             if (!products.isEmpty()) {
@@ -107,12 +109,12 @@ public class ProductController {
 
             // Check if the current product name contains "induction"
             if (prod.getProdName().toLowerCase().contains("induction")) {
-                isInductionBase = true;
+               isInductionBase = true;
             }
             // Get the sizes of the product
             List<String> sizes = isInductionBase 
-                ? pRepo.findInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId())
-                : pRepo.findNonInductionSizesbySubcategory(prod.getSubcategory().getSubcategoryId());
+                ? pRepo.findDistinctSizeVariants(prod.getSubcategory().getSubcategoryId(),true)
+                : pRepo.findDistinctSizeVariants(prod.getSubcategory().getSubcategoryId(),false);
             
             sizes.removeIf(size -> size.trim().equals("-")); // Remove hyphens from the list
             model.addAttribute("sizes", sizes);
