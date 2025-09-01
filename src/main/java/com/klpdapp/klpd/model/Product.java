@@ -79,6 +79,10 @@ public class Product {
     @IndexedEmbedded 
     private List<Images> images;
 
+    @OneToOne(mappedBy = "pid", cascade = CascadeType.ALL)
+    @IndexedEmbedded
+    private Videos videos;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @IndexedEmbedded
     private List<Attribute> attributes;

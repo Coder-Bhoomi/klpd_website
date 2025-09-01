@@ -2,7 +2,6 @@
 <html lang="en" th:replace="base::layout(~{::main})">
 
 <head>
-
 </head>
 
 <body>
@@ -23,12 +22,28 @@
                         </button>
                     </form>
                     </i>
-                    <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
-                        class="img-fluid mb-3" style="width: 85%; border-radius: 8px;">
-                    <div class="d-flex justify-content-center flex-row" style="width: 85%;">
-                        <img th:each="image : ${product.images}" th:src="@{${image.imageUrl}}" alt="Thumbnail"
-                            class="img-thumbnail m-1" style="width: 20%; cursor: pointer;">
+                    <div id="mainMediaContainer" style="width: 85%;">
+                        <img id="mainImage" th:src="@{${product.images[0].imageUrl}}" alt="Product Image"
+                            class="img-fluid mb-3" style="width: 100%; border-radius: 8px;">
                     </div>
+
+                    <div class="d-flex justify-content-center flex-row" style="width: 85%;">
+                        <!-- Image thumbnails -->
+                        <img th:each="image : ${product.images}" th:src="@{${image.imageUrl}}" alt="Thumbnail"
+                            class="img-thumbnail m-1 media-thumb" style="width: 20%; cursor: pointer;"
+                            data-type="image">
+
+                        <!-- Video thumbnails -->
+                        <div th:each="video : ${product.videos}" class="position-relative media-thumb"
+                            style="width:20%; cursor:pointer;"
+                            th:attr="data-type='video', data-video-url=${video.videoUrl}">
+                            <span class="position-absolute top-50 start-50 translate-middle img-thumbnail"
+                                style="font-size: 50px; color: white; background: red;">▶</span>
+                        </div>
+
+
+                    </div>
+
 
                 </div>
 
@@ -43,7 +58,10 @@
                             ₹<s th:text="${product.mrp}">1800</s>
                             ₹<strong class="text-danger" th:text="${product.offerPrice}"><span
                                     class="text-danger">₹</span> 749</strong>
-                            <!-- <span class="text-success" id="discountPercentage">14% OFF</span> -->
+                            <span class="text-success ms-2" th:if="${product.mrp > product.offerPrice}"
+                                th:text="|${#numbers.formatDecimal(((product.mrp - product.offerPrice) * 100) / product.mrp, 0, 0)}% OFF|">
+                            </span>
+
                         </p>
                         <p class="text mb-3 fw-bold" style="color: grey !important;">(inclusive of all taxes)</p>
 
@@ -264,16 +282,31 @@
             </a>
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
-                    const mainImage = document.getElementById('mainImage');
-                    const thumbnails = document.querySelectorAll('.img-thumbnail');
+                    const mainContainer = document.getElementById('mainMediaContainer');
+                    const thumbnails = document.querySelectorAll('.media-thumb');
 
                     thumbnails.forEach(thumbnail => {
                         thumbnail.addEventListener('click', function () {
-                            mainImage.src = this.src; // Set clicked image as main image
+                            const type = this.getAttribute("data-type");
+
+                            if (type === "image") {
+                                // Show image
+                                mainContainer.innerHTML =
+                                    `<img src="${this.src}" class="img-fluid mb-3" style="width:100%; border-radius: 8px;">`;
+                            } else if (type === "video") {
+                                // Show video player
+                                const videoUrl = this.getAttribute("data-video-url");
+                                mainContainer.innerHTML =
+                                    `<video width="100%" controls autoplay style="border-radius: 8px;">
+                            <source src="${videoUrl}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>`;
+                            }
                         });
                     });
                 });
             </script>
+
 
             <script>
                 // Function to calculate the discount percentage
